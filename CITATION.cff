@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use these sites or their code, please cite them as below. Each site also gives its own reference on its page."
+title: "NKUA WebGIS sites"
+type: software
+abstract: "Source code of the WebGIS sites and research catalogues of the research team of Professor Niki Evelpidou at the National and Kapodistrian University of Athens."
+authors:
+  - family-names: Evelpidou
+    given-names: Niki
+    affiliation: "National and Kapodistrian University of Athens"
+  - family-names: Karkani
+    given-names: Eleana
+    affiliation: "National and Kapodistrian University of Athens"
+  - family-names: Saitis
+    given-names: Giannis
+    affiliation: "National and Kapodistrian University of Athens"
+  - family-names: Spyrou
+    given-names: Evangelos
+    affiliation: "National and Kapodistrian University of Athens"
+  - family-names: Liaskos
+    given-names: Alexandros
+    affiliation: "National and Kapodistrian University of Athens"
+repository-code: "https://github.com/AlexandrosLiaskos/nkua-webgis"
+url: "https://evelpidou.nkua.cloud/"
+license: CC-BY-4.0
+keywords:
+  - webgis
+  - geomorphology
+  - natural hazards
+  - coastal geomorphology
+  - floods

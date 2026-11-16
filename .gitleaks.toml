@@ -1,0 +1,18 @@
+# Settings of the secret scan (gitleaks).
+#
+# The scan uses the default rules of gitleaks. The generic rule for API keys
+# takes three kinds of names in the pages for keys; they are allowed here:
+# the storage keys of the visit counter (data-storage-key), the counter keys
+# of the home page (data-visit-key) and two field keys of the tombolo table.
+title = "Secret scan of the NKUA WebGIS sites"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Names of counters and data fields, not secrets"
+regexTarget = "match"
+regexes = [
+  "data-(?:storage|visit)-key=\"[a-z0-9-]+\"",
+  "key: '(?:elevation_rcp26|elevation_rcp85)'",
+]
