@@ -1,0 +1,240 @@
+/* Site-specific additions on top of /webgis-shared/lagoons-ui.css (raster layers, map legend, charts). */
+
+.ci-raster { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+/* mobile tab icons for this site's buttons (the shared CSS only defines filters/search/stats) */
+#mobile-layers-toggle {
+    --mobile-control-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 3 8l9 5 9-5Z'/%3E%3Cpath d='m3 13 9 5 9-5'/%3E%3C/svg%3E");
+}
+#mobile-method-toggle {
+    --mobile-control-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M12 11v5M12 8h.01'/%3E%3C/svg%3E");
+}
+
+/* ---------- layers panel: same box language as the shared .filter-selector; any number of layers can be on ---------- */
+.ci-layers { display: flex; flex-direction: column; border: 1px solid var(--border-color, #333); }
+.ci-layer + .ci-layer { border-top: 1px solid #e4e4e4; }
+.filter-group .ci-layer-row {
+    display: flex; align-items: baseline; gap: .6rem; width: 100%; margin: 0; padding: .65rem .9rem;
+    background: var(--background-primary, #fff); color: var(--text-primary, #000); cursor: pointer;
+    font: inherit; font-size: inherit; font-weight: 400; text-transform: none; letter-spacing: 0;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+.ci-layer-row:hover { background: #f5f5f5; }
+.ci-layer-row input { flex: none; width: 15px; height: 15px; margin: 0; align-self: center; accent-color: #000; }
+.ci-layer-row:focus-within { outline: 2px solid #000; outline-offset: -2px; }
+.ci-layer-name { flex: 1; font-family: var(--font-serif, 'EB Garamond', Georgia, serif); font-size: 1.02rem; line-height: 1.2; }
+.ci-layer-meta { font-family: var(--font-mono, 'JetBrains Mono', monospace); font-size: .66rem; color: var(--text-secondary, #666); white-space: nowrap; }
+.ci-layer.is-active > .ci-layer-row, .ci-layer.is-active > .ci-layer-row:hover { background: #000; color: #fff; }
+.ci-layer.is-active > .ci-layer-row .ci-layer-meta { color: #bbb; }
+.ci-layer.is-active > .ci-layer-row input { accent-color: #fff; }
+/* options of an active layer (expanded under its row) */
+.ci-layer-options { display: flex; flex-direction: column; gap: .55rem; padding: .6rem .9rem .7rem; background: #f6f7f6; border-top: 1px solid #e4e4e4; }
+.ci-layer-options[hidden] { display: none; }
+.ci-style-open {
+    align-self: flex-start; padding: .3rem .6rem; border: 1px solid #bdbdbd; background: #fff; color: #111; cursor: pointer;
+    font: 500 .66rem var(--font-sans, 'Inter', sans-serif); letter-spacing: .04em; text-transform: uppercase;
+}
+.ci-style-open:hover { border-color: #000; }
+.ci-opt[hidden] { display: none; }
+.ci-opt { display: flex; flex-direction: column; gap: .4rem; }
+.ci-opt-inline { flex-direction: row; align-items: center; gap: .75rem; }
+.filter-group .ci-opt-label, .ci-opt-label {
+    margin: 0; flex: none; color: var(--text-secondary, #666);
+    font: 500 .64rem var(--font-sans, 'Inter', sans-serif); text-transform: uppercase; letter-spacing: .06em;
+}
+.ci-opt-inline input[type=range] { flex: 1; min-width: 0; accent-color: #000; }
+.ci-opt-value { flex: none; width: 2.6rem; text-align: right; font: 500 .7rem var(--font-mono, 'JetBrains Mono', monospace); color: #333; }
+/* period: the 8-year mean on its own row, then one chip per hydrological year */
+.ci-year-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+.ci-year-chip {
+    padding: .38rem 0; border: 1px solid #cfcfcf; background: #fff; color: #111;
+    font: 500 .7rem var(--font-mono, 'JetBrains Mono', monospace); cursor: pointer;
+}
+.ci-year-chip.ci-year-mean { grid-column: 1 / -1; }
+.ci-year-chip:hover { border-color: #000; }
+.ci-year-chip.is-active { background: #000; border-color: #000; color: #fff; }
+.ci-year-chip:focus-visible { outline: 2px solid #000; outline-offset: 1px; }
+
+/* reference layers: quieter than the thematic list */
+.ci-ref { margin-top: 1.4rem; }
+.ci-ref-list { margin: 0; padding: 0; border-top: 1px solid #e4e4e4; }
+.ci-ref-row, .ci-ref-list .ci-layer { border-bottom: 1px solid #e4e4e4; }
+.ci-ref-list .ci-layer + .ci-layer { border-top: 0; }
+.filter-group .ci-ref-item {
+    display: flex; align-items: center; gap: .6rem; margin: 0; padding: .55rem .1rem; cursor: pointer;
+    color: var(--text-primary, #000); font-size: .82rem; font-weight: 400; text-transform: none; letter-spacing: 0;
+}
+.ci-ref-item input { width: 15px; height: 15px; margin: 0; accent-color: #000; }
+.ci-ref-swatch { width: 18px; height: 0; border-top: 1.5px solid #222; opacity: .75; }
+.ci-ref-swatch.ci-ref-text { height: auto; border: 0; opacity: .8; font: 600 .7rem var(--font-serif, 'EB Garamond', serif); text-align: center; line-height: 1; }
+.ci-ref-swatch.ci-ref-relief, .ci-lg-relief { height: 12px; border: 0; opacity: 1; background: linear-gradient(135deg, #fff 0 30%, #9a9a9a 60%, #5d5d5d); }
+.filter-group .ci-ref-item.is-disabled { color: var(--text-muted, #999); cursor: not-allowed; }
+.ci-ref-options { padding: 0 .1rem .55rem 1.6rem; }
+.ci-ref-options[hidden] { display: none; }
+/* the context layer (farmland) in the reference list: same quiet row as the other references */
+.filter-group .ci-ref-list .ci-layer-row { padding: .55rem .1rem; font-size: .82rem; }
+.ci-ref-list .ci-layer-name { font-family: inherit; font-size: .82rem; }
+.ci-ref-list .ci-layer.is-active > .ci-layer-row, .ci-ref-list .ci-layer.is-active > .ci-layer-row:hover { background: transparent; color: inherit; }
+.ci-ref-list .ci-layer.is-active > .ci-layer-row .ci-layer-meta { color: var(--text-secondary, #666); }
+.ci-ref-list .ci-layer.is-active > .ci-layer-row input { accent-color: #000; }
+.ci-ref-list .ci-layer-options { padding: 0 .1rem .6rem 1.6rem; background: transparent; border: 0; }
+
+/* conference + organisers, secondary, at the foot of the welcome poster */
+.ci-venue { margin-top: 1.1rem; padding-top: .9rem; border-top: 1px solid #e6e6e6; display: flex; flex-direction: column; align-items: center; gap: .65rem; }
+.ci-venue-text { margin: 0; text-align: center; font-family: var(--font-serif, 'EB Garamond', serif); font-style: italic; font-size: .86rem; line-height: 1.35; color: #555; }
+.ci-venue-logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .6rem 1.1rem; }
+.ci-venue-logos img { height: 30px; width: auto; display: block; opacity: .9; }
+.ci-venue-logos img[src*="tepak"] { height: 22px; }
+.ci-venue-logos img[src*="ead"] { height: 24px; }
+@media (max-width: 720px) {
+    .ci-venue-logos img { height: 24px; }
+    .ci-venue-logos img[src*="tepak"] { height: 18px; }
+}
+
+/* ---------- legend on the map (inside the shared .status-bar-legend card): one block per visible layer ---------- */
+.ci-map-legend { min-width: 230px; max-width: 290px; max-height: min(44vh, 380px); overflow-y: auto; scrollbar-width: thin; }
+.ci-map-legend sub { font-size: .7em; }
+.ci-lg + .ci-lg { margin-top: .7rem; padding-top: .6rem; border-top: 1px solid #e6e6e6; }
+.ci-lg-ref + .ci-lg-ref { margin-top: .15rem; padding-top: 0; border-top: 0; }
+.ci-lg-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: baseline; gap: .4rem; }
+.ci-lg-title { font: 600 .74rem var(--font-sans, 'Inter', sans-serif); letter-spacing: .02em; color: #111; }
+.ci-lg-period { display: block; font: 400 .64rem var(--font-mono, 'JetBrains Mono', monospace); color: #777; letter-spacing: 0; }
+.ci-lg-unit { font: italic 400 .8rem var(--font-serif, 'EB Garamond', serif); color: #555; white-space: nowrap; }
+.ci-lg-btn { align-self: center; display: inline-flex; padding: 3px; border: 1px solid transparent; background: none; color: #555; cursor: pointer; }
+.ci-lg-btn:hover { border-color: #bbb; color: #000; }
+.ci-ramp { display: flex; height: 12px; margin: .4rem 0 .2rem; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }
+.ci-ramp-seg { flex: 1; padding: 0; border: 0; cursor: pointer; }
+.ci-ramp-seg:hover { outline: 1.5px solid #000; outline-offset: -1.5px; position: relative; }
+.is-hidden.ci-ramp-seg, .is-hidden.ci-biv-cell { opacity: .18; background-image: repeating-linear-gradient(45deg, transparent 0 3px, rgba(0, 0, 0, .35) 3px 4px) !important; }
+.ci-ramp-ticks { display: flex; justify-content: space-between; font: 500 .62rem var(--font-mono, 'JetBrains Mono', monospace); color: #444; }
+.ci-lg-row {
+    display: grid; grid-template-columns: 11px minmax(0, 1fr); align-items: center; gap: .5rem; width: 100%;
+    margin: .3rem 0 0; padding: 0; border: 0; background: none; text-align: left; cursor: pointer;
+    font: 400 .74rem var(--font-sans, 'Inter', sans-serif); line-height: 1.25; color: #222;
+}
+.ci-lg-row.is-static { cursor: default; }
+.ci-lg-row.is-hidden { color: #aaa; text-decoration: line-through; }
+.ci-lg-row.is-hidden .ci-lg-dot { opacity: .25; }
+.ci-lg-dot { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15); }
+.ci-lg-relief { border-radius: 2px; }
+.ci-lg-line { width: 14px; height: 0; border-top: 1.5px solid #222; }
+.ci-lg-empty { margin: 0; font-size: .74rem; color: #777; }
+/* 3x3 key: ET_μπλε up the left side, water productivity along the bottom, both from the low corner */
+.ci-biv { display: grid; grid-template-columns: 16px 66px; grid-template-rows: 66px auto; gap: 4px 6px; justify-content: start; margin: .5rem 0 .4rem; }
+.ci-biv-y { writing-mode: vertical-rl; transform: rotate(180deg); font-size: .68rem; color: #555; align-self: end; white-space: nowrap; }
+.ci-biv-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 1px; width: 66px; height: 66px; }
+.ci-biv-cell { padding: 0; border: 0; cursor: pointer; }
+.ci-biv-cell:hover { outline: 1.5px solid #000; outline-offset: -1.5px; }
+.ci-biv-x { grid-column: 2; font-size: .68rem; color: #555; white-space: nowrap; }
+
+/* ---------- graphic scale bar inside the shared readout card ---------- */
+.ci-scalebar { display: inline-flex; align-items: center; gap: .45rem; align-self: center; }
+.ci-scalebar-track { display: inline-flex; height: 6px; border: 1px solid #111; box-sizing: content-box; }
+.ci-scalebar-track i { flex: 1; }
+.ci-scalebar-track i:first-child { background: #111; }
+.ci-scalebar-track i:last-child { background: #fff; }
+.ci-scalebar-label { font: 500 .7rem var(--font-mono, 'JetBrains Mono', monospace); color: #111; white-space: nowrap; }
+.status-bar-right .ci-scalebar::after { content: '·'; margin-left: .4rem; color: var(--text-muted, #999); font-family: var(--font-serif, serif); }
+
+@media (max-width: 720px) {
+    .ci-map-legend { min-width: 0; max-width: 70vw; max-height: 32vh; }
+    .ci-map-legend .ci-legend-source { display: none; }
+    .ci-ramp-ticks { font-size: .55rem; letter-spacing: -.02em; }
+    .ci-lg-period { font-size: .58rem; }
+    .ci-scalebar::after { content: none; }
+}
+
+/* ---------- statistics & method tabs ---------- */
+.ci-chart-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .72rem; color: #444; margin-top: 6px; }
+.ci-chart-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.ci-chart-legend i { display: inline-block; width: 10px; height: 10px; }
+.ci-chart-legend i.ci-line { height: 2px; width: 14px; background: #c96a1b; }
+.ci-chart-legend i.ci-whisker { width: 2px; height: 12px; background: #111; }
+#chart-volumes svg { width: 100%; height: auto; overflow: visible; }
+
+.ci-method h3 { margin: 16px 0 6px; }
+.ci-method ol { padding-left: 1.1rem; margin: 0; font-size: .86rem; line-height: 1.5; }
+.ci-method li { margin-bottom: 6px; }
+.ci-method p { font-size: .86rem; line-height: 1.5; margin: 0 0 8px; }
+.ci-method a { color: #000; }
+
+/* ---------- popup (the shared stylesheet hides all Leaflet popups; re-enable ours only) ---------- */
+.leaflet-popup.ci-leaflet-popup { display: block !important; }
+.ci-leaflet-popup .leaflet-popup-content { margin: 12px 14px; }
+.ci-popup { font-family: 'Inter', sans-serif; color: #111; }
+.ci-popup-coord { font: 500 .7rem 'JetBrains Mono', monospace; color: #666; margin-bottom: 4px; }
+.ci-popup-value { font-family: 'EB Garamond', Georgia, serif; font-size: 1.6rem; font-weight: 600; line-height: 1.1; }
+.ci-popup-value small { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 500; color: #555; }
+.ci-popup-meta { font-size: .75rem; color: #444; margin: 4px 0 6px; }
+.ci-spark { width: 100%; height: auto; display: block; }
+.ci-spark text { font: 500 9px 'JetBrains Mono', monospace; fill: #555; }
+
+.ci-refs ul { padding-left: 1.1rem; margin: 6px 0 12px; font-size: .88rem; line-height: 1.5; }
+.ci-refs p { font-size: .88rem; line-height: 1.5; }
+
+/* secondary layer groups (inputs, model, validation, biomass): collapsible, quieter than the thematic list */
+.ci-groups { margin-top: 1.4rem; }
+.ci-group { border-top: 1px solid #e4e4e4; }
+.ci-group:last-child { border-bottom: 1px solid #e4e4e4; }
+.ci-group > summary {
+    display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .6rem .1rem;
+    cursor: pointer; list-style: none; font-size: .86rem; color: var(--text-primary, #000);
+}
+.ci-group > summary::-webkit-details-marker { display: none; }
+.ci-group > summary::before { content: '▸'; font-size: .7rem; color: #777; margin-right: .45rem; transition: transform 150ms ease; }
+.ci-group[open] > summary::before { transform: rotate(90deg); }
+.ci-group > summary > span:first-child { flex: 1; }
+.ci-group-count { font: 500 .66rem var(--font-mono, 'JetBrains Mono', monospace); color: #888; }
+.ci-layers-sub { margin: 0 0 .7rem; border-color: #cfcfcf; }
+.ci-layers-sub .ci-layer-row { padding: .55rem .8rem; }
+.ci-layers-sub .ci-layer-name { font-size: .94rem; }
+
+/* legend source line and expert popup table */
+.ci-legend-source { margin-top: .25rem; font-size: .6rem; line-height: 1.3; color: #777; }
+.ci-popup-table { width: 100%; border-collapse: collapse; margin: .25rem 0 .45rem; font-size: .74rem; }
+.ci-popup-table caption { text-align: left; font: 500 .6rem var(--font-sans, 'Inter', sans-serif); letter-spacing: .06em; text-transform: uppercase; color: #888; padding-bottom: .2rem; }
+.ci-popup-table th { text-align: left; font-weight: 400; color: #444; padding: .12rem 0; }
+.ci-popup-table td { text-align: right; font-family: var(--font-mono, 'JetBrains Mono', monospace); padding: .12rem 0 .12rem .5rem; white-space: nowrap; }
+.ci-popup-table td:last-child { color: #888; text-align: left; padding-left: .3rem; }
+.ci-popup-table tr + tr th, .ci-popup-table tr + tr td { border-top: 1px solid #eee; }
+.ci-popup-status { display: inline-block; margin: .15rem 0 .1rem; padding: .08rem .4rem; border: 1px solid #ccc; font: 500 .66rem var(--font-sans, 'Inter', sans-serif); color: #555; }
+.ci-popup-status.is-sig { border-color: #1b70a8; color: #1b70a8; }
+
+/* popup: figures, notes and download */
+.ci-pfig { margin: .45rem 0 0; }
+.ci-pfig figcaption { font: 500 .6rem var(--font-sans, 'Inter', sans-serif); letter-spacing: .05em; text-transform: uppercase; color: #888; margin-bottom: .15rem; }
+.ci-key-p { color: #c96a1b; }
+.ci-key-a { color: #0b3b5e; }
+.ci-key-g { color: #4E7D3A; }
+.ci-popup-note { margin: .3rem 0; font-size: .78rem; color: #555; }
+.ci-popup-table small { color: #888; font-size: .66rem; }
+.ci-popup-dl { margin-top: .5rem; width: 100%; padding: .4rem; border: 1px solid #111; background: #fff; cursor: pointer; font: 500 .7rem var(--font-sans, 'Inter', sans-serif); }
+.ci-popup-dl:hover { background: #000; color: #fff; }
+
+/* legend settings dialog */
+.ci-style-modal .modal-content { max-width: 520px; }
+.ci-form-row { display: flex; flex-direction: column; gap: .3rem; margin-bottom: .9rem; }
+.ci-form-row > label, .ci-form-label { font: 500 .64rem var(--font-sans, 'Inter', sans-serif); letter-spacing: .06em; text-transform: uppercase; color: #666; }
+.ci-form-row select, .ci-form-row input[type=text], .ci-form-row input[type=number] { padding: .4rem .5rem; border: 1px solid #bbb; font: 400 .85rem var(--font-sans, 'Inter', sans-serif); background: #fff; }
+.ci-form-row small { font-size: .7rem; color: #777; line-height: 1.35; }
+.ci-form-inline { display: flex; align-items: center; gap: .8rem; }
+.ci-form-inline select { flex: 1; }
+.ci-check { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; color: #333; white-space: nowrap; }
+.ci-classes { display: flex; flex-direction: column; border-top: 1px solid #eee; }
+.ci-class { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: .6rem; padding: .3rem 0; border-bottom: 1px solid #eee; font-size: .8rem; }
+.ci-class input[type=color] { width: 28px; height: 20px; padding: 0; border: 1px solid #bbb; background: none; cursor: pointer; }
+.ci-hist { width: 100%; height: auto; display: block; }
+.ci-hist text { font: 500 9px var(--font-mono, 'JetBrains Mono', monospace); fill: #666; }
+.ci-form-actions { display: flex; justify-content: flex-end; }
+.ci-form-actions button { padding: .4rem .8rem; border: 1px solid #111; background: #fff; cursor: pointer; font: 500 .72rem var(--font-sans, 'Inter', sans-serif); }
+.ci-form-actions button:hover { background: #000; color: #fff; }
+
+/* statistics table and downloads */
+.ci-year-table { width: 100%; border-collapse: collapse; font-size: .78rem; margin-top: .3rem; }
+.ci-year-table th { text-align: right; font: 500 .6rem var(--font-sans, 'Inter', sans-serif); letter-spacing: .05em; text-transform: uppercase; color: #888; padding: .2rem 0; }
+.ci-year-table td { text-align: right; font-family: var(--font-mono, 'JetBrains Mono', monospace); padding: .22rem 0; border-top: 1px solid #eee; }
+.ci-year-table th:first-child, .ci-year-table td:first-child { text-align: left; }
+.ci-downloads { list-style: none; padding: 0; margin: 0 0 8px; font-size: .84rem; line-height: 1.4; }
+.ci-downloads li { padding: .35rem 0; border-bottom: 1px solid #eee; }
+.ci-downloads span { font: 500 .62rem var(--font-mono, 'JetBrains Mono', monospace); color: #888; white-space: nowrap; }
+.ci-method .ci-note { font-size: .78rem; color: #666; }

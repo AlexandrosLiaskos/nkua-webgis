@@ -1,0 +1,10 @@
+[Unit]
+Description=Activate historicfloods.org HTTPS after DNS points to the VPS
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/nkua-webgis/src/infra/scripts/historicfloods-domain.py --activate
+TimeoutStartSec=240

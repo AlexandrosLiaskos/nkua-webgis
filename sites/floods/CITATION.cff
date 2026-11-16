@@ -1,0 +1,60 @@
+{
+  "cff-version": "1.2.0",
+  "message": "Please cite this WebGIS and the catalogue releases and publications supporting the records you use.",
+  "type": "software",
+  "title": "Historic Floods",
+  "authors": [
+    {
+      "family-names": "Evelpidou",
+      "given-names": "Niki"
+    },
+    {
+      "family-names": "Karkani",
+      "given-names": "Eleana"
+    },
+    {
+      "family-names": "Saitis",
+      "given-names": "Giannis"
+    },
+    {
+      "family-names": "Spyrou",
+      "given-names": "Evangelos"
+    },
+    {
+      "family-names": "Liaskos",
+      "given-names": "Alexandros"
+    }
+  ],
+  "url": "https://historicfloods.org/",
+  "preferred-citation": {
+    "type": "software",
+    "title": "Historic Floods",
+    "authors": [
+      {
+        "family-names": "Evelpidou",
+        "given-names": "Niki"
+      },
+      {
+        "family-names": "Karkani",
+        "given-names": "Eleana"
+      },
+      {
+        "family-names": "Saitis",
+        "given-names": "Giannis"
+      },
+      {
+        "family-names": "Spyrou",
+        "given-names": "Evangelos"
+      },
+      {
+        "family-names": "Liaskos",
+        "given-names": "Alexandros"
+      }
+    ],
+    "year": 2026,
+    "publisher": {
+      "name": "National and Kapodistrian University of Athens"
+    },
+    "url": "https://historicfloods.org/"
+  }
+}

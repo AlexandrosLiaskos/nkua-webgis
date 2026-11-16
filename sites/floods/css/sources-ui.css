@@ -1,0 +1,595 @@
+/* Sources use a quiet index, then one consistent reading column. */
+:is(#references-modal, #source-reader-modal) {
+    padding: 1.5rem 1rem;
+}
+
+:is(#references-modal, #source-reader-modal) .modal-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+    max-width: 50rem;
+    max-height: calc(100dvh - 3rem);
+    overflow: clip;
+}
+
+:is(#references-modal, #source-reader-modal) .modal-header {
+    flex: 0 0 auto;
+    align-items: flex-start;
+    padding: 1.5rem 2rem 1.125rem;
+    border-bottom: 1px solid #dedede;
+}
+
+:is(#references-modal, #source-reader-modal) .modal-header h3 {
+    font-size: 2rem;
+}
+
+:is(#references-modal, #source-reader-modal) .reference-modal-heading > p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #666;
+}
+
+:is(#references-modal, #source-reader-modal) .modal-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 2.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.5rem -0.625rem 0 0.5rem;
+    color: #666;
+}
+
+:is(#references-modal, #source-reader-modal) .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    padding: 0 2rem 1.25rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa #fff;
+}
+
+:is(#references-modal, #source-reader-modal) .modal-body::-webkit-scrollbar {
+    width: 0.375rem;
+}
+
+:is(#references-modal, #source-reader-modal) .modal-body::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 0.1875rem;
+}
+
+:is(#references-modal, #source-reader-modal) .reference-sections {
+    display: block;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry {
+    min-width: 0;
+    border-top: 1px solid #dedede;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry:first-child {
+    border-top: 0;
+}
+
+:is(#references-modal, #source-reader-modal) summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    list-style: none;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+:is(#references-modal, #source-reader-modal) summary::-webkit-details-marker {
+    display: none;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-summary {
+    padding: 1.125rem 0;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-label {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 0.375rem;
+    margin: 0;
+    font: inherit;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-title {
+    font: italic 500 1.5rem/1.2 'Cormorant Garamond', var(--font-serif);
+    text-wrap: balance;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-meta {
+    font: 400 0.8125rem/1.5 var(--font-sans);
+    color: #666;
+}
+
+:is(#references-modal, #source-reader-modal) .source-chevron {
+    flex: 0 0 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #666;
+}
+
+:is(#references-modal, #source-reader-modal) details[open] > summary > .source-chevron {
+    transform: rotate(180deg);
+}
+
+:is(#references-modal, #source-reader-modal) summary:hover .source-entry-title,
+:is(#references-modal, #source-reader-modal) summary:hover .source-topic-title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+}
+
+:is(#references-modal, #source-reader-modal) summary:focus-visible,
+:is(#references-modal, #source-reader-modal) .modal-close:focus-visible,
+:is(#references-modal, #source-reader-modal) a:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 3px;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body {
+    max-width: 70ch;
+    padding: 0 0 1.5rem;
+    font: 400 1rem/1.65 var(--font-sans);
+    color: var(--text-primary);
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body p {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    text-wrap: pretty;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body p + p {
+    margin-top: 0.875rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body .source-citation {
+    font: 400 1.125rem/1.65 var(--font-serif);
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body .reference-scope {
+    color: #555;
+    font-size: 1rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-part + .source-part {
+    margin-top: 1.5rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-part h5,
+:is(#references-modal, #source-reader-modal) .source-part h6 {
+    margin: 0 0 0.5rem;
+    font: 500 1.25rem/1.3 var(--font-serif);
+    color: var(--text-primary);
+}
+
+:is(#references-modal, #source-reader-modal) .source-topic {
+    border-top: 1px solid #dedede;
+    margin-top: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body > .source-part + .source-topic {
+    margin-top: 1.25rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-topic > summary {
+    min-height: 3.375rem;
+    padding: 0.875rem 0;
+    font: 500 0.9375rem/1.45 var(--font-sans);
+}
+
+:is(#references-modal, #source-reader-modal) .source-topic-title {
+    margin: 0;
+    font: inherit;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .source-topic > summary .source-chevron {
+    flex-basis: 1rem;
+    width: 1rem;
+    height: 1rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-topic-body {
+    padding: 0.125rem 0 1.5rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-topic-body ul,
+:is(#references-modal, #source-reader-modal) .source-topic-body ol {
+    margin: 1rem 0;
+    padding-left: 1.375rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-topic-body li + li {
+    margin-top: 0.5rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body a {
+    word-break: normal;
+    overflow-wrap: anywhere;
+    text-decoration-color: #aaa;
+    text-underline-offset: 0.2em;
+}
+
+:is(#references-modal, #source-reader-modal) .source-entry-body code {
+    font-size: 0.875em;
+    overflow-wrap: anywhere;
+}
+
+:is(#references-modal, #source-reader-modal) .reference-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0;
+    font: 400 0.9375rem/1.6 var(--font-sans);
+}
+
+:is(#references-modal, #source-reader-modal) .reference-links + .reference-links {
+    margin-top: 0.5rem;
+}
+
+:is(#references-modal, #source-reader-modal) .reference-links a {
+    padding-block: 0.25rem;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-table {
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 1rem;
+    font: 400 0.9375rem/1.6 var(--font-sans);
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-table th,
+:is(#references-modal, #source-reader-modal) .nkua-table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-color: #d2d2d2;
+    overflow-wrap: break-word;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-table thead th {
+    background: #f6f6f5;
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    color: #555;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-table thead th:first-child {
+    width: 34%;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-table th[scope="row"] {
+    background: transparent;
+    font: 500 0.9375rem/1.6 var(--font-sans);
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-cite {
+    margin-left: 0.15em;
+    white-space: nowrap;
+    line-height: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-cite a {
+    text-decoration: none;
+    overflow-wrap: normal;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-cite a:hover {
+    text-decoration: underline;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-study-figures .source-figure-disclosure:first-of-type {
+    margin-top: 1rem;
+}
+
+:is(#references-modal, #source-reader-modal) .source-figure-disclosure > summary {
+    font-weight: 400;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-figure {
+    margin: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-figure > a,
+:is(#references-modal, #source-reader-modal) .nkua-figure img {
+    display: block;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-figure img {
+    width: 100%;
+    height: auto;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-figure figcaption,
+:is(#references-modal, #source-reader-modal) .source-entry-body .nkua-figure-credit {
+    margin-top: 0.75rem;
+    font: 400 0.8125rem/1.6 var(--font-sans);
+    color: #555;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-reference-list ol {
+    margin: 0;
+    padding-left: 1.75rem;
+    font-size: 0.9375rem;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-reference-list li {
+    padding: 0.75rem 0 0.75rem 0.25rem;
+    border-top: 1px solid #e5e5e5;
+    overflow-wrap: anywhere;
+    scroll-margin-block: 1rem;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-reference-list li:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-reference-list li + li {
+    margin-top: 0;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-reference-list li::marker {
+    color: #666;
+    font-variant-numeric: tabular-nums;
+}
+
+:is(#references-modal, #source-reader-modal) .nkua-reference-list li:target {
+    outline: 1px solid #aaa;
+    outline-offset: 0.25rem;
+}
+
+:is(#references-modal, #source-reader-modal) ::selection {
+    background: #dededb;
+    color: #111;
+}
+
+@media (max-width: 600px) {
+    :is(#references-modal, #source-reader-modal) {
+        padding: 1rem;
+    }
+    :is(#references-modal, #source-reader-modal) .modal-content {
+        max-height: calc(100dvh - 2rem);
+    }
+    :is(#references-modal, #source-reader-modal) .modal-header {
+        padding: 1.25rem 1.25rem 1rem;
+    }
+    :is(#references-modal, #source-reader-modal) .modal-header h3 {
+        font-size: 1.75rem;
+    }
+    :is(#references-modal, #source-reader-modal) .modal-body {
+        padding: 0 1.25rem 1rem;
+    }
+    :is(#references-modal, #source-reader-modal) .source-entry-title {
+        font-size: 1.375rem;
+    }
+    :is(#references-modal, #source-reader-modal) .source-entry-body .source-citation {
+        font-size: 1.0625rem;
+    }
+    :is(#references-modal, #source-reader-modal) .nkua-table th,
+    :is(#references-modal, #source-reader-modal) .nkua-table td {
+        padding: 0.5rem;
+    }
+    :is(#references-modal, #source-reader-modal) .nkua-table thead th:first-child {
+        width: 38%;
+    }
+}
+
+/* Each source has its own reader dialog with a persistent section list. */
+#references-modal .source-entry-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.125rem 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+}
+
+#references-modal .source-entry-summary:hover .source-entry-title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+}
+
+#references-modal .source-entry-summary:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 3px;
+}
+
+#source-reader-modal .source-reader-shell {
+    max-width: 68rem;
+    height: min(52rem, calc(100dvh - 3rem));
+}
+
+#source-reader-modal .reference-modal-heading {
+    max-width: none;
+}
+
+#source-reader-modal .source-reader-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin: 0 0 0.75rem;
+    padding: 0.125rem 0;
+    border: 0;
+    background: transparent;
+    color: #666;
+    font: 400 0.875rem/1.5 var(--font-sans);
+    cursor: pointer;
+}
+
+#source-reader-modal .source-reader-back svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+#source-reader-modal .source-reader-back:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+#source-reader-modal .source-reader-layout {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: clip;
+}
+
+#source-reader-sidebar {
+    overflow-y: auto;
+    padding: 1.125rem 0.75rem;
+    border-right: 1px solid #dedede;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa #fff;
+}
+
+#source-reader-sidebar button {
+    display: block;
+    width: 100%;
+    margin: 0 0 0.25rem;
+    padding: 0.75rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #555;
+    font: 400 0.9375rem/1.45 var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+}
+
+#source-reader-sidebar button:hover {
+    background: #f7f7f5;
+    color: var(--text-primary);
+}
+
+#source-reader-sidebar button.active {
+    background: #efefec;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+#source-reader-modal button:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+}
+
+#source-reader-content {
+    min-width: 0;
+    min-height: 0;
+    padding: 1.5rem 2rem 2rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa #fff;
+}
+
+#source-reader-modal .source-reader-panel {
+    max-width: 70ch;
+    padding: 0;
+}
+
+#source-reader-modal .source-reader-section-title {
+    margin: 0 0 1.25rem;
+    font: 500 1.5rem/1.25 var(--font-serif);
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+#source-reader-modal .source-reader-panel > ul,
+#source-reader-modal .source-reader-panel > ol {
+    margin: 1rem 0;
+    padding-left: 1.375rem;
+}
+
+#source-reader-modal .source-reader-panel > ul > li + li,
+#source-reader-modal .source-reader-panel > ol > li + li {
+    margin-top: 0.5rem;
+}
+
+#source-reader-modal .source-reader-panel > .source-part {
+    margin-top: 1.5rem;
+}
+
+#source-reader-modal .source-reader-panel > ol:has(#nkua-ref-1) {
+    padding-left: 1.75rem;
+    font-size: 0.9375rem;
+}
+
+#source-reader-modal [id^="nkua-ref-"] {
+    padding: 0.75rem 0 0.75rem 0.25rem;
+    border-top: 1px solid #e5e5e5;
+    scroll-margin-block: 1rem;
+}
+
+#source-reader-modal [id^="nkua-ref-"]:first-child {
+    border-top: 0;
+}
+
+#source-reader-modal [id^="nkua-ref-"]::marker {
+    color: #666;
+    font-variant-numeric: tabular-nums;
+}
+
+#source-reader-modal .source-document[hidden],
+#source-reader-modal .source-reader-panel[hidden] {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    #source-reader-modal .source-reader-shell {
+        height: calc(100dvh - 2rem);
+    }
+    #source-reader-modal .source-reader-layout {
+        display: flex;
+        flex-direction: column;
+    }
+    #source-reader-sidebar {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 0.375rem;
+        padding: 0.625rem 1rem;
+        border-right: 0;
+        border-bottom: 1px solid #dedede;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    #source-reader-sidebar button {
+        flex: 0 0 auto;
+        width: auto;
+        margin: 0;
+        padding: 0.75rem;
+        white-space: nowrap;
+    }
+    #source-reader-content {
+        flex: 1 1 auto;
+        padding: 1.25rem;
+    }
+}

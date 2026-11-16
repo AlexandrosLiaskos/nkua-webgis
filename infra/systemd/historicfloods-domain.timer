@@ -1,0 +1,10 @@
+[Unit]
+Description=Wait for Historic Floods DNS and activate HTTPS once
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Unit=historicfloods-domain.service
+
+[Install]
+WantedBy=timers.target

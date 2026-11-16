@@ -1,0 +1,909 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:prisma-catalogue-builder:schema:1.0.0",
+  "title": "PRISMA Catalogue Builder project exchange v1",
+  "description": "Public catalogue exchange. A valid structure is not evidence of a completed or scientifically validated review.",
+  "$comment": "Run src/model.mjs validateProject after schema validation. Global ID uniqueness, reference integrity, decoded route safety, bbox/time ordering and recursive public-data security are additional application rules. Optional descriptive fields are permitted to match the runtime. Unknown counts are null. Counts of assets or download requests are not PRISMA screening counts.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "project",
+    "protocol",
+    "providers",
+    "resources",
+    "assets",
+    "searches",
+    "acquisitions",
+    "screening",
+    "references"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "protocol": {
+      "$ref": "#/$defs/protocol"
+    },
+    "providers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/provider"
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/resource"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "searches": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/search"
+      }
+    },
+    "acquisitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/acquisition"
+      }
+    },
+    "screening": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/screeningDecision"
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": "^(?![.]+$)[A-Za-z0-9_.:-]+$"
+    },
+    "nonemptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "publicUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?://",
+      "description": "Public external HTTP(S) URL. Application validation rejects credentials, signed access, private hosts and malformed URLs."
+    },
+    "nullableUrl": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/publicUrl"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^(?!0000)\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "datetime": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?!0000)\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,9})?(?:Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "dateOrTime": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/date"
+        },
+        {
+          "$ref": "#/$defs/datetime"
+        }
+      ]
+    },
+    "nullableDateOrTime": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/dateOrTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullableDate": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullableCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Null means unknown; zero means an observed zero. Nonnegative safe integer."
+    },
+    "doi": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "const": ""
+        },
+        {
+          "type": "string",
+          "pattern": "^(?:https://(?:dx\\.)?doi\\.org/)?10\\.\\d{4,9}/\\S+$"
+        }
+      ]
+    },
+    "idList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "bbox",
+        "start",
+        "end"
+      ],
+      "properties": {
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                }
+              ],
+              "items": false,
+              "description": "[west,south,east,north]. Runtime additionally requires west<east and south<north; no antimeridian-crossing boxes in v1."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start": {
+          "$ref": "#/$defs/nullableDateOrTime"
+        },
+        "end": {
+          "$ref": "#/$defs/nullableDateOrTime"
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "language",
+        "updatedAt",
+        "siteUrl",
+        "basePath",
+        "status",
+        "authors",
+        "webgisUrl",
+        "contactEmail",
+        "heroImage"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "pattern": "^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$",
+          "default": "en"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/datetime"
+        },
+        "siteUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^https://"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "basePath": {
+          "type": "string",
+          "pattern": "^/(?:[^/\\\\?#\\s]+/)*$",
+          "default": "/",
+          "description": "Slash-delimited path ending in /. Literal Unicode and percent-encoded Unicode are supported. Each decoded segment must contain only Unicode letters/marks/numbers, underscore or hyphen; runtime checks decoding and blocks traversal/reserved characters."
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "active",
+            "frozen"
+          ]
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "institution": {
+          "type": "string"
+        },
+        "webgisUrl": {
+          "$ref": "#/$defs/nullableUrl"
+        },
+        "contactEmail": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[^\\s@<>]+@[^\\s@<>]+\\.[^\\s@<>]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "heroImage": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "src",
+                "alt",
+                "credit",
+                "creditUrl"
+              ],
+              "properties": {
+                "src": {
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "pattern": "^https?://"
+                    },
+                    {
+                      "pattern": "^assets/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\\.(?:[pP][nN][gG]|[jJ][pP][eE]?[gG]|[wW][eE][bB][pP]|[aA][vV][iI][fF]|[sS][vV][gG])$"
+                    }
+                  ]
+                },
+                "alt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "credit": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "creditUrl": {
+                  "$ref": "#/$defs/nullableUrl"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "citation": {
+          "type": "string"
+        }
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "required": [
+        "countingUnit",
+        "status",
+        "registeredAt",
+        "completeThrough"
+      ],
+      "properties": {
+        "objective": {
+          "type": "string"
+        },
+        "eligibility": {
+          "type": "string"
+        },
+        "searchStrategy": {
+          "type": "string"
+        },
+        "screeningMethod": {
+          "type": "string"
+        },
+        "countingUnit": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "registered",
+            "completed"
+          ]
+        },
+        "registeredAt": {
+          "$ref": "#/$defs/nullableDate"
+        },
+        "completeThrough": {
+          "$ref": "#/$defs/nullableDate"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "registered"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "registeredAt": {
+                "$ref": "#/$defs/date"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "completed"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "completeThrough": {
+                "$ref": "#/$defs/date"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "provider": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "url",
+        "kind"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "url": {
+          "$ref": "#/$defs/publicUrl"
+        },
+        "kind": {
+          "enum": [
+            "platform",
+            "catalogue",
+            "organisation",
+            "repository"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "providerId",
+        "kind",
+        "topics",
+        "url",
+        "reviewStatus",
+        "coverage"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "originalTitle": {
+          "type": "string"
+        },
+        "providerId": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "description": {
+          "type": "string"
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "temporalRole": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/$defs/nullableUrl"
+        },
+        "doi": {
+          "$ref": "#/$defs/doi"
+        },
+        "citation": {
+          "type": "string"
+        },
+        "reviewStatus": {
+          "enum": [
+            "pending",
+            "included",
+            "excluded"
+          ]
+        },
+        "reviewBasis": {
+          "type": "string"
+        },
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "reviewStatus": {
+                "const": "excluded"
+              }
+            },
+            "required": [
+              "reviewStatus"
+            ]
+          },
+          "then": {
+            "required": [
+              "reviewBasis"
+            ],
+            "properties": {
+              "reviewBasis": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "asset": {
+      "type": "object",
+      "required": [
+        "id",
+        "resourceId",
+        "title",
+        "url",
+        "format",
+        "status",
+        "sha256",
+        "sizeBytes",
+        "acquisitionId",
+        "coverage"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "url": {
+          "$ref": "#/$defs/nullableUrl"
+        },
+        "format": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "status": {
+          "enum": [
+            "acquired",
+            "catalogued",
+            "legacy_registered"
+          ]
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sizeBytes": {
+          "$ref": "#/$defs/nullableCount"
+        },
+        "acquisitionId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "search": {
+      "type": "object",
+      "required": [
+        "id",
+        "providerId",
+        "title",
+        "kind",
+        "query",
+        "searchedAt",
+        "status",
+        "resultCount",
+        "countUnit",
+        "resourceIds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "providerId": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "kind": {
+          "enum": [
+            "discovery",
+            "metadata_lookup",
+            "catalogue_query",
+            "legacy_import"
+          ]
+        },
+        "query": {
+          "type": [
+            "string",
+            "object"
+          ]
+        },
+        "searchedAt": {
+          "$ref": "#/$defs/nullableDateOrTime"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "partial",
+            "unavailable",
+            "legacy"
+          ]
+        },
+        "resultCount": {
+          "$ref": "#/$defs/nullableCount"
+        },
+        "countUnit": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "resourceIds": {
+          "$ref": "#/$defs/idList"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "completed"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "searchedAt": {
+                "$ref": "#/$defs/dateOrTime"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "acquisition": {
+      "type": "object",
+      "required": [
+        "id",
+        "providerId",
+        "resourceId",
+        "title",
+        "request",
+        "registeredAt",
+        "retrievedAt",
+        "assetIds",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "providerId": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "request": {
+          "type": "object"
+        },
+        "registeredAt": {
+          "$ref": "#/$defs/dateOrTime"
+        },
+        "retrievedAt": {
+          "$ref": "#/$defs/nullableDateOrTime"
+        },
+        "assetIds": {
+          "$ref": "#/$defs/idList"
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "screeningDecision": {
+      "type": "object",
+      "required": [
+        "id",
+        "resourceId",
+        "decision",
+        "decidedAt",
+        "provenance"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "decision": {
+          "enum": [
+            "included",
+            "excluded",
+            "pending"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "reviewer": {
+          "type": "string"
+        },
+        "decidedAt": {
+          "$ref": "#/$defs/nullableDateOrTime"
+        },
+        "provenance": {
+          "enum": [
+            "recorded",
+            "legacy"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "excluded"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          },
+          "then": {
+            "required": [
+              "reason"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "provenance": {
+                "const": "recorded"
+              },
+              "decision": {
+                "enum": [
+                  "included",
+                  "excluded"
+                ]
+              }
+            },
+            "required": [
+              "provenance",
+              "decision"
+            ]
+          },
+          "then": {
+            "required": [
+              "reviewer"
+            ],
+            "properties": {
+              "reviewer": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "decidedAt": {
+                "$ref": "#/$defs/dateOrTime"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "id",
+        "citation",
+        "url"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "citation": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "url": {
+          "$ref": "#/$defs/nullableUrl"
+        },
+        "doi": {
+          "$ref": "#/$defs/doi"
+        }
+      }
+    }
+  }
+}

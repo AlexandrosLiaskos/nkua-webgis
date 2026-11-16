@@ -1,0 +1,162 @@
+/* Distribution maps follow the source reader's existing type and spacing. */
+#source-reader-modal .record-map-section {
+    display: grid;
+    gap: 0.875rem;
+    min-width: 0;
+    font: 400 0.875rem/1.45 var(--font-sans, sans-serif);
+}
+
+#source-reader-modal .record-map-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+#source-reader-modal .record-map-field {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: #555;
+    font: 400 0.8125rem/1.35 var(--font-sans, sans-serif);
+    white-space: nowrap;
+}
+
+#source-reader-modal .record-map-select {
+    appearance: none;
+    box-sizing: border-box;
+    flex: 0 0 5.75rem;
+    width: 5.75rem;
+    min-width: 0;
+    max-width: 100%;
+    height: 2rem;
+    min-height: 2rem;
+    border: 1px solid #c7c7c7;
+    border-radius: 0.125rem;
+    padding: 0 1.625rem 0 0.5625rem;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='%23777' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 0.75rem;
+    color: #111;
+    font: inherit;
+    cursor: pointer;
+}
+
+#source-reader-modal .record-map-select:hover {
+    border-color: #888;
+}
+
+#source-reader-modal .record-map-select:focus-visible,
+#source-reader-modal .record-map-retry:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}
+
+#source-reader-modal .record-map-canvas {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    height: clamp(18rem, 39dvh, 27rem);
+    border: 1px solid #ccc;
+    background-color: #f4f5f3;
+    z-index: 0;
+}
+
+#source-reader-modal .record-map-canvas .leaflet-control-attribution {
+    max-width: calc(100% - 1rem);
+    font: 400 0.625rem/1.4 var(--font-sans, sans-serif);
+    white-space: normal;
+}
+
+#source-reader-modal .record-map-canvas .leaflet-control-attribution a {
+    color: #333;
+}
+
+#source-reader-modal .record-map-canvas .leaflet-control-zoom {
+    border: 1px solid #b8b8b8;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#source-reader-modal .record-map-canvas .leaflet-control-zoom a {
+    border-radius: 0;
+    color: #111;
+}
+
+#source-reader-modal .record-map-legend {
+    display: grid;
+    gap: 0.375rem;
+    width: 100%;
+    min-width: 0;
+}
+
+#source-reader-modal .record-map-legend-heading {
+    color: #333;
+    font-size: 0.8125rem;
+}
+
+#source-reader-modal .record-map-gradient {
+    height: 0.625rem;
+    border: 1px solid #c8c8c8;
+}
+
+#source-reader-modal .record-map-legend-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    color: #555;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+}
+
+#source-reader-modal .record-map-legend-middle {
+    text-align: center;
+}
+
+#source-reader-modal .record-map-status {
+    min-height: 1.25rem;
+    color: #666;
+    font-size: 0.8125rem;
+}
+
+#source-reader-modal .record-map-status:empty {
+    display: none;
+}
+
+#source-reader-modal .record-map-retry {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #111;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    cursor: pointer;
+}
+
+#source-reader-modal .record-map-tooltip {
+    width: max-content;
+    max-width: min(22rem, calc(100vw - 3rem));
+    border: 1px solid #c5c5c5;
+    border-radius: 0.125rem;
+    padding: 0.4375rem 0.625rem;
+    background: #fff;
+    color: #111;
+    font: 400 0.8125rem/1.45 var(--font-sans, sans-serif);
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+    writing-mode: horizontal-tb;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+}
+
+@media (max-width: 700px) {
+    #source-reader-modal .record-map-canvas {
+        height: clamp(15rem, 34dvh, 21rem);
+    }
+}

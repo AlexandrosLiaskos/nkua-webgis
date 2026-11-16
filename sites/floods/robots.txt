@@ -1,0 +1,7 @@
+# historicfloods.org
+# The pages are open to search engines. The data service and the data folders are not.
+User-agent: *
+Disallow: /webgis-api/
+Disallow: /data/
+Disallow: /floods/data/
+Allow: /

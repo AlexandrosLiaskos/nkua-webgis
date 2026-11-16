@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Παράκτιες επιπτώσεις της κακοκαιρίας του Φεβρουαρίου 2026</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Διαδραστικό WebGIS των πληγεισών παράκτιων περιοχών στην Ελλάδα από την κακοκαιρία του Φεβρουαρίου 2026, με τεκμηριωμένες επιπτώσεις, Natura 2000 και αποφάσεις έκτακτης ανάγκης.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="el_GR">
+    <meta property="og:site_name" content="National and Kapodistrian University of Athens">
+    <meta property="og:title" content="Παράκτιες επιπτώσεις της κακοκαιρίας του Φεβρουαρίου 2026">
+    <meta property="og:description"
+        content="Εξερευνήστε τις πληγείσες παράκτιες περιοχές, τις τεκμηριωμένες επιπτώσεις, τη σχέση με Natura 2000 και τις αποφάσεις έκτακτης ανάγκης.">
+    <meta property="og:url" content="https://evelpidou.geo.nkua.cloud/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/">
+    <meta property="og:image" content="https://evelpidou.geo.nkua.cloud/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/map-preview.png?v=20261116-previews-1">
+    <meta property="og:image:secure_url" content="https://evelpidou.geo.nkua.cloud/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/map-preview.png?v=20261116-previews-1">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:image:alt" content="WebGIS για τις παράκτιες επιπτώσεις της κακοκαιρίας του Φεβρουαρίου 2026, του Εθνικού και Καποδιστριακού Πανεπιστημίου Αθηνών">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Παράκτιες επιπτώσεις της κακοκαιρίας του Φεβρουαρίου 2026">
+    <meta name="twitter:description"
+        content="Εξερευνήστε τις πληγείσες παράκτιες περιοχές, τις τεκμηριωμένες επιπτώσεις, τη σχέση με Natura 2000 και τις αποφάσεις έκτακτης ανάγκης.">
+    <meta name="twitter:image" content="https://evelpidou.geo.nkua.cloud/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/map-preview.png?v=20261116-previews-1">
+    <meta name="twitter:image:alt" content="WebGIS για τις παράκτιες επιπτώσεις της κακοκαιρίας του Φεβρουαρίου 2026, του Εθνικού και Καποδιστριακού Πανεπιστημίου Αθηνών">
+
+    <link rel="canonical" href="https://evelpidou.geo.nkua.cloud/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/">
+    <link rel="icon" type="image/png" sizes="48x48" href="/Nepal-Flood-2026/favicon.png?v=20260828-3">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Italianno&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/webgis-shared/lagoons-ui.css?v=20261116-footer-1">
+    <link rel="stylesheet" href="/webgis-shared/map-display.css?v=20261026-filters-display-1">
+    <link rel="stylesheet" href="/webgis-shared/last-updated.css?v=20260905-4">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Welcome Modal — editorial poster -->
+        <div id="welcome-modal" class="modal welcome-modal wm">
+            <div class="modal-content wm-content">
+                <button class="wm-close" id="close-welcome" aria-label="Κλείσιμο εισαγωγικού παραθύρου">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <article class="wm-poster">
+                    <div class="wm-cred">
+                        <div class="wm-institution">
+                            <img class="wm-institution-emblem" src="/webgis-shared/nkua-190-el-horizontal.png" alt="Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών — 190 χρόνια, 1837–2027">
+                        </div>
+                    </div>
+                    <header class="wm-masthead">
+                        <div class="wm-eyebrow">WebGIS · 2026</div>
+                        <h1 class="wm-title">Παράκτιες επιπτώσεις της κακοκαιρίας<br><em class="wm-title-italic">του Φεβρουαρίου 2026</em></h1>
+                        <p class="wm-deck">
+                            Εξερευνήστε τις παράκτιες επιπτώσεις της κακοκαιρίας στην Ελλάδα.
+                            Δείτε τις καταγεγραμμένες ζημιές, τις αποφάσεις έκτακτης ανάγκης
+                            και αν τα σημεία βρίσκονται σε προστατευόμενες περιοχές Natura 2000.
+                        </p>
+                        <div class="wm-entry-row">
+                            <div class="wm-coverage" role="group" aria-label="Κάλυψη δεδομένων">
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Καταγεγραμμένα συμβάντα</span>
+                                <span class="wm-cov-value" id="storm-event-count">—</span>
+                            </div>
+                            <span class="wm-cov-divider" aria-hidden="true"></span>
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Γεωγραφική κάλυψη</span>
+                                <span class="wm-cov-value-text">Ελλάδα</span>
+                            </div>
+                            </div>
+                        </div>
+                    </header>
+                    <footer class="wm-foot">
+                        <div class="wm-team" aria-label="Ομάδα έρευνας και έργου">
+                            <span class="wm-team-eyebrow">Ομάδα έρευνας &amp; έργου</span>
+                            <div class="wm-team-list">
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Αποστολή email σε Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt=""></a><figcaption>Prof. Niki Evelpidou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Αποστολή email σε Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt=""></a><figcaption>Dr. Eleana Karkani</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Αποστολή email σε Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt=""></a><figcaption>Dr. Giannis Saitis</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Αποστολή email σε Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt=""></a><figcaption>Evangelos Spyrou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Ιστοσελίδα του Αλέξανδρου Λιάσκου" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt=""></a><figcaption>Alexandros Liaskos</figcaption></figure>
+                            </div>
+                        </div>
+                        <div class="wm-sig-tag">
+                            <span class="wm-sig-tag-eyebrow">Ανάπτυξη ιστοσελίδας από</span>
+                            <a class="wm-signature wm-signature-sm" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Ιστοσελίδα του Αλέξανδρου Λιάσκου" title="liaskos.eu">
+                                <img src="/webgis-shared/signature.png" alt="">
+                                <span class="wm-signature-name">Alexandros Liaskos</span>
+                            </a>
+                        </div>
+                        <span class="wm-visits" role="status" aria-live="polite" aria-describedby="storm-visit-privacy">
+                            <span>Καταγεγραμμένες επισκέψεις σελίδας</span>
+                            <strong data-visit-count data-endpoint="./api/page-summary" data-storage-key="storm-visit-counted-v1" data-locale="el-GR" data-unavailable="Μη διαθέσιμο">—</strong>
+                        </span>
+                        <span id="storm-visit-privacy" class="sr-only">Ο μετρητής δεν χρησιμοποιεί cookies και δεν συλλέγει πληροφορίες που μπορούν να ταυτοποιήσουν επισκέπτες. Αποθηκεύεται μόνο ο συνολικός αριθμός επισκέψεων.</span>
+                    </footer>
+                </article>
+            </div>
+        </div>
+
+        <!-- Error Banner -->
+        <div id="error-banner" class="error-banner hidden">
+            <div class="error-banner-content">
+                <div class="error-banner-icon">⚠️</div>
+                <div class="error-banner-message" id="error-banner-message"></div>
+                <button class="error-banner-close" id="error-banner-close"
+                    aria-label="Κλείσιμο μηνύματος σφάλματος">×</button>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a class="header-institution-link" href="/" aria-label="Αρχική σελίδα — Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών">
+                    <img class="header-institution-emblem" src="/webgis-shared/nkua-190-el-horizontal.png" alt="">
+                </a>
+                <nav class="header-nav">
+                </nav>
+                <div class="header-title header-title-compact">
+                    <span class="header-rule" aria-hidden="true"></span>
+                    <h1>
+                        <span class="header-title-line">Παράκτιες επιπτώσεις της</span>
+                        <span class="header-title-line">κακοκαιρίας <em>του Φεβρουαρίου 2026</em></span>
+                    </h1>
+                    <span class="header-rule" aria-hidden="true"></span>
+                </div>
+                <div class="header-actions">
+                    <span class="last-updated" lang="en">Last updated: <time datetime="2026-09-05">5 September 2026</time></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <button id="mobile-filters-toggle" class="mobile-toggle-btn">Φίλτρα</button>
+            <button id="mobile-search-toggle" class="mobile-toggle-btn">Αναζήτηση</button>
+            <button id="mobile-stats-toggle" class="mobile-toggle-btn">Στατιστικά</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <!-- Mobile Close Button -->
+                <button class="mobile-sidebar-close" id="mobile-sidebar-close" aria-label="Κλείσιμο πλαϊνού πίνακα">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="sidebar-content">
+                    <!-- Top Tabs -->
+                    <div class="tab-nav" aria-label="Καρτέλες πλαϊνού πίνακα">
+                        <button class="tab-button active" data-tab="filters" title="Φίλτρα" aria-label="Φίλτρα">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Φίλτρα</span>
+                        </button>
+
+                        <button class="tab-button" data-tab="search" title="Αναζήτηση" aria-label="Αναζήτηση">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Αναζήτηση</span>
+                        </button>
+                        <button class="tab-button" data-tab="stats" title="Στατιστικά" aria-label="Στατιστικά">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="square">
+                                    <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    <rect x="5" y="11" width="3" height="9"></rect>
+                                    <rect x="10" y="6" width="3" height="14"></rect>
+                                    <rect x="15" y="14" width="3" height="6"></rect>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Στατιστικά</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Tab Content -->
+                    <div class="tab-content active" id="filters-tab">
+                        <!-- Filter Loading Indicator -->
+                        <div id="filter-loading" class="filter-loading hidden">
+                            <div class="spinner-small"></div>
+                            <span>Φόρτωση φίλτρων...</span>
+                        </div>
+
+                        <!-- Filter Controls Container -->
+                        <div id="filter-controls">
+                            <!-- Date Filter -->
+                            <div class="filter-group">
+                                <label>Ημερομηνία Συμβάντος:</label>
+                                <button class="filter-selector" data-filter="date" id="date-filter-btn">
+                                    <span class="filter-selector-value">Όλες οι Ημερομηνίες</span>
+                                    <span class="filter-selector-badge" id="date-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="date-filter" name="date" value="">
+                            </div>
+
+                            <!-- Location Filter -->
+                            <div class="filter-group">
+                                <label>Τοποθεσία:</label>
+                                <button class="filter-selector" data-filter="location" id="location-filter-btn">
+                                    <span class="filter-selector-value">Όλες οι Τοποθεσίες</span>
+                                    <span class="filter-selector-badge" id="location-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="location-filter" name="location" value="">
+                            </div>
+
+                            <!-- Natura Filter -->
+                            <div class="filter-group">
+                                <label>Κατάσταση Natura:</label>
+                                <button class="filter-selector" data-filter="deathsToll" id="deaths-toll-filter-btn">
+                                    <span class="filter-selector-value">Όλες οι Καταστάσεις</span>
+                                    <span class="filter-selector-badge" id="deaths-toll-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="deaths-toll-filter" name="deathsToll" value="">
+                            </div>
+
+                            <!-- Region Filter -->
+                            <div class="filter-group">
+                                <label>Περιφέρεια:</label>
+                                <button class="filter-selector" data-filter="region" id="region-filter-btn">
+                                    <span class="filter-selector-value">Όλες οι Περιφέρειες</span>
+                                    <span class="filter-selector-badge" id="region-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="region-filter" name="region" value="">
+                            </div>
+
+                            <!-- Regional Unit Filter -->
+                            <div class="filter-group">
+                                <label>Περιφερειακή Ενότητα:</label>
+                                <button class="filter-selector" data-filter="regionalUnit"
+                                    id="regional-unit-filter-btn">
+                                    <span class="filter-selector-value">Όλες οι Περιφερειακές Ενότητες</span>
+                                    <span class="filter-selector-badge" id="regional-unit-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="regional-unit-filter" name="regionalUnit" value="">
+                            </div>
+
+                            <!-- Municipality Filter -->
+                            <div class="filter-group">
+                                <label>Δήμος:</label>
+                                <button class="filter-selector" data-filter="municipality" id="municipality-filter-btn">
+                                    <span class="filter-selector-value">Όλοι οι Δήμοι</span>
+                                    <span class="filter-selector-badge" id="municipality-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="municipality-filter" name="municipality" value="">
+                            </div>
+
+                            <!-- Active Filters Summary -->
+                            <div id="active-filters-summary" class="active-filters-summary hidden">
+                                <h4>Ενεργά Φίλτρα:</h4>
+                                <div id="active-filters-list" class="active-filters-list"></div>
+                            </div>
+
+                            <!-- Clear Filters Button -->
+                            <button id="clear-filters" class="btn-secondary"
+                                style="width: 100%; margin-top: 0.5rem;">Καθαρισμός Φίλτρων</button>
+                        </div>
+
+                        <!-- Filter Error Message -->
+                        <div id="filter-error" class="filter-error hidden"></div>
+                    </div>
+
+                    <!-- Search Tab Content -->
+                    <div class="tab-content" id="search-tab">
+                        <p class="stats-hint stats-hint-top">
+                            Η επιλογή αποτελέσματος ενημερώνει τον χάρτη και τα στατιστικά.
+                        </p>
+                        <div class="search-panel">
+                            <label for="global-search-input" class="search-label">Καθολική Αναζήτηση</label>
+                            <input id="global-search-input" type="text" class="search-input"
+                                placeholder="Αναζήτηση τοποθεσίας, δήμου, περιφέρειας ή ημερομηνίας…"
+                                autocomplete="off" />
+                            <div id="global-search-results" class="search-results hidden" aria-live="polite"></div>
+                            <div id="global-search-selected" class="search-selected hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Tab Content -->
+                    <div class="tab-content" id="stats-tab">
+                        <div class="statistics-panel">
+                            <p class="stats-hint stats-hint-top">
+                                Τα φίλτρα εφαρμόζονται στα στατιστικά· καθαρίστε τα για το πλήρες σύνολο δεδομένων.
+                            </p>
+                            <div class="stats-sample">Φόρτωση ορατών εγγραφών…</div>
+                            <figure class="stats-figure">
+                                <figcaption class="stats-figcaption">
+                                    <span class="stats-fig-num">Σχ.</span>
+                                    <span class="stats-figure-title">Συμβάντα ανά περιφέρεια</span>
+                                </figcaption>
+                                <div class="stats-chart-wrap" aria-live="polite"></div>
+                                <div class="stats-axis-label">Περιφέρεια</div>
+                            </figure>
+                            <div class="stats-summary-head">
+                                <span class="stats-summary-eyebrow">Συνοπτικά στατιστικά</span>
+                            </div>
+                            <div class="stats-summary" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Container -->
+            <main class="map-container">
+                <div id="map"></div>
+
+                <!-- Loading Indicator -->
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Φόρτωση δεδομένων...</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Event Detail Modal -->
+        <div id="event-modal" class="modal">
+            <div class="modal-content lagoon-modal-content">
+                <div class="modal-header lagoon-modal-header">
+                    <div class="lagoon-modal-titleblock" id="event-modal-titleblock"></div>
+                    <button class="modal-close" id="close-event" aria-label="Κλείσιμο">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="event-details">
+                        <!-- Details will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-authorship">
+                    <div class="footer-project-team">
+                        <span class="footer-authorship-label">Ομάδα έρευνας &amp; έργου</span>
+                        <div class="footer-team-list">
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Αποστολή email σε Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt="Prof. Niki Evelpidou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Αποστολή email σε Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt="Dr. Eleana Karkani"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Αποστολή email σε Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt="Dr. Giannis Saitis"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Αποστολή email σε Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt="Evangelos Spyrou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Ιστοσελίδα του Αλέξανδρου Λιάσκου" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt="Alexandros Liaskos"></a></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-credit" aria-label="Πνευματικά δικαιώματα και άδεια">
+                    <a class="footer-collection-link" href="/">
+                        <span class="footer-collection-name"><span class="footer-current-catalogue">Παράκτιες επιπτώσεις της κακοκαιρίας του Φεβρουαρίου 2026</span></span>
+                    </a>
+                    <span class="footer-credit-meta">
+                        <span>© 2026</span><span class="footer-credit-dot" aria-hidden="true">·</span>
+                        <span>Περιεχόμενο με άδεια <a class="footer-license-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a></span>
+                    </span>
+                </div>
+                <nav class="footer-nav" aria-label="Σύνδεσμοι ιστοτόπου">
+                    <button id="about-btn" class="footer-link" type="button">Σχετικά</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="references-btn" class="footer-link" type="button">Πηγές</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="submit-data-btn" class="footer-link" type="button">Υποβολή&nbsp;δεδομένων</button>
+                </nav>
+            </div>
+        </footer>
+
+
+        <!-- References Modal -->
+        <div id="references-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="reference-modal-heading">
+                        <h3>Πηγές και παραπομπές</h3>
+                        <p>Χρησιμοποιήστε την αναφορά που αντιστοιχεί στο υλικό που παραπέμπετε.</p>
+                    </div>
+                    <button class="modal-close" id="close-references" aria-label="Κλείσιμο πηγών και παραπομπών">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="reference-sections">
+                        <section class="reference-section" aria-labelledby="storm-platform-title">
+                            <header class="reference-section-heading">
+                                <h4 id="storm-platform-title">Διαδικτυακή πλατφόρμα</h4>
+                                <p>Για αναφορά στον διαδραστικό ιστότοπο και τη διεπαφή.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Evelpidou, N., Karkani, E., Saitis, G., Spyrou, E., &amp; Liaskos, A. (2026). <em>Παράκτιες επιπτώσεις της κακοκαιρίας του Φεβρουαρίου 2026</em> [Διαδραστικό WebGIS]. <a href="https://evelpidou.geo.nkua.cloud/Κακοκαιρία-Φεβ-2026" target="_blank" rel="noopener noreferrer">evelpidou.geo.nkua.cloud/Κακοκαιρία-Φεβ-2026</a></p>
+                                <p><strong>Φορέας των συγγραφέων</strong><br>Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="storm-sources-title">
+                            <header class="reference-section-heading">
+                                <h4 id="storm-sources-title">Πηγές δεδομένων</h4>
+                                <p>Για τα δεδομένα και το πρωτογενές υλικό.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Αποφάσεις κήρυξης έκτακτης ανάγκης (ΑΔΑ) από τη Διαύγεια, διοικητικά όρια και επιμελημένη περιγραφή επιπτώσεων ανά συμβάν.</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="storm-licence-title">
+                            <header class="reference-section-heading">
+                                <h4 id="storm-licence-title">Άδεια και επαναχρησιμοποίηση</h4>
+                                <p>Όροι χρήσης του πρωτότυπου περιεχομένου της πλατφόρμας.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Εκτός εάν δεδομένα τρίτων, υπόβαθρα χαρτών, εικόνες, λογότυπα ή υλικό πηγών αναφέρονται ξεχωριστά, το πρωτότυπο κείμενο, η διεπαφή, ο σχεδιασμός οπτικοποίησης και τα ερευνητικά αποτελέσματα αυτής της εφαρμογής διατίθενται με τη <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">Διεθνή Άδεια Creative Commons Αναφορά Δημιουργού 4.0 (CC BY 4.0)</a>.</p>
+                                <p>Μπορείτε να κοινοποιείτε και να προσαρμόζετε αυτό το υλικό, υπό την προϋπόθεση ότι παρέχετε την κατάλληλη αναφορά, σύνδεσμο προς την άδεια και δηλώνετε εάν έγιναν αλλαγές. Το υλικό τρίτων εξακολουθεί να διέπεται από τους αντίστοιχους όρους και άδειες.</p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Data Modal -->
+        <div id="submit-data-modal" class="modal submit-data-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Υποβολή δεδομένων</h3>
+                    <button class="modal-close" id="close-submit-data" aria-label="Κλείσιμο οδηγιών υποβολής">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="submit-data-intro"><p>Υποβάλετε νέο παράκτιο συμβάν ή διόρθωση για την κακοκαιρία του Φεβρουαρίου 2026 στην Ελλάδα. Χρησιμοποιήστε μία γραμμή ανά θέση και ημερομηνία συμβάντος, με τεκμηρίωση των επιπτώσεων.</p></div>
+                    <div class="submit-data-section">
+                        <h4>Προετοιμασία υποβολής</h4>
+                        <p>Συμπληρώστε το κενό φύλλο Data του XLSX. Το Field guide περιλαμβάνει όλες τις στήλες, τις μονάδες και παραδείγματα. Εναλλακτικά, χρησιμοποιήστε το CSV με τις ίδιες κεφαλίδες.</p>
+                        <p class="submit-data-note">Αφήστε κενές τις άγνωστες τιμές. Για διόρθωση, συμπληρώστε το υπάρχον id και εξηγήστε την αλλαγή στο submission_notes.</p>
+                        <div class="submit-data-actions">
+                            <a class="btn-primary" href="/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/templates/storm-events-data-template.xlsx?v=20260905-1" download="storm-events-data-template.xlsx">Λήψη XLSX</a>
+                            <a class="btn-primary" href="/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/templates/storm-events-data-template.csv?v=20260905-1" download="storm-events-data-template.csv">Λήψη CSV</a>
+                            <a class="btn-primary" href="mailto:alexliaskos@geol.uoa.gr,evelpidou@geol.uoa.gr?subject=%CE%A5%CF%80%CE%BF%CE%B2%CE%BF%CE%BB%CE%AE%20%CE%B4%CE%B5%CE%B4%CE%BF%CE%BC%CE%AD%CE%BD%CF%89%CE%BD%20%CF%80%CE%B1%CF%81%CE%AC%CE%BA%CF%84%CE%B9%CF%89%CE%BD%20%CE%B5%CF%80%CE%B9%CF%80%CF%84%CF%8E%CF%83%CE%B5%CF%89%CE%BD%20%CE%A6%CE%B5%CE%B2%CF%81%CE%BF%CF%85%CE%B1%CF%81%CE%AF%CE%BF%CF%85%202026&amp;body=%CE%A0%CF%81%CE%BF%CF%82%20%CF%84%CE%B7%CE%BD%20%CE%B5%CF%81%CE%B5%CF%85%CE%BD%CE%B7%CF%84%CE%B9%CE%BA%CE%AE%20%CE%BF%CE%BC%CE%AC%CE%B4%CE%B1%2C%0A%0A%CE%98%CE%B1%20%CE%AE%CE%B8%CE%B5%CE%BB%CE%B1%20%CE%BD%CE%B1%20%CF%85%CF%80%CE%BF%CE%B2%CE%AC%CE%BB%CF%89%20%CE%B4%CE%B5%CE%B4%CE%BF%CE%BC%CE%AD%CE%BD%CE%B1%20%CE%B3%CE%B9%CE%B1%20%CE%A0%CE%B1%CF%81%CE%AC%CE%BA%CF%84%CE%B9%CE%B5%CF%82%20%CE%B5%CF%80%CE%B9%CF%80%CF%84%CF%8E%CF%83%CE%B5%CE%B9%CF%82%20%CE%A6%CE%B5%CE%B2%CF%81%CE%BF%CF%85%CE%B1%CF%81%CE%AF%CE%BF%CF%85%202026.%0A%0A%CE%9F%CE%BD%CF%8C%CE%BC%CE%B1%CF%84%CE%B1%20%CF%83%CF%85%CE%BD%CF%84%CE%B5%CE%BB%CE%B5%CF%83%CF%84%CF%8E%CE%BD%0A%5B%CE%A3%CF%85%CE%BC%CF%80%CE%BB%CE%B7%CF%81%CF%8E%CF%83%CF%84%CE%B5%5D%0A%0A%CE%A6%CE%BF%CF%81%CE%AD%CE%B1%CF%82%0A%5B%CE%A3%CF%85%CE%BC%CF%80%CE%BB%CE%B7%CF%81%CF%8E%CF%83%CF%84%CE%B5%5D%0A%0AEmail%20%CE%B5%CF%80%CE%B9%CE%BA%CE%BF%CE%B9%CE%BD%CF%89%CE%BD%CE%AF%CE%B1%CF%82%0A%5B%CE%A3%CF%85%CE%BC%CF%80%CE%BB%CE%B7%CF%81%CF%8E%CF%83%CF%84%CE%B5%5D%0A%0A%CE%9D%CE%AD%CE%B5%CF%82%20%CE%B5%CE%B3%CE%B3%CF%81%CE%B1%CF%86%CE%AD%CF%82%20%CE%AE%20%CE%B4%CE%B9%CE%BF%CF%81%CE%B8%CF%8E%CF%83%CE%B5%CE%B9%CF%82%20%CE%BA%CE%B1%CE%B9%20%CF%80%CE%B5%CF%81%CE%B9%CE%BF%CF%87%CE%AE%20%CE%BA%CE%AC%CE%BB%CF%85%CF%88%CE%B7%CF%82%0A%5B%CE%A3%CF%85%CE%BC%CF%80%CE%BB%CE%B7%CF%81%CF%8E%CF%83%CF%84%CE%B5%5D%0A%0A%CE%95%CF%80%CE%B9%CF%83%CF%85%CE%BD%CE%AC%CF%88%CF%84%CE%B5%20%CF%84%CE%BF%20%CF%83%CF%85%CE%BC%CF%80%CE%BB%CE%B7%CF%81%CF%89%CE%BC%CE%AD%CE%BD%CE%BF%20XLSX%20%CE%AE%20CSV%20%CE%BA%CE%B1%CE%B9%20%CF%84%CE%B9%CF%82%20%CF%80%CE%B7%CE%B3%CE%AD%CF%82.%20%CE%9F%CE%B9%20%CF%86%CF%89%CF%84%CE%BF%CE%B3%CF%81%CE%B1%CF%86%CE%AF%CE%B5%CF%82%20%CE%BA%CE%B1%CE%B9%20%CE%BF%CE%B9%20%CE%B1%CF%80%CE%BF%CF%86%CE%AC%CF%83%CE%B5%CE%B9%CF%82%20%CF%80%CF%81%CE%BF%CF%83%CF%84%CE%AF%CE%B8%CE%B5%CE%BD%CF%84%CE%B1%CE%B9%20%CF%87%CE%B5%CE%B9%CF%81%CE%BF%CE%BA%CE%AF%CE%BD%CE%B7%CF%84%CE%B1.%0A%0A%CE%A3%CE%B7%CE%BC%CE%B5%CE%B9%CF%8E%CF%83%CE%B5%CE%B9%CF%82%20%CE%BA%CE%B1%CE%B9%20%CE%B4%CE%B9%CE%BA%CE%B1%CE%B9%CF%8E%CE%BC%CE%B1%CF%84%CE%B1%20%CF%87%CF%81%CE%AE%CF%83%CE%B7%CF%82%20%CF%83%CF%85%CE%BD%CE%B7%CE%BC%CE%BC%CE%AD%CE%BD%CF%89%CE%BD%0A%5B%CE%A3%CF%85%CE%BC%CF%80%CE%BB%CE%B7%CF%81%CF%8E%CF%83%CF%84%CE%B5%5D">Αποστολή με email</a>
+                        </div>
+                    </div>
+                    <div class="submit-data-section">
+                        <h4>Υποχρεωτικά πεδία</h4>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Πεδίο και στήλη</th><th scope="col">Μορφή και μονάδα</th><th scope="col">Τι συμπληρώνετε</th></tr></thead>
+                            <tbody><tr><th scope="row">Ημερομηνία συμβάντος<br><code>date_of_commencement</code></th><td>YYYY-MM-DD</td><td>Τεκμηριωμένη ημερομηνία παράκτιων επιπτώσεων τον Φεβρουάριο 2026, σε μορφή YYYY-MM-DD.</td></tr>
+                            <tr><th scope="row">Παράκτια θέση<br><code>location_name</code></th><td>Κείμενο</td><td>Συγκεκριμένο παράκτιο μέτωπο, οικισμός ή θέση που επλήγη.</td></tr>
+                            <tr><th scope="row">Γεωγραφικό πλάτος<br><code>latitude</code></th><td>WGS84 (μοίρες)</td><td>Γεωγραφικό πλάτος σε δεκαδικές μοίρες WGS84.</td></tr>
+                            <tr><th scope="row">Γεωγραφικό μήκος<br><code>longitude</code></th><td>WGS84 (μοίρες)</td><td>Γεωγραφικό μήκος σε δεκαδικές μοίρες WGS84.</td></tr>
+                            <tr><th scope="row">Περιγραφή επιπτώσεων<br><code>damage_description</code></th><td>Κείμενο</td><td>Πλήρης τεκμηριωμένη περιγραφή διάβρωσης, ζημιών και άλλων παράκτιων επιπτώσεων.</td></tr>
+                            <tr><th scope="row">Πηγή τεκμηρίωσης<br><code>reference</code></th><td>Κείμενο</td><td>Επαληθεύσιμο URL, παραπομπή ή σύνδεσμος απόφασης ΑΔΑ.</td></tr></tbody>
+                        </table></div>
+                    </div>
+                    <details class="submit-data-section submission-optional">
+                        <summary>Προαιρετικά πεδία (16)</summary>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Πεδίο και στήλη</th><th scope="col">Μορφή και μονάδα</th><th scope="col">Τι συμπληρώνετε</th></tr></thead>
+                            <tbody><tr><th scope="row">Υπάρχον ID<br><code>id</code></th><td>Ακέραιος</td><td>ID της εγγραφής στον χάρτη μόνο για διόρθωση. Κενό για νέο συμβάν.</td></tr>
+                            <tr><th scope="row">Αποκεντρωμένη διοίκηση<br><code>decentralized_admin</code></th><td>Κείμενο</td><td>Αρμόδια αποκεντρωμένη διοίκηση.</td></tr>
+                            <tr><th scope="row">Περιφέρεια<br><code>region_name</code></th><td>Κείμενο</td><td>Περιφέρεια στην οποία βρίσκεται η θέση.</td></tr>
+                            <tr><th scope="row">Περιφερειακή ενότητα<br><code>regional_unit</code></th><td>Κείμενο</td><td>Περιφερειακή ενότητα στην οποία βρίσκεται η θέση.</td></tr>
+                            <tr><th scope="row">Δήμος<br><code>municipality</code></th><td>Κείμενο</td><td>Δήμος της θέσης.</td></tr>
+                            <tr><th scope="row">Δημοτική ενότητα<br><code>municipal_unit</code></th><td>Κείμενο</td><td>Δημοτική ενότητα της θέσης.</td></tr>
+                            <tr><th scope="row">Κοινότητα<br><code>community</code></th><td>Κείμενο</td><td>Δημοτική κοινότητα της θέσης.</td></tr>
+                            <tr><th scope="row">Σύντομη περιγραφή<br><code>short_damage</code></th><td>Κείμενο</td><td>Σύντομη περίληψη των τεκμηριωμένων επιπτώσεων.</td></tr>
+                            <tr><th scope="row">Κωδικός ΑΔΑ<br><code>ada_code</code></th><td>Κείμενο</td><td>Ακριβής κωδικός της σχετικής απόφασης στη Διαύγεια, όταν υπάρχει.</td></tr>
+                            <tr><th scope="row">Φορέας απόφασης<br><code>source</code></th><td>Κείμενο</td><td>Διοικητική μονάδα ή φορέας που εξέδωσε την απόφαση. Ο σύνδεσμος τεκμηρίωσης μπαίνει στο reference.</td></tr>
+                            <tr><th scope="row">Ημερομηνία κήρυξης<br><code>declaration_date</code></th><td>YYYY-MM-DD</td><td>Ημερομηνία κήρυξης έκτακτης ανάγκης, σε μορφή YYYY-MM-DD.</td></tr>
+                            <tr><th scope="row">Διάρκεια έκτακτης ανάγκης<br><code>emergency_duration</code></th><td>Κείμενο</td><td>Διάρκεια και μονάδα όπως αναγράφονται στην απόφαση.</td></tr>
+                            <tr><th scope="row">Εντός Natura 2000<br><code>natura_flag</code></th><td>YES / NO</td><td>YES ή NO μόνο εφόσον τεκμηριώνεται. Κενό αν η χωρική σχέση είναι άγνωστη.</td></tr>
+                            <tr><th scope="row">Κωδικός Natura 2000<br><code>natura_code</code></th><td>Κείμενο</td><td>Επίσημος κωδικός ή κωδικοί των σχετικών προστατευόμενων περιοχών.</td></tr>
+                            <tr><th scope="row">Όνομα Natura 2000<br><code>natura_name</code></th><td>Κείμενο</td><td>Επίσημη ονομασία της σχετικής προστατευόμενης περιοχής.</td></tr>
+                            <tr><th scope="row">Σημειώσεις υποβολής<br><code>submission_notes</code></th><td>Κείμενο</td><td>Εξηγήστε διορθώσεις, αβεβαιότητες, πηγές χωρικής τεκμηρίωσης και τα συνημμένα αρχεία.</td></tr></tbody>
+                        </table></div>
+                    </details>
+                    <div class="submit-data-section">
+                        <h4>Ειδικές οδηγίες</h4>
+                        <ul class="notes-list"><li>Η ημερομηνία συμβάντος διαφέρει από την ημερομηνία κήρυξης έκτακτης ανάγκης. Συμπληρώστε τις χωριστά και μόνο όταν τεκμηριώνονται.</li><li>Συμπληρώστε έναν επαληθεύσιμο σύνδεσμο ή παραπομπή στο reference. Αν υπάρχει απόφαση, προσθέστε τον ακριβή κωδικό ΑΔΑ και τον φορέα της.</li><li>Η ένδειξη Natura 2000 δηλώνει χωρική ένταξη σε προστατευόμενη περιοχή. Δεν αποτελεί αριθμό θυμάτων ή βαθμό σοβαρότητας.</li><li>Χρησιμοποιήστε YES ή NO για το natura_flag μόνο με διαθέσιμη τεκμηρίωση. Η άγνωστη χωρική σχέση παραμένει κενή.</li></ul>
+                    </div>
+                    <p class="submit-data-note">Στο email προσθέστε ονόματα συντελεστών, φορέα και στοιχεία επικοινωνίας. Επισυνάψτε το αρχείο και τις πηγές χειροκίνητα. Η ερευνητική ομάδα εξετάζει κάθε υποβολή πριν από τη δημοσίευση.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Selection Modal -->
+        <div id="filter-selection-modal" class="modal filter-selection-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="filter-modal-title">Επιλογή Τιμής</h3>
+                    <button class="modal-close" id="close-filter-selection">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="filter-modal-search">
+                        <input type="text" id="filter-modal-search-input" placeholder="Αναζήτηση..." autocomplete="off">
+                        <svg class="filter-modal-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                    <div class="filter-modal-actions-top">
+                        <button id="filter-modal-clear" class="btn-filter-modal-clear">Καθαρισμός Επιλογής</button>
+                    </div>
+                    <div id="filter-modal-list" class="filter-modal-list">
+                        <!-- Available options will be populated here -->
+                    </div>
+                    <div id="filter-modal-unavailable-section" class="filter-modal-unavailable-section hidden">
+                        <div class="filter-modal-unavailable-header">Μη Διαθέσιμες (εκτός φίλτρων)</div>
+                        <div id="filter-modal-unavailable-list" class="filter-modal-unavailable-list">
+                            <!-- Unavailable options will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+    <script src="/webgis-shared/common-map.js?v=20261026-filters-display-1"></script>
+    <script src="/webgis-shared/map-display.js?v=20261026-filters-display-1"></script>
+        <script src="/webgis-shared/common-ui.js?v=20261026-filters-display-1"></script>
+
+    <!-- Measurement Tool -->
+    <script src="./measurement-tool.js"></script>
+
+    <!-- Modular Application (ES Modules) -->
+    <script type="module" src="./js/main.js?v=20261026-filters-display-1"></script>
+</body>
+
+</html>

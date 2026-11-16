@@ -1,0 +1,12 @@
+/* All common presentation comes from webgis-shared/lagoons-ui.css. */
+.hazard-pagination, .hazard-source-links { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin: .75rem 0; }
+.hazard-pagination[hidden] { display: none; }
+.hazard-pagination span { font: .75rem var(--font-mono, monospace); }
+.hazard-original-fields { margin-top: 1.5rem; }
+.hazard-original-fields summary { cursor: pointer; font-weight: 600; }
+#hazard-details .detail-value { overflow-wrap: anywhere; }
+#record-search { margin-top: .35rem; }
+#record-list { max-height: none; }
+#global-search-selected { margin-bottom: 1rem; }
+#source-library .reference-section { margin-top: 1rem; }
+#load-area:disabled, #download-view:disabled { opacity: .5; cursor: default; }

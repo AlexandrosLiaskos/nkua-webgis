@@ -1,0 +1,185 @@
+/* Map display settings (legend settings button, class toggles and dialog),
+   shared by the atlases; matches the Historic Floods legend and dialog. */
+
+.map-display-legend .legend-title {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 32px;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    row-gap: 2px;
+    align-items: center;
+    padding: 0 0 10px;
+    margin-bottom: 8px;
+}
+.map-display-legend .legend-title-main { grid-column: 1; grid-row: 1; min-width: 0; line-height: 1.35; }
+.map-display-legend .legend-title-sub {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+    color: #777;
+    font: 400 0.7rem/1.4 var(--font-sans, Inter, sans-serif);
+    letter-spacing: 0;
+    text-transform: none;
+}
+.map-display-settings-button {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #555;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+}
+.map-display-settings-button svg { width: 18px; height: 18px; }
+.map-display-settings-button circle { fill: #fff; }
+.map-display-settings-button:hover { background: #f0f0f0; color: #111; }
+.map-display-settings-button:active { background: #e7e7e7; }
+.map-display-settings-button:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
+
+.map-display-legend-rows { max-height: min(150px, 24vh); overflow-y: auto; overscroll-behavior: contain; padding: 2px 4px 2px 2px; }
+.map-display-legend-rows .legend-row {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.map-display-legend-rows .legend-row:hover .legend-text { text-decoration: underline; text-underline-offset: 2px; }
+.map-display-legend-rows .legend-row:focus-visible { outline: 2px solid #111; outline-offset: 1px; }
+.map-display-legend-rows .legend-row.is-hidden { opacity: 0.4; }
+.map-display-legend-rows .legend-row.is-hidden .legend-text { text-decoration: line-through; }
+
+@media (prefers-reduced-motion: reduce) {
+    .map-display-settings-button { transition: none; }
+}
+
+@media (max-width: 720px) {
+    /* The compact mobile legend keeps the settings button without the title text. */
+    .status-bar-legend.map-display-legend .legend-title { display: flex; padding: 0; margin: 0; }
+    .map-display-legend .legend-title-main,
+    .map-display-legend .legend-title-sub { display: none; }
+    .map-display-legend-rows { display: flex; flex-wrap: wrap; gap: 0.55rem; max-height: none; padding: 0; }
+    .map-display-legend-rows .legend-row { width: auto; }
+}
+
+/* Dialog */
+.display-settings-dialog {
+    box-sizing: border-box;
+    width: min(560px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--text-primary);
+    border-radius: 0;
+    color: var(--text-primary);
+    background: var(--background-primary);
+    box-shadow: 0 30px 80px rgb(0 0 0 / 18%), 0 6px 16px rgb(0 0 0 / 8%);
+    overflow: hidden;
+    font: 400 0.8rem/1.5 var(--font-sans);
+}
+.display-settings-dialog::backdrop { background: rgb(0 0 0 / 55%); backdrop-filter: blur(3px); }
+.display-settings-dialog[open] { display: flex; flex-direction: column; }
+.display-settings-header {
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.4rem 1.75rem 0.7rem;
+    border-bottom: 0;
+}
+.display-settings-header h2 {
+    margin: 0;
+    font: italic 500 1.7rem/1.1 'Cormorant Garamond', var(--font-serif);
+    letter-spacing: -0.005em;
+}
+.display-settings-dialog .display-settings-close {
+    flex: 0 0 32px;
+    min-width: 32px;
+    min-height: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--text-muted);
+    font: 400 1.5rem/1 var(--font-sans);
+}
+.display-settings-dialog .display-settings-close:hover { color: var(--primary-color); }
+.display-settings-form { display: flex; flex-direction: column; min-height: 0; }
+.display-settings-body { padding: 0.5rem 1.75rem 1.4rem; overflow-y: auto; overscroll-behavior: contain; }
+.display-settings-controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; }
+.display-settings-field { min-width: 0; margin-bottom: 1.15rem; }
+.display-settings-field label { display: block; margin-bottom: 0.35rem; color: var(--text-secondary); font-size: 0.7rem; font-weight: 400; }
+.display-settings-field select, .display-settings-field > input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 38px;
+    padding: 0.3rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--border-light);
+    border-radius: 0;
+    background: transparent;
+    color: var(--text-primary);
+    font: italic 400 1.15rem/1.3 var(--font-serif);
+}
+.display-settings-field select option, .display-settings-field select optgroup { font: 400 0.875rem var(--font-sans); }
+.display-settings-field > input { font: 400 0.85rem/1.4 var(--font-sans); }
+.display-settings-field select:hover, .display-settings-field > input:hover { border-bottom-color: var(--primary-color); }
+.display-settings-numeric { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; }
+.display-settings-context { margin: -0.3rem 0 1rem; color: var(--text-secondary); font-size: 0.74rem; line-height: 1.5; }
+.display-settings-preview .template-table-wrapper { margin: 0; }
+.display-settings-table { table-layout: fixed; }
+.display-settings-table th:first-child, .display-settings-table td:first-child { width: 5.25rem; padding-inline: 0.5rem; text-align: center; }
+.display-settings-table th:last-child, .display-settings-table td:last-child { width: 104px; text-align: right; }
+.display-settings-table th, .display-settings-table td { vertical-align: middle; }
+.display-settings-table th:first-child { white-space: nowrap; }
+.display-settings-color {
+    display: block;
+    box-sizing: border-box;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    padding: 2px;
+    margin: auto;
+    border: 1px solid #bbb;
+    border-radius: 0;
+    background: var(--background-primary);
+    cursor: pointer;
+}
+.display-settings-color::-webkit-color-swatch-wrapper { padding: 0; }
+.display-settings-color::-webkit-color-swatch { border: 0; }
+.display-settings-color::-moz-color-swatch { border: 0; }
+.display-settings-class-label { line-height: 1.4; overflow-wrap: anywhere; }
+.display-settings-class-count { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.display-settings-error { margin: 0.85rem 0 0; font-size: 0.8rem; color: #a12720; }
+.display-settings-empty { color: var(--text-secondary); }
+.display-settings-footer { display: flex; flex-shrink: 0; justify-content: flex-end; gap: 0.65rem; margin: 0; padding: 0.85rem 1.75rem 1.4rem; border-top: 0; background: var(--background-primary); }
+.display-settings-footer .btn-primary, .display-settings-footer .btn-secondary {
+    width: auto;
+    min-height: 38px;
+    padding: 0.65rem 1.4rem;
+    border-radius: 2px;
+    font: italic 500 1rem/1 'Cormorant Garamond', var(--font-serif);
+    text-transform: none;
+    letter-spacing: 0;
+}
+.display-settings-apply:disabled { cursor: default; opacity: 0.4; }
+.display-settings-dialog :focus-visible { outline: 2px solid var(--primary-color); outline-offset: 3px; }
+.display-settings-dialog [hidden] { display: none !important; }
+
+@media (max-width: 480px) {
+    .display-settings-dialog { width: calc(100vw - 1.25rem); max-height: calc(100dvh - 1.25rem); }
+    .display-settings-header { padding: 1.1rem 1.125rem 0.65rem; }
+    .display-settings-body { padding: 0.5rem 1.125rem 1.1rem; }
+    .display-settings-controls { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .display-settings-table th:last-child, .display-settings-table td:last-child { width: 82px; }
+    .display-settings-footer { padding: 0.75rem 1.125rem 1.1rem; }
+    .display-settings-header h2 { font-size: 1.6rem; }
+}

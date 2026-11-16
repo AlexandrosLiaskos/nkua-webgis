@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Landslides of Earth</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Explore global landslide inventories, mapped footprints and point records with original evidence, source licences, filters and statistics.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="National and Kapodistrian University of Athens">
+    <meta property="og:title" content="Landslides of Earth">
+    <meta property="og:description"
+        content="Explore global landslide inventories, mapped footprints and point records with original evidence and source licences.">
+    <meta property="og:url" content="https://evelpidou.geo.nkua.cloud/landslides/">
+    <meta property="og:image" content="https://evelpidou.geo.nkua.cloud/landslides/map-preview.jpg?v=20261116-previews-1">
+    <meta property="og:image:secure_url" content="https://evelpidou.geo.nkua.cloud/landslides/map-preview.jpg?v=20261116-previews-1">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:image:alt" content="Landslides WebGIS by the National and Kapodistrian University of Athens">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Landslides of Earth">
+    <meta name="twitter:description"
+        content="Explore global landslide inventories, mapped footprints and point records with original evidence and source licences.">
+    <meta name="twitter:image" content="https://evelpidou.geo.nkua.cloud/landslides/map-preview.jpg?v=20261116-previews-1">
+    <meta name="twitter:image:alt" content="Landslides WebGIS by the National and Kapodistrian University of Athens">
+
+    <link rel="canonical" href="https://evelpidou.geo.nkua.cloud/landslides/">
+    <link rel="icon" type="image/png" sizes="48x48" href="/Nepal-Flood-2026/favicon.png?v=20260828-3">
+    <meta name="application-name" content="Landslides of Earth">
+    <meta name="apple-mobile-web-app-title" content="Landslides of Earth">
+    <link rel="manifest" href="./site.webmanifest?v=20260907-browser-social-1">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Italianno&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/webgis-shared/lagoons-ui.css?v=20261116-footer-1">
+    <link rel="stylesheet" href="/webgis-shared/map-display.css?v=20261026-filters-display-1">
+    <link rel="stylesheet" href="./landslides.css?v=20260907-8">
+    <link rel="stylesheet" href="/webgis-shared/feature-guide.css?v=20260905-1">
+    <script src="/webgis-shared/feature-guide.js?v=20260905-1" defer></script>
+    <link rel="stylesheet" href="/webgis-shared/last-updated.css?v=20260905-4">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Welcome Modal — editorial poster -->
+        <div id="welcome-modal" class="modal welcome-modal wm">
+            <div class="modal-content wm-content">
+                <button class="wm-close" id="close-welcome" aria-label="Close welcome modal">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <article class="wm-poster">
+                    <div class="wm-cred">
+                        <div class="wm-institution">
+                            <img class="wm-institution-emblem" src="/webgis-shared/nkua-190-en-horizontal.png" alt="National and Kapodistrian University of Athens — 190 years, 1837–2027">
+                        </div>
+                    </div>
+                    <header class="wm-masthead">
+                        <div class="wm-eyebrow">A WebGIS · 2026</div>
+                        <h1 class="wm-title">Landslides<br><em class="wm-title-italic">of Earth</em></h1>
+                        <p class="wm-deck">
+                            Explore landslide inventories around the world through maps, filters, search and statistics.
+                            Discover mapped footprints, reported locations and their original evidence. Source records can overlap.
+                        </p>
+                        <div class="wm-entry-row">
+                            <div class="wm-coverage" role="group" aria-label="Database coverage">
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Source records</span>
+                                <span class="wm-cov-value" id="welcome-record-count" aria-live="polite">—</span>
+                            </div>
+                            <span class="wm-cov-divider" aria-hidden="true"></span>
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Regions covered</span>
+                                <span class="wm-cov-value-text">Worldwide</span>
+                            </div>
+                            </div>
+                        </div>
+                    </header>
+                    <footer class="wm-foot">
+                        <div class="wm-team" aria-label="Research and project team">
+                            <span class="wm-team-eyebrow">Research &amp; project team</span>
+                            <div class="wm-team-list">
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt=""></a><figcaption>Prof. Niki Evelpidou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt=""></a><figcaption>Dr. Eleana Karkani</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Email Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt=""></a><figcaption>Dr. Giannis Saitis</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Email Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt=""></a><figcaption>Evangelos Spyrou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt=""></a><figcaption>Alexandros Liaskos</figcaption></figure>
+                            </div>
+                        </div>
+                        <div class="wm-sig-tag">
+                            <span class="wm-sig-tag-eyebrow">Website developed by</span>
+                            <a class="wm-signature wm-signature-sm" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu">
+                                <img src="/webgis-shared/signature.png" alt="">
+                                <span class="wm-signature-name">Alexandros Liaskos</span>
+                            </a>
+                        </div>
+                        <span class="wm-visits" role="status" aria-live="polite" aria-describedby="landslides-visit-privacy">
+                            <span>Recorded page visits</span>
+                            <strong data-visit-count data-endpoint="./api/page-summary" data-storage-key="landslides-visit-counted-v1" data-locale="en">—</strong>
+                        </span>
+                        <span id="landslides-visit-privacy" class="sr-only">The counter does not use cookies or collect information that can identify individual visitors. Only the aggregate visit count is stored.</span>
+                    </footer>
+                </article>
+            </div>
+        </div>
+
+        <!-- Error Banner -->
+        <div id="error-banner" class="error-banner hidden">
+            <div class="error-banner-content">
+                <div class="error-banner-icon">⚠️</div>
+                <div class="error-banner-message" id="error-banner-message"></div>
+                <button class="error-banner-close" id="error-banner-close" aria-label="Close error banner">×</button>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a class="header-institution-link" href="/" aria-label="Home page — National and Kapodistrian University of Athens">
+                    <img class="header-institution-emblem" src="/webgis-shared/nkua-190-en-horizontal.png" alt="">
+                </a>
+                <div class="header-title">
+                    <span class="header-rule" aria-hidden="true"></span>
+                    <h1>Landslides <em>of Earth</em></h1>
+                    <span class="header-rule" aria-hidden="true"></span>
+                </div>
+                <div class="header-actions">
+                    <span class="last-updated" lang="en">Last updated: <time datetime="2026-09-07">7 September 2026</time></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <button id="mobile-filters-toggle" class="mobile-toggle-btn">Filters</button>
+            <button id="mobile-search-toggle" class="mobile-toggle-btn">Search</button>
+            <button id="mobile-stats-toggle" class="mobile-toggle-btn">Statistics</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <!-- Mobile Close Button -->
+                <button class="mobile-sidebar-close" id="mobile-sidebar-close" aria-label="Close sidebar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="sidebar-content">
+                    <!-- Top Tabs -->
+                    <div class="tab-nav" aria-label="Sidebar tabs">
+                        <button class="tab-button active" data-tab="filters" title="Filters" aria-label="Filters">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Filters</span>
+                        </button>
+
+                        <button class="tab-button" data-tab="search" title="Search" aria-label="Search">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Search</span>
+                        </button>
+                        <button class="tab-button" data-tab="stats" title="Statistics" aria-label="Statistics">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="square">
+                                    <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    <rect x="5" y="11" width="3" height="9"></rect>
+                                    <rect x="10" y="6" width="3" height="14"></rect>
+                                    <rect x="15" y="14" width="3" height="6"></rect>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Statistics</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Tab Content -->
+                    <div class="tab-content active" id="filters-tab">
+                        <!-- Filter Loading Indicator -->
+                        <div id="filter-loading" class="filter-loading hidden">
+                            <div class="spinner-small"></div>
+                            <span>Loading filters...</span>
+                        </div>
+
+                        <!-- Filter Controls Container -->
+                        <div id="filter-controls">
+                            <input type="hidden" id="mapClass-filter" value="">
+                            <input type="hidden" id="family-filter" value="">
+                            <input type="hidden" id="source-filter" value="">
+                            <input type="hidden" id="country-filter" value="">
+                            <input type="hidden" id="kind-filter" value="">
+                            <input type="hidden" id="movement-filter" value="">
+                            <input type="hidden" id="factor-filter" value="">
+                            <input type="hidden" id="precision-filter" value="">
+                            <input type="hidden" id="startYear-filter" value="">
+                            <input type="hidden" id="endYear-filter" value="">
+                            <!-- Clear Filters Button -->
+                            <button id="clear-filters" class="btn-secondary"
+                                style="width: 100%; margin-top: 0.5rem;">Clear All Filters</button>
+                        </div>
+
+                        <!-- Filter Error Message -->
+                        <div id="filter-error" class="filter-error hidden"></div>
+                    </div>
+
+                    <!-- Search Tab Content -->
+                    <div class="tab-content" id="search-tab">
+                        <p class="stats-hint stats-hint-top">
+                            Select a country or source to filter the map and statistics, or a record to open its details.
+                        </p>
+                        <div class="search-panel">
+                            <label for="global-search-input" class="search-label">Global Search</label>
+                            <input id="global-search-input" type="text" class="search-input"
+                                placeholder="Search names, IDs, countries, sources…" autocomplete="off" />
+                            <div id="global-search-results" class="search-results hidden" aria-live="polite"></div>
+                            <div id="global-search-selected" class="search-selected hidden"></div>
+                        </div>
+                        <details class="search-area-tools">
+                            <summary>Browse records in this map area</summary>
+                            <div class="search-panel">
+                            <label for="record-search" class="search-label">Records in the loaded area</label>
+                            <input id="record-search" class="search-input" type="search" placeholder="Search record name or original ID…">
+                            <p id="record-status" class="stats-hint" aria-live="polite">Zoom in to load individual records.</p>
+                            <div class="submit-data-actions">
+                                <button id="load-area" class="btn-primary" type="button" disabled>Load this area</button>
+                                <button id="download-view" class="btn-secondary" type="button" disabled>Download area CSV</button>
+                            </div>
+                            <div id="record-list" class="search-results"></div>
+                            <div id="pagination" class="landslide-pagination" hidden><button id="previous-page" class="btn-secondary" type="button">Previous</button><span id="page-label"></span><button id="next-page" class="btn-secondary" type="button">Next</button></div>
+
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Statistics Tab Content -->
+                    <div class="tab-content" id="stats-tab" data-statistics-layout="classic">
+                        <div class="statistics-panel">
+                            <p class="stats-hint stats-hint-top">
+                                Filter changes apply to statistics; clear all filters to view the full dataset.
+                            </p>
+                            <div class="stats-sample">Loading visible records…</div>
+                            <figure class="stats-figure">
+                                <figcaption class="stats-figcaption">
+                                    <span class="stats-fig-num">Fig.</span>
+                                    <span class="stats-figure-title">Landslide source records by movement</span>
+                                </figcaption>
+                                <div class="stats-chart-wrap" aria-live="polite"></div>
+                                <div class="stats-axis-label">Year</div>
+                            </figure>
+                            <div class="stats-summary-head">
+                                <span class="stats-summary-eyebrow">Summary statistics</span>
+                            </div>
+                            <div class="stats-summary" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Container -->
+            <main class="map-container">
+                <div id="map"></div>
+
+                <!-- Loading Indicator -->
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading landslide inventories…</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Landslide Detail Modal -->
+        <div id="landslide-modal" class="modal" aria-labelledby="landslide-record-name">
+            <div class="modal-content lagoon-modal-content">
+                <div class="modal-header lagoon-modal-header">
+                    <div class="lagoon-modal-titleblock" id="landslide-modal-titleblock"></div>
+                    <button class="modal-close" id="close-landslide" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="landslide-details">
+                        <!-- Details will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-authorship">
+                    <div class="footer-project-team">
+                        <span class="footer-authorship-label">Research &amp; project team</span>
+                        <div class="footer-team-list">
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt="Prof. Niki Evelpidou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt="Dr. Eleana Karkani"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Email Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt="Dr. Giannis Saitis"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Email Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt="Evangelos Spyrou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt="Alexandros Liaskos"></a></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-credit" aria-label="Copyright and licence">
+                    <a class="footer-collection-link" href="/">
+                        <span class="footer-collection-name"><span class="footer-current-catalogue">Landslides</span></span>
+                    </a>
+                    <span class="footer-credit-meta">
+                        <span>© 2026</span><span class="footer-credit-dot" aria-hidden="true">·</span>
+                        <span>Platform under <a class="footer-license-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a></span>
+                    </span>
+                </div>
+                <nav class="footer-nav" aria-label="Site links">
+                    <button id="feature-guide-btn" class="footer-link" type="button" aria-haspopup="dialog" aria-controls="feature-guide-modal">Landslides</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="about-btn" class="footer-link" type="button">About</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="references-btn" class="footer-link" type="button">Sources</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="submit-data-btn" class="footer-link" type="button">Submit&nbsp;data</button>
+                </nav>
+            </div>
+        </footer>
+
+        <!-- References Modal -->
+        <div id="references-modal" class="modal references-catalogue">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="reference-modal-heading">
+                        <h3>Sources &amp; citations</h3>
+                        <p>Use the reference that matches what you are citing.</p>
+                    </div>
+                    <button class="modal-close" id="close-references" aria-label="Close sources and citations">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="reference-sections">
+                        <section class="reference-section"><header class="reference-section-heading"><h4>Catalogue coverage</h4><p id="coverage-totals"></p></header><div class="reference-section-copy"><p id="prepared-date"></p><p>Point records and footprints are source representations, not a deduplicated count of landslides or disasters. Overlapping inventories are retained with their provenance. A peer-reviewed dataset does not imply independent verification of every entry.</p><p>Coverage cells show record concentrations. A footprint pin is an interior display anchor; open the record to see its full outline. A point may be approximate. Missing dates and survey intervals remain distinct from known event dates.</p></div></section>
+                        <section class="reference-section"><header class="reference-section-heading"><h4>Source library</h4><p>Use the citation and licence of each inventory.</p></header><div class="reference-section-copy"><label for="source-search" class="search-label">Find an inventory</label><input id="source-search" class="search-input" type="search" placeholder="Search inventory, provider or licence…"></div></section>
+                        <div id="source-library"></div>
+                        <section class="reference-section"><header class="reference-section-heading"><h4>Additional sources</h4><p>Availability and access constraints</p></header><div id="additional-sources" class="reference-section-copy"></div></section>
+                        <section class="reference-section"><header class="reference-section-heading"><h4>Licence &amp; reuse</h4><p>Source terms travel with the data.</p></header><div class="reference-section-copy"><p>UGLC v2 is CC BY-NC 4.0. NASA COOLR and the other inventories retain their own terms. Downloads carry source citations and applicable notices. Third-party materials are not relicensed by this platform.</p><p>Original platform text and interface design are <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener noreferrer" target="_blank">CC BY 4.0</a>, except separately credited imagery, basemaps, logos and source materials.</p><p><a href="./data/manifest.json">Catalogue manifest</a> · <a href="./data/source-bibliography.json">Source bibliography</a> · <a href="./data/source-access.json">Access register</a> · <a href="./data/statistics/metadata.json">Numerical methods</a></p></div></section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Data Modal -->
+        <div id="submit-data-modal" class="modal submit-data-modal">
+            <div class="modal-content"><div class="modal-header"><h3>Submit landslide data</h3><button class="modal-close" id="close-submit-data" aria-label="Close submission instructions">&times;</button></div>
+                <div class="modal-body"><div class="submit-data-intro"><p>Contribute a documented landslide, an inventory, or a correction. Use one row per source record and attach the original evidence and geometry where available.</p></div>
+                    <div class="submit-data-section"><h4>Prepare your submission</h4><p>Use the Data sheet and Field guide in the workbook, or the CSV with the same columns. Leave unknown values blank. Attach footprints as GeoJSON, GeoPackage or another documented GIS format with its coordinate reference system.</p><div class="submit-data-actions"><a class="btn-primary" href="./templates/landslides-data-template.xlsx" download>Download XLSX</a><a class="btn-primary" href="./templates/landslides-data-template.csv" download>Download CSV</a><a class="btn-primary" href="mailto:alexliaskos@geol.uoa.gr,evelpidou@geol.uoa.gr?subject=Landslides%20data%20submission">Send by email</a></div></div>
+                    <div class="submit-data-section"><h4>Required information</h4><div class="template-table-wrapper"><table class="template-table submission-field-guide"><thead><tr><th>Field</th><th>What to provide</th></tr></thead><tbody><tr><th>name, country</th><td>Locality or inventory record name and country.</td></tr><tr><th>latitude, longitude</th><td>WGS84 decimal coordinates. Explain whether these are observed, approximate or derived from a footprint.</td></tr><tr><th>source, licence</th><td>Traceable publication, DOI, agency report or dataset URL and its reuse terms.</td></tr></tbody></table></div></div>
+                    <details class="submit-data-section submission-optional">
+                        <summary>Optional fields and corrections</summary>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th>Field</th><th>What to provide</th></tr></thead>
+                            <tbody>
+                                <tr><th>start_date, end_date</th><td>Known dates in YYYY-MM-DD format. Explain uncertain dates and survey intervals in submission_notes; leave unknown dates blank.</td></tr>
+                                <tr><th>movement, factor</th><td>Movement type and contributing factor as documented by the source.</td></tr>
+                                <tr><th>mapping_method, accuracy_m</th><td>Documented mapping method and reported location accuracy in metres. Leave undocumented accuracy blank.</td></tr>
+                                <tr><th>original_id, geometry_file</th><td>Original inventory identifier and the filename of any attached geometry. Include its coordinate reference system.</td></tr>
+                                <tr><th>id, submission_notes</th><td>For corrections, give the existing catalogue ID and explain the change. For a new record, leave id blank.</td></tr>
+                            </tbody>
+                        </table></div>
+                    </details>
+                    <div class="submit-data-section"><h4>Send your contribution</h4><ul class="notes-list"><li>Include contributor names, affiliation and contact details in your email.</li><li>Attach the completed file, evidence and any geometries. The email button opens a draft; it does not send files automatically.</li><li>The research team reviews submissions before publication.</li></ul></div>
+                </div>
+            </div>
+        </div>
+
+        <dialog id="feature-guide-modal" class="feature-guide-dialog" aria-labelledby="feature-guide-title">
+            <header class="feature-guide-header">
+                <h2 id="feature-guide-title">What is a landslide?</h2>
+                <button class="feature-guide-close" type="button" aria-label="Close explanation">&times;</button>
+            </header>
+            <div class="feature-guide-body">
+                <p class="feature-guide-definition">A landslide occurs when gravity carries rock, debris or soil down a slope. The material may fall, topple, slide, spread or flow.</p>
+                <figure class="feature-guide-figure">
+                    <img src="/webgis-shared/feature-guide/landslide-oso.jpg" width="1336" height="870" alt="Aerial view of the Oso landslide in Washington, with displaced material extending from a forested slope across the valley." loading="lazy" decoding="async">
+                    <figcaption>
+                        <span>The Oso landslide, Washington, United States, March 2014.</span>
+                        <span>Photo: M. Reid · <a href="https://www.usgs.gov/media/images/oso-landslide-washinton" target="_blank" rel="noopener noreferrer">USGS</a> · Public domain.</span>
+                    </figcaption>
+                </figure>
+                <p class="feature-guide-source">Definition source: <a href="https://www.usgs.gov/faqs/what-a-landslide-and-what-causes-one" target="_blank" rel="noopener noreferrer">USGS — What is a landslide and what causes one?</a>.</p>
+            </div>
+        </dialog>
+
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+
+    <!-- NKUA VPS data client -->
+    <script src="/webgis-shared/common-map.js?v=20261026-filters-display-1"></script>
+    <script src="/webgis-shared/map-display.js?v=20261026-filters-display-1"></script>
+        <script src="/webgis-shared/common-ui.js?v=20261026-filters-display-1"></script>
+
+    <!-- Measurement Tool -->
+    <script src="/floods/measurement-tool.js"></script>
+
+    <!-- Modular Application (ES Modules) -->
+    <script type="module" src="./app.js?v=20261026-filters-display-1"></script>
+</body>
+
+</html>

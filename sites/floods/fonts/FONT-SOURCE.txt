@@ -1,0 +1,10 @@
+Italianno, normal 400, Latin subset
+
+Downloaded: 2026-10-04
+Official Google Fonts CSS: https://fonts.googleapis.com/css2?family=Italianno&display=swap
+Modern browser CSS selected the Latin WOFF2 subset.
+Font binary: https://fonts.gstatic.com/s/italianno/v18/dg4n_p3sv6gCJkwzT6RXiJwo.woff2
+Licence and attribution: https://raw.githubusercontent.com/google/fonts/main/ofl/italianno/OFL.txt
+Upstream repository: https://github.com/google/fonts/tree/main/ofl/italianno
+
+The font binary is unmodified. OFL.txt is preserved as downloaded.

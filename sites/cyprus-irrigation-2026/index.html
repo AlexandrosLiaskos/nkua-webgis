@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <title>Κατανάλωση νερού άρδευσης στην Κύπρο 2018–2026</title>
+    <meta name="description"
+        content="Διαδραστικό WebGIS της καθαρής κατανάλωσης νερού άρδευσης στην Κύπρο (2018/19–2025/26) από δορυφορική τηλεπισκόπηση και υδατικό ισοζύγιο ριζοστρώματος.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="el_GR">
+    <meta property="og:site_name" content="National and Kapodistrian University of Athens">
+    <meta property="og:title" content="Κατανάλωση νερού άρδευσης στην Κύπρο 2018–2026">
+    <meta property="og:description"
+        content="Χάρτες, χρονοσειρές και αβεβαιότητα της καθαρής κατανάλωσης νερού άρδευσης στην Κύπρο, ανά 300 m και υδρολογικό έτος.">
+    <meta property="og:url" content="https://evelpidou.nkua.cloud/cyprus-irrigation-2026/">
+    <meta property="og:image" content="https://evelpidou.nkua.cloud/cyprus-irrigation-2026/map-preview.jpg?v=20261116-previews-1">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Κατανάλωση νερού άρδευσης στην Κύπρο 2018–2026">
+    <meta name="twitter:image" content="https://evelpidou.nkua.cloud/cyprus-irrigation-2026/map-preview.jpg?v=20261116-previews-1">
+    <link rel="canonical" href="https://evelpidou.nkua.cloud/cyprus-irrigation-2026/">
+    <link rel="icon" type="image/png" sizes="48x48" href="/Nepal-Flood-2026/favicon.png?v=20260828-3">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Italianno&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
+    <link rel="stylesheet" href="/webgis-shared/lagoons-ui.css?v=20261116-footer-1">
+    <link rel="stylesheet" href="/webgis-shared/last-updated.css?v=20260905-4">
+    <link rel="stylesheet" href="./styles.css?v=20261102-20">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Welcome Modal — editorial poster -->
+        <div id="welcome-modal" class="modal welcome-modal wm">
+            <div class="modal-content wm-content">
+                <button class="wm-close" id="close-welcome" aria-label="Κλείσιμο εισαγωγικού παραθύρου">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <article class="wm-poster">
+                    <div class="wm-cred">
+                        <div class="wm-institution">
+                            <img class="wm-institution-emblem" src="/webgis-shared/nkua-190-el-horizontal.png" alt="Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών — 190 χρόνια, 1837–2027">
+                        </div>
+                    </div>
+                    <header class="wm-masthead">
+                        <div class="wm-eyebrow">WebGIS · 2026</div>
+                        <h1 class="wm-title">Κατανάλωση νερού άρδευσης<br><em class="wm-title-italic">στην Κύπρο, 2018–2026</em></h1>
+                        <p class="wm-deck">
+                            Χωρική και διαχρονική εκτίμηση της καθαρής κατανάλωσης νερού άρδευσης (ET<sub>μπλε</sub>)
+                            στην Κύπρο για τα υδρολογικά έτη 2018/19–2025/26, με βάση δορυφορική εξατμισοδιαπνοή
+                            (FAO WaPOR v3, 300 m) και ημερήσιο υδατικό ισοζύγιο ριζοστρώματος.
+                        </p>
+                        <div class="wm-entry-row">
+                            <div class="wm-coverage" role="group" aria-label="Κύρια αποτελέσματα">
+                                <div class="wm-cov-block">
+                                    <span class="wm-cov-label">Καθαρή κατανάλωση</span>
+                                    <span class="wm-cov-value" id="kpi-volume">—</span>
+                                </div>
+                                <span class="wm-cov-divider" aria-hidden="true"></span>
+                                <div class="wm-cov-block">
+                                    <span class="wm-cov-label">Αρδευόμενη γη</span>
+                                    <span class="wm-cov-value" id="kpi-area">—</span>
+                                </div>
+                                <span class="wm-cov-divider" aria-hidden="true"></span>
+                                <div class="wm-cov-block">
+                                    <span class="wm-cov-label">Γεωγραφική κάλυψη</span>
+                                    <span class="wm-cov-value-text">Κύπρος</span>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                    <footer class="wm-foot">
+                        <div class="wm-team" aria-label="Ομάδα έρευνας και έργου">
+                            <span class="wm-team-eyebrow">Ομάδα έρευνας &amp; έργου</span>
+                            <div class="wm-team-list">
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Αποστολή email σε Νίκη Ευελπίδου" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt=""></a><figcaption>Νίκη Ευελπίδου</figcaption></figure>
+                                <figure class="wm-team-member"><span class="team-photo-link"><img src="/team/antonarakou.webp" alt=""></span><figcaption>Α. Αντωναράκου</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Ιστοσελίδα του Αλέξανδρου Λιάσκου" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt=""></a><figcaption>Αλέξανδρος Λιάσκος</figcaption></figure>
+                            </div>
+                        </div>
+                        <div class="wm-sig-tag">
+                            <span class="wm-sig-tag-eyebrow">Ανάπτυξη ιστοσελίδας από</span>
+                            <a class="wm-signature wm-signature-sm" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Ιστοσελίδα του Αλέξανδρου Λιάσκου" title="liaskos.eu">
+                                <img src="/webgis-shared/signature.png" alt="">
+                                <span class="wm-signature-name">Alexandros Liaskos</span>
+                            </a>
+                        </div>
+                        <span class="wm-visits" role="status" aria-live="polite" aria-describedby="ci-visit-privacy">
+                            <span>Καταγεγραμμένες επισκέψεις σελίδας</span>
+                            <strong data-visit-count data-endpoint="./api/page-summary" data-storage-key="cyprus-irrigation-visit-counted-v1" data-locale="el-GR" data-unavailable="Μη διαθέσιμο">—</strong>
+                        </span>
+                        <span id="ci-visit-privacy" class="sr-only">Ο μετρητής δεν χρησιμοποιεί cookies και δεν συλλέγει πληροφορίες που μπορούν να ταυτοποιήσουν επισκέπτες. Αποθηκεύεται μόνο ο συνολικός αριθμός επισκέψεων.</span>
+                    </footer>
+                    <aside class="ci-venue" aria-label="Συνέδριο και φορείς διοργάνωσης">
+                        <p class="ci-venue-text">4ο Παγκύπριο Συνέδριο «Αγροτική Ανάπτυξη: από την Έρευνα στην Πράξη» · Λευκωσία, 12 Νοεμβρίου 2026</p>
+                        <div class="ci-venue-logos">
+                            <img src="./assets/logos/1-conference.png" alt="Λογότυπος του 4ου Παγκύπριου Συνεδρίου Αγροτικής Ανάπτυξης">
+                            <img src="./assets/logos/2-cyprus.png" alt="Κυπριακή Δημοκρατία – Υπουργείο Γεωργίας, Αγροτικής Ανάπτυξης και Περιβάλλοντος" title="Κυπριακή Δημοκρατία – Υπουργείο Γεωργίας, Αγροτικής Ανάπτυξης και Περιβάλλοντος">
+                            <img src="./assets/logos/3-ead.png" alt="Εθνικό Αγροτικό Δίκτυο" title="Εθνικό Αγροτικό Δίκτυο">
+                            <img src="./assets/logos/4-tmima-georgias.png" alt="Τμήμα Γεωργίας" title="Τμήμα Γεωργίας">
+                            <img src="./assets/logos/5-ige.png" alt="Ινστιτούτο Γεωργικών Ερευνών" title="Ινστιτούτο Γεωργικών Ερευνών">
+                            <img src="./assets/logos/6-tepak.png" alt="Τεχνολογικό Πανεπιστήμιο Κύπρου" title="Τεχνολογικό Πανεπιστήμιο Κύπρου">
+                        </div>
+                    </aside>
+                </article>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a class="header-institution-link" href="/" aria-label="Αρχική σελίδα — Εθνικό και Καποδιστριακό Πανεπιστήμιο Αθηνών">
+                    <img class="header-institution-emblem" src="/webgis-shared/nkua-190-el-horizontal.png" alt="">
+                </a>
+                <nav class="header-nav"></nav>
+                <div class="header-title header-title-compact">
+                    <span class="header-rule" aria-hidden="true"></span>
+                    <h1>
+                        <span class="header-title-line">Κατανάλωση νερού άρδευσης</span>
+                        <span class="header-title-line">στην Κύπρο <em>2018–2026</em></span>
+                    </h1>
+                    <span class="header-rule" aria-hidden="true"></span>
+                </div>
+                <div class="header-actions">
+                    <span class="last-updated" lang="en">Last updated: <time datetime="2026-11-02">2 November 2026</time></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <button id="mobile-layers-toggle" class="mobile-toggle-btn" data-tab="layers">Επίπεδα</button>
+            <button id="mobile-stats-toggle" class="mobile-toggle-btn" data-tab="stats">Στατιστικά</button>
+            <button id="mobile-method-toggle" class="mobile-toggle-btn" data-tab="method">Μέθοδος</button>
+        </div>
+
+        <div class="main-content">
+            <aside class="sidebar" id="sidebar">
+                <button class="mobile-sidebar-close" id="mobile-sidebar-close" aria-label="Κλείσιμο πλαϊνού πίνακα">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="sidebar-content">
+                    <div class="tab-nav" aria-label="Καρτέλες πλαϊνού πίνακα">
+                        <button class="tab-button active" data-tab="layers" title="Επίπεδα" aria-label="Επίπεδα">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                    <polyline points="2 17 12 22 22 17"></polyline>
+                                    <polyline points="2 12 12 17 22 12"></polyline>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Επίπεδα</span>
+                        </button>
+                        <button class="tab-button" data-tab="stats" title="Στατιστικά" aria-label="Στατιστικά">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+                                    <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    <rect x="5" y="11" width="3" height="9"></rect>
+                                    <rect x="10" y="6" width="3" height="14"></rect>
+                                    <rect x="15" y="14" width="3" height="6"></rect>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Στατιστικά</span>
+                        </button>
+                        <button class="tab-button" data-tab="method" title="Μέθοδος" aria-label="Μέθοδος">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Μέθοδος</span>
+                        </button>
+                    </div>
+
+                    <!-- Layers -->
+                    <div class="tab-content active" id="layers-tab">
+                        <div class="filter-group">
+                            <label id="period-label">Περίοδος</label>
+                            <div class="ci-year-grid" id="year-grid" role="radiogroup" aria-labelledby="period-label"></div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label id="layer-label">Αποτελέσματα</label>
+                            <!-- rows are rendered from data/meta.json (catalog) by app.js; any number can be on -->
+                            <div class="ci-layers" id="layers-main" role="group" aria-labelledby="layer-label"></div>
+                        </div>
+
+                        <div class="filter-group ci-groups">
+                            <label>Δεδομένα και διαγνωστικά</label>
+                            <div id="layers-secondary"></div>
+                        </div>
+
+                        <div class="filter-group ci-ref">
+                            <label id="ref-label">Επίπεδα αναφοράς</label>
+                            <div class="ci-ref-list" id="layers-context" aria-labelledby="ref-label">
+                                <div class="ci-ref-row">
+                                    <label class="ci-ref-item"><input type="checkbox" id="relief-toggle" checked><span class="ci-ref-swatch ci-ref-relief" aria-hidden="true"></span>Σκίαση αναγλύφου</label>
+                                    <div class="ci-opt ci-opt-inline ci-ref-options" id="relief-options">
+                                        <span class="ci-opt-label">Διαφάνεια</span>
+                                        <input type="range" id="relief-transp" min="0" max="0.95" step="0.05" value="0.6" aria-label="Διαφάνεια σκίασης">
+                                        <output class="ci-opt-value" id="relief-transp-v">60%</output>
+                                    </div>
+                                </div>
+                                <div class="ci-ref-row"><label class="ci-ref-item"><input type="checkbox" id="districts-toggle"><span class="ci-ref-swatch" aria-hidden="true"></span>Όρια επαρχιών</label></div>
+                                <div class="ci-ref-row"><label class="ci-ref-item" id="labels-item"><input type="checkbox" id="labels-toggle"><span class="ci-ref-swatch ci-ref-text" aria-hidden="true">Aα</span>Τοπωνύμια</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="tab-content" id="stats-tab">
+                        <div class="statistics-panel">
+                            <figure class="stats-figure">
+                                <figcaption class="stats-figcaption">
+                                    <span class="stats-fig-num">Σχ. 1</span>
+                                    <span class="stats-figure-title">Καθαρή κατανάλωση ανά υδρολογικό έτος (hm³)</span>
+                                </figcaption>
+                                <div class="stats-chart-wrap" id="chart-volumes"></div>
+                                <div class="ci-chart-legend" id="chart-volumes-legend"></div>
+                            </figure>
+                            <div class="stats-summary-head"><span class="stats-summary-eyebrow">Συνοπτικά στατιστικά</span></div>
+                            <div class="stats-summary" id="stats-summary"></div>
+                            <div class="stats-summary-head"><span class="stats-summary-eyebrow">Ανά επαρχία (μέσος όρος)</span></div>
+                            <div class="stats-summary" id="stats-districts"></div>
+                            <div class="stats-summary-head"><span class="stats-summary-eyebrow">Ανά υδρολογικό έτος (hm³, βροχή σε mm)</span></div>
+                            <div id="stats-table"></div>
+                        </div>
+                    </div>
+
+                    <!-- Method -->
+                    <div class="tab-content" id="method-tab">
+                        <div class="ci-method">
+                            <h3 class="section-title">Πώς υπολογίζεται</h3>
+                            <ol>
+                                <li><strong>Δορυφορική ET</strong> — FAO WaPOR v3 (300 m, ανά 10ήμερο).</li>
+                                <li><strong>ET χωρίς άρδευση</strong> — ημερήσιο ισοζύγιο ριζοστρώματος FAO-56 μόνο με βροχή (CHIRPS, ERA5), εδάφη SoilGrids, κάλυψη CORINE.</li>
+                                <li><strong>Βαθμονόμηση</strong> — αφαιρείται το συστηματικό υπόλοιπο ανεξάρτητων ξηρικών πεδίων αναφοράς (Sentinel-2).</li>
+                                <li><strong>ET<sub>μπλε</sub></strong> = θετική διαφορά πάνω από το όριο αβεβαιότητας (50 προσομοιώσεις, 5% ψευδώς θετικά).</li>
+                            </ol>
+                            <h3 class="section-title">Επικύρωση</h3>
+                            <p id="method-validation"></p>
+                            <h3 class="section-title">Περιορισμοί</h3>
+                            <p>Ανάλυση 300 m: τα μικτά εικονοστοιχεία υποεκτιμούν διάσπαρτη άρδευση. Η άρδευση χειμερινών–ανοιξιάτικων καλλιεργειών (π.χ. πατάτα) δεν εντοπίζεται από την εξατμισοδιαπνοή· δοκιμή με ραντάρ Sentinel-1 (αλλαγή οπισθοσκέδασης VV χωρίς βροχή, 40 m, 2019–2021) δεν τη διέκρινε από τις καλλιεργητικές εργασίες χωρίς όρια αγροτεμαχίων. Οι χάρτες άρδευσης ESA WorldCereal 2021 δεν χρησιμοποιήθηκαν για επικύρωση, γιατί χαρακτηρίζουν αρδευόμενο το 71% των ξηρικών πεδίων αναφοράς. Το 2025/26 βασίζεται σε προϊόντα σχεδόν πραγματικού χρόνου.</p>
+                            <h3 class="section-title">Δεδομένα</h3>
+                            <ul class="ci-downloads">
+                                <li><a href="./data/etblue_mean.tif" download>ET<sub>μπλε</sub>: μέση τιμή, εύρος 90%, πιθανότητα, σημαντικότητα</a> <span>GeoTIFF</span></li>
+                                <li><a href="./data/etblue_yearly.tif" download>ET<sub>μπλε</sub> ανά υδρολογικό έτος</a> <span>GeoTIFF</span></li>
+                                <li><a href="./data/yearly_variables.tif" download>Δορυφορική ET, διαπνοή, ET χωρίς άρδευση, βροχή, ET αναφοράς, βιομάζα και παραγωγικότητα νερού ανά έτος</a> <span>GeoTIFF Int16</span></li>
+                                <li><a href="./data/island_volumes.csv" download>Ετήσιοι όγκοι, όλη η Κύπρος</a> <span>CSV</span></li>
+                                <li><a href="./data/district_volumes.csv" download>Ετήσιοι όγκοι ανά επαρχία</a> <span>CSV</span></li>
+                            </ul>
+                            <p class="ci-note">Τα δεδομένα κάθε εικονοστοιχείου (ετήσιες σειρές και μηνιαίο ισοζύγιο) λαμβάνονται από το αναδυόμενο παράθυρο του χάρτη.</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="map-container">
+                <div id="map"></div>
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Φόρτωση δεδομένων...</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-authorship">
+                    <div class="footer-project-team">
+                        <span class="footer-authorship-label">Ομάδα έρευνας &amp; έργου</span>
+                        <div class="footer-team-list">
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Αποστολή email σε Νίκη Ευελπίδου" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt="Νίκη Ευελπίδου"></a></figure>
+                            <figure class="footer-team-member"><span class="team-photo-link" title="Α. Αντωναράκου"><img src="/team/antonarakou.webp" alt="Α. Αντωναράκου"></span></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Ιστοσελίδα του Αλέξανδρου Λιάσκου" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt="Αλέξανδρος Λιάσκος"></a></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-credit" aria-label="Πνευματικά δικαιώματα και άδεια">
+                    <a class="footer-collection-link" href="/">
+                        <span class="footer-collection-name"><span class="footer-current-catalogue">Κατανάλωση νερού άρδευσης στην Κύπρο 2018–2026</span></span>
+                    </a>
+                    <span class="footer-credit-meta">
+                        <span>© 2026</span><span class="footer-credit-dot" aria-hidden="true">·</span>
+                        <span>Περιεχόμενο με άδεια <a class="footer-license-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a></span>
+                    </span>
+                </div>
+                <nav class="footer-nav" aria-label="Σύνδεσμοι ιστοτόπου">
+                    <button id="about-btn" class="footer-link" type="button">Σχετικά</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="references-btn" class="footer-link" type="button">Πηγές</button>
+                </nav>
+            </div>
+        </footer>
+
+        <!-- Legend settings (one layer at a time) -->
+        <div id="ci-style-modal" class="modal ci-style-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="reference-modal-heading">
+                        <h3 id="ci-style-title">Ρυθμίσεις υπομνήματος</h3>
+                        <p id="ci-style-sub"></p>
+                    </div>
+                    <button class="modal-close" id="close-style" aria-label="Κλείσιμο">&times;</button>
+                </div>
+                <div class="modal-body" id="ci-style-body"></div>
+            </div>
+        </div>
+
+        <!-- References Modal -->
+        <div id="references-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="reference-modal-heading">
+                        <h3>Πηγές και παραπομπές</h3>
+                        <p>Δεδομένα και βιβλιογραφία που χρησιμοποιήθηκαν.</p>
+                    </div>
+                    <button class="modal-close" id="close-references" aria-label="Κλείσιμο">&times;</button>
+                </div>
+                <div class="modal-body ci-refs">
+                    <section class="reference-section">
+                        <header class="reference-section-heading"><h4>Δεδομένα</h4></header>
+                        <ul>
+                            <li>FAO WaPOR v3, Level 1 (AETI, T, NPP, βροχή CHIRPS, RET) — data.apps.fao.org/wapor</li>
+                            <li>Copernicus DEM GLO-90 (ESA) · σκίαση αναγλύφου Esri World Hillshade</li>
+                            <li>ERA5 μέσω Open-Meteo · ISRIC SoilGrids 2.0 · CORINE Land Cover 2018 (EEA) · Copernicus Sentinel-2 L2A</li>
+                            <li>Όρια: geoBoundaries (επαρχίες), Natural Earth</li>
+                        </ul>
+                    </section>
+                    <section class="reference-section">
+                        <header class="reference-section-heading"><h4>Βιβλιογραφία</h4></header>
+                        <ul>
+                            <li>Allen R.G., Pereira L.S., Raes D., Smith M. (1998) Crop evapotranspiration. FAO Irrigation and Drainage Paper 56. FAO, Rome.</li>
+                            <li>FAO (2024) WaPOR methodology: Version 3 release. FAO, Rome.</li>
+                            <li>Karimi P., Bastiaanssen W.G.M., Molden D. (2013) Hydrol. Earth Syst. Sci. 17, 2459–2472.</li>
+                            <li>van Dijk A.I.J.M. et al. (2018) Hydrol. Earth Syst. Sci. 22, 4959–4980.</li>
+                        </ul>
+                    </section>
+                    <section class="reference-section">
+                        <header class="reference-section-heading"><h4>Παραπομπή</h4></header>
+                        <p>Ευελπίδου Ν., Αντωναράκου Α., Λιάσκος Α. (2026) Διαχρονική εκτίμηση της κατανάλωσης νερού άρδευσης στην Κύπρο μέσω δορυφορικής τηλεπισκόπησης και μοντελοποίησης υδατικού ισοζυγίου (2018–2026). 4ο Παγκύπριο Συνέδριο «Αγροτική Ανάπτυξη: από την Έρευνα στην Πράξη», Λευκωσία.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+    <script src="/webgis-shared/common-map.js?v=20260907-pin-counts-1"></script>
+    <script src="/webgis-shared/common-ui.js?v=20260904-7"></script>
+    <script src="./app.js?v=20261102-20"></script>
+</body>
+
+</html>

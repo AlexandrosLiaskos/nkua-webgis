@@ -1,0 +1,25 @@
+{
+    "name": "NKUA geospatial research catalogues",
+    "short_name": "NKUA",
+    "description": "Geospatial research catalogues of Earth's geomorphic features and natural disasters.",
+    "id": "/",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#f6f8f5",
+    "theme_color": "#0a2f3a",
+    "icons": [
+        {
+            "src": "/geocollections-favicon-192.png?v=20260904-1",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/geocollections-favicon-512.png?v=20260904-1",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

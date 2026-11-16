@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Data release · 5 September 2026 · NKUA WebGIS</title>
+    <style>
+        body { margin: 0 auto; padding: 3rem 1.25rem; max-width: 760px; color: #202421; background: #fafbf8; font: 17px/1.65 Georgia, serif; }
+        nav, .eyebrow { font: 12px/1.5 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+        h1 { font-weight: 400; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.1; margin-bottom: 1rem; }
+        h2 { font-size: 1.4rem; font-weight: 400; margin-top: 2rem; }
+        a { color: #275b70; text-underline-offset: 3px; }
+        :focus-visible { outline: 2px solid #275b70; outline-offset: 4px; }
+        .note { border-left: 3px solid #477f91; padding-left: 1rem; }
+        li { margin: .6rem 0; }
+        footer { border-top: 1px solid #ccc; margin-top: 3rem; padding-top: 1rem; font: 13px/1.6 system-ui, sans-serif; }
+    </style>
+</head>
+<body>
+    <nav><a href="/">Home</a> / Data provenance</nav>
+    <main>
+        <p class="eyebrow">5 September 2026 · First research expansion</p>
+        <!-- <h1>European flood regions<br>and cited catalogue updates</h1> -->
+        <h1>Cited catalogue updates</h1>
+        <!-- HANZE release material retained for future use.
+        <p>This release adds 2,412 HANZE source records outside Greece and enriches 12 existing catalogue records. Each dataset keeps its own observation unit and source attribution.</p>
+        <h2>HANZE affected regions</h2>
+        <p><a href="/floods/">Open Floods</a> to browse both catalogues through the same pins, filters, search and statistics. Filter by country or territory, source catalogue, year and flood type. The HANZE records cover 39 countries and territories from 1870 to 2020. Select a pin to open its record card, region preview, source evidence and GeoJSON download.</p>
+        <p class="note">The polygons identify affected administrative regions, not inundation extent. Overlapping polygons do not measure flood frequency. Several records may belong to one wider flood episode; the record count is not a count of independently deduplicated disasters.</p>
+        <p>Geometry comes from HANZE v2.1.1 and was transformed from EPSG:3035 to EPSG:4326 (longitude, latitude), without simplification. Complete attributes come from the source CSV. Original intervals, explicitly approximate dates, source notes, reference labels and possible related records remain attached. Null values mean unreported or unavailable, not zero. Reported inundated area is a source statistic, not an area calculated from the polygons.</p>
+        <p>HANZE pins are display anchors inside affected regions, derived from the largest polygon component by coordinate area; they are not observed flood-site coordinates. The original geometry is retained separately. The 109 Greek HANZE records remain excluded pending reconciliation. Both catalogues use the same controls; the source-catalogue filter and statistics distinguish their records.</p>
+        <p>Dataset: Paprotny, <a href="https://doi.org/10.5281/zenodo.8410025">HANZE v2.1.1</a>, CC BY 4.0. Methods: Paprotny, D., Terefenko, P. and Śledziowski, J. (2024), <a href="https://doi.org/10.5194/essd-16-5145-2024">HANZE v2.1: an improved database of flood impacts in Europe from 1870 to 2020</a>, <em>Earth System Science Data</em> 16, 5145–5170.</p>
+        <p><a href="/floods/data/hanze/v2.1.1/manifest.json">Machine-readable provenance and country files</a> · <a href="/floods/data/hanze/v2.1.1/bibliography.json">Source bibliography</a> · <a href="/floods/data/hanze/v2.1.1/reference-links.jsonl">Reference-label matching and unresolved labels</a></p>
+        -->
+        <p>This page documents cited updates to 12 existing catalogue records.</p>
+        <h2>Existing records enriched</h2>
+        <ul>
+            <li><strong>Eleven Sri Lankan beachrocks</strong> (IDs 342–351 and 353): added the published citation and specimen-qualified cement microstructure from Nayanthara et al. (2021), <a href="https://doi.org/10.1007/s43217-020-00036-1">Distribution and cementation characteristics of beachrocks along southern, southwestern and western coast of Sri Lanka</a>, Tables 1 and 3. Specimens describe sampled material; they are not additional outcrop occurrences. Coordinates, mineral classes and dating fields are preserved.</li>
+        <!-- <li><strong>Mandra flood, ID 1743</strong>: appended the reported 14–15 November 2017 interval from Soulios et al. (2018), <a href="https://doi.org/10.12681/bgsg.16419">The floods in Greece: the case of Mandra in Attica</a>, p.132. The single commencement-date field and existing 23-fatality value are preserved. A wider source's 24-fatality scope remains unresolved.</li> -->
+            <li><strong>Mandra flood, ID 1743</strong>: appended the reported 14–15 November 2017 interval from Soulios et al. (2018), <a href="https://doi.org/10.12681/bgsg.16419">The floods in Greece: the case of Mandra in Attica</a>, p.132. The single commencement-date field and existing 23-fatality value are preserved.</li>
+        </ul>
+        <!-- <p><a href="./catalogue-updates.json">Exact before/after field changes and source locators</a> · <a href="./sources.json">Release source register</a></p> -->
+        <p><a href="./catalogue-updates.json">Exact before/after field changes and source locators</a></p>
+        <h2>Research limits</h2>
+        <!-- <p>This release follows a documented PRISMA-informed screening and extraction process for the captured research corpus. It does not claim exhaustive global coverage or independent assessment of every upstream reference in HANZE. Bibliographic matching alone is not full-text assessment. Further coastal candidates and cross-catalogue flood matches remain under extraction or reconciliation.</p> -->
+        <p>This release follows a documented PRISMA-informed screening and extraction process for the captured research corpus. It does not claim exhaustive global coverage. Bibliographic matching alone is not full-text assessment. Further coastal candidates remain under extraction.</p>
+    </main>
+    <footer>National and Kapodistrian University of Athens · <a href="/floods/">Floods</a> · <a href="/beachrocks/">Beachrocks</a></footer>
+</body>
+</html>

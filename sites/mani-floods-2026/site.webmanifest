@@ -1,0 +1,17 @@
+{
+  "name": "Floods in Mani, Greece — 16 Aug 2026",
+  "short_name": "Mani Floods 2026",
+  "description": "L01 Oitylo mapped field-observation WebGIS",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

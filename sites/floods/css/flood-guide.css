@@ -1,0 +1,361 @@
+.feature-guide-dialog.flood-guide-dialog {
+    width: min(760px, calc(100vw - 2rem));
+}
+.flood-guide-dialog .feature-guide-header {
+    padding: 0.8rem 1.5rem;
+}
+.flood-guide-dialog .feature-guide-body {
+    padding: 1.5rem;
+}
+.flood-guide-dialog .feature-guide-definition {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.55;
+}
+.flood-guide-dialog .feature-guide-figure {
+    max-width: 580px;
+    margin: 1.25rem auto 1.5rem;
+}
+.flood-guide-dialog .feature-guide-figure img {
+    width: 100%;
+    height: auto;
+    max-height: none;
+}
+.flood-guide-dialog .feature-guide-figure figcaption {
+    gap: 0.1rem;
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    line-height: 1.45;
+}
+.flood-guide-dialog .flood-guide-section + .flood-guide-section {
+    margin-top: 1.5rem;
+}
+.flood-guide-dialog .flood-guide-section h3 {
+    margin: 0 0 0.75rem;
+    font: 600 1.25rem/1.3 var(--font-serif, Georgia, serif);
+}
+.flood-guide-dialog .template-table-wrapper {
+    margin: 0;
+}
+.flood-guide-dialog .flood-types-table {
+    min-width: 0;
+    table-layout: fixed;
+    font: 0.875rem/1.5 var(--font-sans, sans-serif);
+}
+.flood-guide-dialog .flood-types-table thead th:first-child {
+    width: 25%;
+}
+.flood-guide-dialog .flood-types-table th,
+.flood-guide-dialog .flood-types-table td {
+    padding: 0.65rem 0.75rem;
+    vertical-align: top;
+    overflow-wrap: break-word;
+}
+.flood-guide-dialog .flood-types-table th[scope="row"] {
+    background: transparent;
+    color: var(--text-primary, #171b1a);
+    font-size: inherit;
+    font-weight: 500;
+    line-height: inherit;
+    letter-spacing: 0;
+    text-transform: none;
+}
+.flood-guide-dialog .flood-guide-cite {
+    margin-left: 0.12em;
+    font: 0.66em/0 var(--font-sans, sans-serif);
+    vertical-align: super;
+    white-space: nowrap;
+}
+.flood-guide-dialog .flood-guide-citation {
+    padding-inline: 0.06em;
+    text-decoration: none;
+}
+.flood-guide-dialog .flood-guide-citation:hover {
+    text-decoration: underline;
+}
+.flood-guide-dialog .flood-guide-reference-list {
+    margin-top: 1.5rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border-light, #d9dcda);
+    font: 0.8rem/1.5 var(--font-sans, sans-serif);
+}
+.flood-guide-dialog .flood-guide-reference-list summary {
+    width: fit-content;
+    padding-block: 0.2rem;
+    cursor: pointer;
+    color: var(--text-secondary, #4b514f);
+}
+.flood-guide-dialog .flood-guide-reference-list summary:focus-visible,
+.flood-guide-dialog .flood-guide-references li:focus-visible {
+    outline: 2px solid var(--primary-color, #23575e);
+    outline-offset: 3px;
+}
+.flood-guide-dialog .flood-guide-references {
+    margin: 0.8rem 0 0;
+    padding-left: 1.3rem;
+}
+.flood-guide-dialog .flood-guide-references li {
+    padding-left: 0.2rem;
+    scroll-margin-top: 5rem;
+}
+.flood-guide-dialog .flood-guide-references li + li {
+    margin-top: 0.6rem;
+}
+@media (max-width: 480px) {
+    .flood-guide-dialog .feature-guide-header {
+        padding: 0.65rem 1rem;
+    }
+    .flood-guide-dialog .feature-guide-body {
+        padding: 1rem;
+    }
+    .flood-guide-dialog .feature-guide-definition {
+        font-size: 1.1rem;
+    }
+    .flood-guide-dialog .feature-guide-figure {
+        margin: 1rem 0 1.25rem;
+    }
+    .flood-guide-dialog .flood-types-table {
+        font-size: 0.82rem;
+    }
+    .flood-guide-dialog .flood-types-table thead th:first-child {
+        width: 7rem;
+    }
+    .flood-guide-dialog .flood-types-table th,
+    .flood-guide-dialog .flood-types-table td {
+        padding: 0.6rem 0.5rem;
+    }
+}
+
+.flood-guide-dialog .flood-classification-intro {
+    margin: 0 0 0.9rem;
+    font: 0.875rem/1.55 var(--font-sans, sans-serif);
+}
+.flood-guide-dialog .flood-classification-note {
+    margin: 0.8rem 0 0;
+    font: 0.8rem/1.55 var(--font-sans, sans-serif);
+    color: var(--text-secondary, #4b514f);
+}
+
+.flood-guide-dialog .flood-photo-crop {
+    aspect-ratio: 960 / 450;
+    overflow: hidden;
+}
+
+/* The explanation uses the same section reader as Sources. */
+.feature-guide-dialog.flood-guide-dialog {
+    width: min(68rem, calc(100vw - 2rem));
+    height: min(52rem, calc(100dvh - 3rem));
+    max-height: calc(100dvh - 3rem);
+    padding: 0;
+    overflow: clip;
+}
+
+.feature-guide-dialog.flood-guide-dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.flood-guide-dialog .feature-guide-header {
+    flex: 0 0 auto;
+    align-items: flex-start;
+    padding: 1.5rem 2rem 1.125rem;
+    border-bottom: 1px solid #dedede;
+}
+
+.flood-guide-dialog .feature-guide-header h2 {
+    margin: 0;
+    font: italic 500 2rem/1.2 'Cormorant Garamond', var(--font-serif);
+}
+
+.flood-guide-dialog .feature-guide-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -0.5rem -0.625rem 0 0.5rem;
+    border: 0;
+    background: transparent;
+    color: #666;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.flood-guide-dialog .feature-guide-close:hover {
+    color: var(--text-primary);
+}
+
+.flood-guide-layout {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: clip;
+}
+
+#flood-guide-sidebar {
+    padding: 1.125rem 0.75rem;
+    overflow-y: auto;
+    border-right: 1px solid #dedede;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa #fff;
+}
+
+#flood-guide-sidebar button {
+    display: block;
+    width: 100%;
+    margin: 0 0 0.25rem;
+    padding: 0.75rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #555;
+    font: 400 0.9375rem/1.45 var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+}
+
+#flood-guide-sidebar button:hover {
+    background: #f7f7f5;
+    color: var(--text-primary);
+}
+
+#flood-guide-sidebar button.active {
+    background: #efefec;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.flood-guide-dialog button:focus-visible,
+.flood-guide-dialog a:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+}
+
+#flood-guide-content {
+    min-width: 0;
+    min-height: 0;
+    padding: 1.5rem 2rem 2rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa #fff;
+}
+
+.flood-guide-panel {
+    max-width: 70ch;
+    font: 400 1rem/1.65 var(--font-sans);
+}
+
+.flood-guide-panel[hidden] {
+    display: none;
+}
+
+.flood-guide-dialog .flood-guide-panel-title,
+.flood-guide-dialog .flood-guide-section h3 {
+    margin: 0 0 1.25rem;
+    font: 500 1.5rem/1.25 var(--font-serif);
+}
+
+.flood-guide-dialog .flood-classification-intro,
+.flood-guide-dialog .flood-classification-note {
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+.flood-guide-dialog .flood-types-table {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+.flood-guide-dialog .flood-types-table th,
+.flood-guide-dialog .flood-types-table td {
+    border-color: #d2d2d2;
+    padding: 0.75rem;
+}
+
+.flood-guide-dialog .flood-types-table thead th {
+    background: #f6f6f5;
+    color: #555;
+}
+
+.flood-guide-dialog .feature-guide-figure figcaption {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+.flood-guide-dialog .flood-guide-references {
+    margin: 0;
+    padding-left: 1.75rem;
+    font: 400 0.9375rem/1.65 var(--font-sans);
+}
+
+.flood-guide-dialog .flood-guide-references li {
+    padding: 0.75rem 0 0.75rem 0.25rem;
+    border-top: 1px solid #e5e5e5;
+    scroll-margin-block: 1rem;
+}
+
+.flood-guide-dialog .flood-guide-references li:first-child {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.flood-guide-dialog .flood-guide-references li + li {
+    margin-top: 0;
+}
+
+.flood-guide-dialog .flood-guide-references li::marker {
+    color: #666;
+    font-variant-numeric: tabular-nums;
+}
+
+.flood-guide-dialog ::selection {
+    background: #dededb;
+    color: #111;
+}
+
+@media (max-width: 700px) {
+    .feature-guide-dialog.flood-guide-dialog {
+        height: calc(100dvh - 2rem);
+        max-height: calc(100dvh - 2rem);
+    }
+    .flood-guide-dialog .feature-guide-header {
+        padding: 1.25rem 1.25rem 1rem;
+    }
+    .flood-guide-dialog .feature-guide-header h2 {
+        font-size: 1.75rem;
+    }
+    .flood-guide-layout {
+        display: flex;
+        flex-direction: column;
+    }
+    #flood-guide-sidebar {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 0.375rem;
+        padding: 0.625rem 1rem;
+        border-right: 0;
+        border-bottom: 1px solid #dedede;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    #flood-guide-sidebar button {
+        flex: 0 0 auto;
+        width: auto;
+        margin: 0;
+        white-space: nowrap;
+    }
+    #flood-guide-content {
+        flex: 1 1 auto;
+        padding: 1.25rem;
+    }
+    .flood-guide-dialog .flood-types-table th,
+    .flood-guide-dialog .flood-types-table td {
+        padding: 0.5rem;
+    }
+    .flood-guide-dialog .flood-types-table thead th:first-child {
+        width: 34%;
+    }
+}

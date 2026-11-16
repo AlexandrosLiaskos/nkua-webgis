@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create, document and export a research resource catalogue using a reusable static website template.">
+  <title>Research catalogue builder</title>
+  <link rel="icon" type="image/png" href="./template-assets/favicon.png">
+  <link rel="stylesheet" href="./studio.css">
+  <script type="module" src="./studio.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to catalogue editor</a>
+  <header class="site-header">
+    <div class="container masthead">
+      <a class="brand" href="./">Research catalogue <span>Builder</span></a>
+      <span class="header-note">Nepal catalogue template</span>
+    </div>
+  </header>
+  <main class="container" id="workspace">
+    <section class="page-head" aria-labelledby="page-title">
+      <div><h1 id="page-title">Build a research catalogue.</h1><p class="lede">Keep searches, resources and acquired files connected. Generate a complete website from one portable project.</p></div>
+      <div class="project-actions">
+        <button type="button" class="quiet" id="new-project">New project</button>
+        <button type="button" class="quiet" id="import-project">Import JSON</button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden>
+      </div>
+    </section>
+    <div class="project-strip">
+      <div><strong id="active-title">Loading project…</strong><span id="project-summary" class="muted"></span></div>
+      <label class="autosave-label"><input type="checkbox" id="autosave"> Save in this browser</label>
+    </div>
+    <p class="save-note" id="save-note">Changes stay in this tab. Download the project JSON to keep a copy.</p>
+    <div class="notice" id="message" role="status" aria-live="polite" hidden></div>
+    <div class="tabs" role="tablist" aria-label="Catalogue editor">
+      <button type="button" id="tab-project" role="tab" aria-selected="true" aria-controls="panel-project" tabindex="0">Project &amp; protocol</button>
+      <button type="button" id="tab-records" role="tab" aria-selected="false" aria-controls="panel-records" tabindex="-1">Records</button>
+      <button type="button" id="tab-preview" role="tab" aria-selected="false" aria-controls="panel-preview" tabindex="-1">Preview &amp; export</button>
+    </div>
+    <section id="panel-project" role="tabpanel" aria-labelledby="tab-project">
+      <div class="editor-columns">
+        <section class="form-section" aria-labelledby="identity-title">
+          <h2 id="identity-title">Project identity</h2>
+          <p class="section-note">The title, authors and links shown on your website.</p>
+          <div id="identity-fields" class="field-grid"></div>
+          <details class="additional-fields"><summary>Publication details</summary><div id="publication-fields" class="field-grid"></div></details>
+        </section>
+        <section class="form-section" aria-labelledby="protocol-title">
+          <h2 id="protocol-title">Search &amp; screening protocol</h2>
+          <p class="section-note">Describe what was sought and how resources were selected. Leave unknown historical counts unknown.</p>
+          <div id="protocol-fields" class="field-grid"></div>
+        </section>
+      </div>
+      <div class="section-end"><button type="button" class="quiet" id="load-example">Load coastal flooding in Greece example</button><p>Use this example as a starting point, or create a separate project.</p></div>
+    </section>
+    <section id="panel-records" role="tabpanel" aria-labelledby="tab-records" hidden>
+      <div class="section-heading"><div><h2>Catalogue records</h2><p class="section-note">Select a collection, then a record. Relationships use stable record IDs.</p></div></div>
+      <div class="record-controls">
+        <label>Collection<select id="collection-select"></select></label>
+        <label class="search-control">Find a record<input type="search" id="record-search" placeholder="Title, ID or provider" autocomplete="off"></label>
+        <button type="button" id="add-record">Add record</button>
+      </div>
+      <p id="collection-help" class="collection-help"></p>
+      <div class="records-workspace">
+        <div class="record-browser">
+          <div class="record-list" id="record-list" aria-label="Records"></div>
+          <div class="pagination"><button type="button" class="quiet" id="previous-page">Previous</button><span id="record-count" class="muted"></span><button type="button" class="quiet" id="next-page">Next</button></div>
+        </div>
+        <section class="record-detail" aria-labelledby="record-heading">
+          <h3 id="record-heading">Choose a record</h3>
+          <p class="section-note" id="record-hint">Its fields and linked IDs will appear here.</p>
+          <div id="record-editor-wrap" hidden>
+            <label for="record-json" class="sr-only">Record JSON</label>
+            <textarea id="record-json" class="code-editor" spellcheck="false" rows="24" wrap="off" aria-describedby="record-hint"></textarea>
+            <p id="record-draft-note" class="draft-note" aria-live="polite"></p>
+            <div class="record-actions"><button type="button" id="apply-record">Apply record</button><button type="button" class="quiet" id="discard-record">Discard changes</button><button type="button" class="danger quiet" id="delete-record">Delete record</button></div>
+          </div>
+          <button type="button" class="quiet" id="undo-delete" hidden>Undo last deletion</button>
+        </section>
+      </div>
+    </section>
+    <section id="panel-preview" role="tabpanel" aria-labelledby="tab-preview" hidden>
+      <div class="section-heading"><div><h2>Review your catalogue</h2><p class="section-note">Preview the generated pages, then download your project and website.</p></div><button type="button" id="refresh-preview">Refresh preview</button></div>
+      <div class="export-bar">
+        <div class="export-item"><button type="button" class="quiet" id="export-json">Download project JSON</button><p>Editable source. Reopen it here to continue.</p></div>
+        <div class="export-item"><button type="button" id="export-site">Download website ZIP</button><p>Complete static website, with styles and fonts. Upload its contents to your hosting directory.</p></div>
+      </div>
+      <div class="validation-summary" id="validation-summary" aria-live="polite"></div>
+      <details id="validation-details" class="validation-details" hidden><summary id="validation-title">Items to resolve</summary><ul id="validation-list"></ul></details>
+      <div class="preview-toolbar"><label>Page<select id="preview-page"><option value="index.html">Home</option></select></label><div class="viewport-controls" aria-label="Preview width"><button type="button" class="quiet" id="preview-wide" aria-pressed="true">Desktop</button><button type="button" class="quiet" id="preview-narrow" aria-pressed="false">Mobile</button></div></div>
+      <p class="section-note">External links and file downloads are disabled inside this preview. They are available in the exported website.</p>
+      <div class="preview-well"><iframe id="preview-frame" title="Generated research catalogue preview" sandbox="allow-scripts" referrerpolicy="no-referrer" srcdoc="<!doctype html><html lang='en'><head><meta charset='utf-8'></head><body><p style='font:16px system-ui;padding:24px;color:#60717b'>Select Refresh preview to generate this catalogue.</p></body></html>"></iframe></div>
+    </section>
+  </main>
+  <footer class="container studio-footer"><p>Research catalogue builder</p><p>Edits stay in your browser. Exports do not publish or change an existing website.</p><p><span class="site-visits" role="status" aria-live="polite" aria-describedby="prisma-builder-visit-privacy"><span>Recorded page visits</span> <strong data-visit-count data-endpoint="/api/visits/prisma-builder" data-storage-key="prisma-builder-visit-counted-v1" data-locale="en" data-unavailable="—">—</strong></span><span id="prisma-builder-visit-privacy" class="sr-only">The counter does not use cookies or collect information that can identify individual visitors. Only the aggregate visit count is stored.</span></p></footer>
+  <noscript><p class="container">Enable JavaScript to edit and export a catalogue. Existing generated catalogues remain readable without JavaScript.</p></noscript>
+<script>
+(function () {
+    'use strict';
+    var counter = document.querySelector('[data-visit-count]');
+    if (!counter || !window.fetch) return;
+    var endpoint = counter.getAttribute('data-endpoint');
+    var storageKey = counter.getAttribute('data-storage-key');
+    var locale = counter.getAttribute('data-locale') || 'en';
+    var counted = false;
+    try { counted = window.sessionStorage.getItem(storageKey) === 'yes'; } catch (_error) { counted = false; }
+    window.fetch(endpoint, { method: counted ? 'GET' : 'POST', cache: 'no-store', credentials: 'omit', headers: { Accept: 'application/json' } })
+        .then(function (response) { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+        .then(function (payload) {
+            var count = Number(payload.count);
+            if (!Number.isFinite(count) || count < 0) throw new Error('Invalid visit count');
+            counter.textContent = count.toLocaleString(locale);
+            if (!counted) { try { window.sessionStorage.setItem(storageKey, 'yes'); } catch (_error) { /* storage unavailable */ } }
+        })
+        .catch(function () { /* the dash stays */ });
+})();
+</script>
+</body>
+</html>

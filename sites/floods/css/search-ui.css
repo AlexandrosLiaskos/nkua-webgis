@@ -1,0 +1,87 @@
+/* Reuse the site's editorial search and dropdown typography. */
+#search-tab .search-panel {
+    gap: 0.65rem;
+}
+
+#search-tab .flood-search-input {
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0.4rem 0;
+    border-radius: 0;
+    font-size: 1.15rem;
+    line-height: 1.4;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+#search-tab .flood-search-input:hover,
+#search-tab .flood-search-input:focus {
+    border-bottom-color: var(--primary-color);
+}
+
+#search-tab .flood-search-input:focus-visible {
+    outline: none;
+    border-bottom-width: 2px;
+}
+
+#search-tab .flood-search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    background: center / 14px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' stroke='%23666666' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='m4 4 8 8m0-8-8 8'/%3E%3C/svg%3E");
+}
+
+#search-tab .flood-search-hint {
+    margin: 0;
+    color: var(--text-secondary);
+    font: 400 0.7rem/1.5 var(--font-sans);
+}
+
+#search-tab .search-results {
+    margin-top: 0.35rem;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    scrollbar-gutter: auto;
+}
+
+#search-tab .search-section + .search-section {
+    margin-top: 0.55rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid #e5e5e5;
+}
+
+#search-tab .search-section-title {
+    padding: 0.45rem 0 0.25rem;
+    font: 600 0.62rem/1.4 var(--font-sans);
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+}
+
+#search-tab .search-section-list {
+    gap: 0;
+}
+
+#search-tab .search-result {
+    min-height: 44px;
+    padding: 0.5rem 0.35rem;
+    border-radius: 0;
+    font: 400 1rem/1.4 var(--font-serif);
+}
+
+#search-tab .search-result:hover,
+#search-tab .search-result:focus-visible {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+#search-tab .search-empty {
+    padding: 1.25rem 0;
+    font: italic 400 1rem/1.4 var(--font-serif);
+    color: var(--text-secondary);
+    text-align: center;
+}

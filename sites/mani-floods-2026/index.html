@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="robots" content="noindex,nofollow,noarchive,noimageindex">
+    <meta name="googlebot" content="noindex,nofollow,noarchive,noimageindex">
+    <title>Floods in Mani, Greece — 15 Aug 2026</title>
+    <meta name="description" content="A WebGIS of field-observation points at six locations in Mani after the 15 August 2026 flash floods.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="National and Kapodistrian University of Athens">
+    <meta property="og:title" content="Floods in Mani, Greece — 15 Aug 2026">
+    <meta property="og:description" content="Fifty survey points at six locations in Mani, from Oitylo to Kokkala. Field photographs were captured on 18 August 2026.">
+    <meta property="og:url" content="https://evelpidou.nkua.cloud/mani-floods-2026/">
+    <link rel="canonical" href="https://evelpidou.nkua.cloud/mani-floods-2026/">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=Italianno&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
+    <link rel="stylesheet" href="/webgis-shared/lagoons-ui.css?v=20261116-footer-1">
+    <link rel="stylesheet" href="/webgis-shared/map-display.css?v=20261026-filters-display-1">
+    <link rel="stylesheet" href="/webgis-shared/last-updated.css?v=20260905-4">
+    <link rel="stylesheet" href="/webgis-shared/feature-guide.css?v=20260905-1">
+    <link rel="stylesheet" href="./styles.css?v=20261103-parity-1">
+</head>
+<body class="has-welcome-modal" data-active-tab="filters">
+    <div id="app">
+        <div id="welcome-modal" class="modal welcome-modal wm" role="dialog" aria-modal="true"
+             aria-labelledby="welcome-title" aria-describedby="welcome-description" aria-hidden="true">
+            <div class="modal-content wm-content" tabindex="-1">
+                <button class="wm-close" id="close-welcome" type="button" aria-label="Close introduction">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.5" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <article class="wm-poster">
+                    <div class="wm-cred">
+                        <div class="wm-institution">
+                            <img class="wm-institution-emblem" src="/webgis-shared/nkua-190-en-horizontal.png"
+                                 alt="National and Kapodistrian University of Athens — 190 years, 1837–2027">
+                        </div>
+                    </div>
+                    <header class="wm-masthead">
+                        <div class="wm-eyebrow">A WebGIS · 2026</div>
+                        <h1 class="wm-title" id="welcome-title">Floods in Mani, Greece<br>
+                            <em class="wm-title-italic">15 August 2026</em>
+                        </h1>
+                        <p class="wm-deck" id="welcome-description">
+                            Explore the field observations at Οίτυλο, Καραβοστάσι, Νέο Οίτυλο,
+                            Αλύπα, Κοκκάλα and Έξω Νύμφιο. The flood event date is 15 August; the
+                            field photographs were captured during the survey on 18 August 2026.
+                        </p>
+                        <div class="wm-entry-row">
+                            <div class="wm-coverage" role="group" aria-label="Coverage so far">
+                                <div class="wm-cov-block">
+                                    <span class="wm-cov-label">Survey points</span>
+                                    <span class="wm-cov-value" id="welcome-point-count">—</span>
+                                </div>
+                                <span class="wm-cov-divider" aria-hidden="true"></span>
+                                <div class="wm-cov-block">
+                                    <span class="wm-cov-label">Locations</span>
+                                    <span class="wm-cov-value" id="welcome-location-count">—</span>
+                                </div>
+                                <span class="wm-cov-divider" aria-hidden="true"></span>
+                                <div class="wm-cov-block">
+                                    <span class="wm-cov-label">Field photographs</span>
+                                    <span class="wm-cov-value" id="welcome-photo-count">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                    <footer class="wm-foot">
+                        <div class="wm-team" aria-label="Research and project team">
+                            <span class="wm-team-eyebrow">Research &amp; project team</span>
+                            <div class="wm-team-list">
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt=""></a><figcaption>Prof. Niki Evelpidou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt=""></a><figcaption>Dr. Eleana Karkani</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt=""></a><figcaption>Alexandros Liaskos</figcaption></figure>
+                            </div>
+                        </div>
+                        <div class="wm-sig-tag">
+                            <span class="wm-sig-tag-eyebrow">Website developed by</span>
+                            <a class="wm-signature wm-signature-sm" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu">
+                                <img src="/webgis-shared/signature.png" alt="">
+                                <span class="wm-signature-name">Alexandros Liaskos</span>
+                            </a>
+                        </div>
+                        <span class="wm-visits" role="status" aria-live="polite"
+                              aria-describedby="mani-visit-privacy">
+                            <span>Recorded page visits</span>
+                            <strong data-visit-count data-endpoint="./api/page-summary"
+                                    data-storage-key="mani-floods-2026-visit-counted-v1"
+                                    data-locale="en-GB" data-unavailable="Unavailable">—</strong>
+                        </span>
+                        <span id="mani-visit-privacy" class="sr-only">
+                            This aggregate counter uses no cookies and stores no identifying visitor information.
+                        </span>
+                    </footer>
+                </article>
+            </div>
+        </div>
+
+        <div id="error-banner" class="error-banner hidden" role="alert">
+            <div class="error-banner-content">
+                <div class="error-banner-icon" aria-hidden="true">!</div>
+                <div class="error-banner-message" id="error-banner-message"></div>
+                <button class="error-banner-close" id="error-banner-close" type="button"
+                        aria-label="Close error message">×</button>
+            </div>
+        </div>
+
+        <header class="header">
+            <div class="header-content">
+                <a class="header-institution-link" href="/"
+                   aria-label="Home page — National and Kapodistrian University of Athens">
+                    <img class="header-institution-emblem"
+                         src="/webgis-shared/nkua-190-en-horizontal.png" alt="">
+                </a>
+                <div class="header-title header-title-compact">
+                    <span class="header-rule" aria-hidden="true"></span>
+                    <h1>
+                        <span class="header-title-line">Floods in Mani, Greece</span>
+                        <span class="header-title-line"><em>15 Aug 2026</em></span>
+                    </h1>
+                    <span class="header-rule" aria-hidden="true"></span>
+                </div>
+                <div class="header-actions">
+                    <span class="last-updated">Last updated:
+                        <time datetime="2026-11-05">5 November 2026</time>
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <div class="mobile-controls" aria-label="Map panels">
+            <button id="mobile-filters-toggle" class="mobile-toggle-btn" type="button">Filters</button>
+            <button id="mobile-search-toggle" class="mobile-toggle-btn" type="button">Search</button>
+            <button id="mobile-stats-toggle" class="mobile-toggle-btn" type="button">Statistics</button>
+        </div>
+
+        <div class="main-content">
+            <aside class="sidebar" id="sidebar" aria-label="Map tools">
+                <button class="mobile-sidebar-close" id="mobile-sidebar-close" type="button"
+                        aria-label="Close map tools">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="sidebar-content">
+                    <div class="tab-nav" role="tablist" aria-label="Map data tools">
+                        <button class="tab-button active" id="filters-tab-button" type="button"
+                                role="tab" aria-selected="true" aria-controls="filters-tab"
+                                data-tab="filters">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Filters</span>
+                        </button>
+                        <button class="tab-button" id="search-tab-button" type="button"
+                                role="tab" aria-selected="false" aria-controls="search-tab"
+                                tabindex="-1" data-tab="search">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Search</span>
+                        </button>
+                        <button class="tab-button" id="statistics-tab-button" type="button"
+                                role="tab" aria-selected="false" aria-controls="statistics-tab"
+                                tabindex="-1" data-tab="statistics">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="square">
+                                    <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    <rect x="5" y="11" width="3" height="9"></rect>
+                                    <rect x="10" y="6" width="3" height="14"></rect>
+                                    <rect x="15" y="14" width="3" height="6"></rect>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Statistics</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Tab -->
+                    <section class="tab-content active" id="filters-tab" role="tabpanel"
+                             aria-labelledby="filters-tab-button">
+                        <div id="filter-loading" class="filter-loading hidden">
+                            <div class="spinner-small"></div>
+                            <span>Loading filters…</span>
+                        </div>
+
+                        <div id="filter-controls">
+                            <!-- Point filters: options come from the data (FILTERS in js/main.js) -->
+                            <div class="filter-group">
+                                <label for="location-filter">Location:</label>
+                                <select id="location-filter" name="location" class="filter-select">
+                                    <option value="">All locations</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="station-filter">Station:</label>
+                                <select id="station-filter" name="station" class="filter-select">
+                                    <option value="">All stations</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="setting-filter">Setting:</label>
+                                <select id="setting-filter" name="setting" class="filter-select">
+                                    <option value="">All settings</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="reference-filter">Reference images:</label>
+                                <select id="reference-filter" name="reference" class="filter-select">
+                                    <option value="">All points</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="municipal-unit-filter">Municipal unit:</label>
+                                <select id="municipal-unit-filter" name="municipal_unit" class="filter-select">
+                                    <option value="">All municipal units</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-group">
+                                <label for="community-filter">Community:</label>
+                                <select id="community-filter" name="community" class="filter-select">
+                                    <option value="">All communities</option>
+                                </select>
+                            </div>
+
+                            <div id="active-filters-summary" class="active-filters-summary hidden">
+                                <h4>Active Filters:</h4>
+                                <div id="active-filters-list" class="active-filters-list"></div>
+                            </div>
+
+                            <button id="clear-filters" class="btn-secondary" style="width: 100%; margin-top: 1rem;">Clear All Filters</button>
+                        </div>
+
+                        <div id="filter-error" class="filter-error hidden"></div>
+
+                    </section>
+
+                    <!-- Search Tab -->
+                    <section class="tab-content" id="search-tab" role="tabpanel"
+                             aria-labelledby="search-tab-button" hidden>
+                        <p class="stats-hint stats-hint-top">
+                            Find a survey point by its code, location, settlement, note, or photograph capture time.
+                        </p>
+                        <div class="search-panel">
+                            <label for="global-search-input" class="search-label">Global Search</label>
+                            <input id="global-search-input" type="search" class="search-input"
+                                   placeholder="Search point, location, settlement or note…"
+                                   autocomplete="off">
+                            <div id="global-search-results" class="search-results hidden"
+                                 role="listbox" aria-live="polite"></div>
+                        </div>
+                    </section>
+
+                    <!-- Statistics Tab -->
+                    <section class="tab-content" id="statistics-tab" role="tabpanel"
+                             aria-labelledby="statistics-tab-button" hidden>
+                        <div class="statistics-panel">
+                            <p class="stats-hint stats-hint-top">
+                                Filter changes apply to statistics; clear all filters to view the full dataset.
+                            </p>
+                            <div class="stats-sample">Loading visible records…</div>
+                            <figure class="stats-figure">
+                                <figcaption class="stats-figcaption">
+                                    <span class="stats-fig-num">Fig.</span>
+                                    <span class="stats-figure-title">Location distribution</span>
+                                </figcaption>
+                                <div class="stats-chart-wrap" aria-live="polite"></div>
+                                <div class="stats-axis-label">Location</div>
+                            </figure>
+                            <div class="stats-summary-head">
+                                <span class="stats-summary-eyebrow">Summary statistics</span>
+                            </div>
+                            <div class="stats-summary" aria-live="polite"></div>
+                        </div>
+                    </section>
+                </div>
+            </aside>
+
+            <main class="map-container" aria-label="Map of the survey points">
+                <div id="map" tabindex="0"></div>
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading field survey data…</p>
+                </div>
+            </main>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-authorship">
+                    <div class="footer-project-team">
+                        <span class="footer-authorship-label">Research &amp; project team</span>
+                        <div class="footer-team-list">
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt="Prof. Niki Evelpidou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt="Dr. Eleana Karkani"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt="Alexandros Liaskos"></a></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-credit" aria-label="Copyright and licence">
+                    <a class="footer-collection-link" href="/">
+                        <span class="footer-collection-name"><span
+                            class="footer-current-catalogue">Floods in Mani 2026</span></span>
+                    </a>
+                    <span class="footer-credit-meta">
+                        <span>© 2026</span><span class="footer-credit-dot" aria-hidden="true">·</span>
+                        <span>Content under <a class="footer-license-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a></span>
+                    </span>
+                </div>
+                <nav class="footer-nav" aria-label="Site links">
+                    <button id="feature-guide-btn" class="footer-link" type="button" aria-haspopup="dialog" aria-controls="feature-guide-modal">Flash floods</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="about-btn" class="footer-link" type="button">About</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="references-btn" class="footer-link" type="button">Sources</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="submit-data-btn" class="footer-link" type="button">Submit&nbsp;data</button>
+                </nav>
+            </div>
+        </footer>
+
+        <div id="placemark-modal" class="modal" role="dialog" aria-modal="true"
+             aria-labelledby="placemark-modal-title" aria-hidden="true">
+            <div class="modal-content lagoon-modal-content" tabindex="-1">
+                <div class="modal-header lagoon-modal-header">
+                    <div class="lagoon-modal-titleblock" id="placemark-modal-titleblock">
+                        <span class="lagoon-eyebrow">Survey point</span>
+                        <h2 class="lagoon-name" id="placemark-modal-title">
+                            <span class="lagoon-name-en">Placemark</span>
+                        </h2>
+                    </div>
+                    <button class="modal-close" id="close-placemark" type="button"
+                            aria-label="Close placemark details">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" id="placemark-details"></div>
+            </div>
+        </div>
+
+        <div id="references-modal" class="modal" role="dialog" aria-modal="true"
+             aria-labelledby="references-title" aria-hidden="true">
+            <div class="modal-content" tabindex="-1">
+                <div class="modal-header">
+                    <div class="reference-modal-heading">
+                        <h3 id="references-title">Sources &amp; citations</h3>
+                        <p>Use the reference that matches what you are citing.</p>
+                    </div>
+                    <button class="modal-close" id="close-references" type="button"
+                            aria-label="Close sources and citations">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="reference-sections">
+                        <section class="reference-section" aria-labelledby="mani-platform-title">
+                            <header class="reference-section-heading">
+                                <h4 id="mani-platform-title">Web platform</h4>
+                                <p>Cite the interactive website and interface.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Evelpidou, N., Karkani, E., &amp; Liaskos, A. (2026). <em>Floods in Mani,
+                                    Greece — 15 August 2026</em> [Interactive WebGIS]. <a
+                                    href="https://evelpidou.nkua.cloud/mani-floods-2026/" target="_blank"
+                                    rel="noopener noreferrer">evelpidou.nkua.cloud/mani-floods-2026</a></p>
+                                <p><strong>Author affiliation</strong><br>National and Kapodistrian University of Athens</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="mani-dataset-title">
+                            <header class="reference-section-heading">
+                                <h4 id="mani-dataset-title">Field survey dataset</h4>
+                                <p>Six locations in Mani, surveyed on 18 August 2026.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Fifty survey points at Οίτυλο, Καραβοστάσι, Νέο Οίτυλο, Αλύπα, Κοκκάλα
+                                    and Έξω Νύμφιο, with 200 field photographs captured three days after the
+                                    15 August 2026 flood event. Every point carries its setting, an
+                                    observation note, its settlement and community, and its photographs.
+                                    The data are available from the authors on request.</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="position-source-title">
+                            <header class="reference-section-heading">
+                                <h4 id="position-source-title">Mapped positions</h4>
+                                <p>Fifty points at six locations, accurate to better than 2 m.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>The survey team placed each point by hand in Google Earth Pro, using the
+                                    field photographs, their memory of the field and Google Street View, and
+                                    checked every position against Street View to better than 2 m. Points at
+                                    the same spot were merged, so a station keeps a letter (S02a, S02b) only
+                                    when it has more than one point.</p>
+                                <p>The source photographs contain no camera GPS fields, so the positions
+                                    come from this placement, not from the photographs' metadata.</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="photo-source-title">
+                            <header class="reference-section-heading">
+                                <h4 id="photo-source-title">Field photographs</h4>
+                                <p>Survey captures from 18 August 2026.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Web previews link to full PNG copies. Capture timestamps remain in
+                                    image metadata. Lossless TIFF masters remain offline. Two Οίτυλο S03
+                                    photographs were not assigned to any point and appear only in the
+                                    database. Photographs and videos supplied by residents of Κοκκάλα are
+                                    kept offline because their reuse terms are not known.</p>
+                                <p>A photograph that documents two points appears at both; within one
+                                    point, identical images are shown once.</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="street-view-title">
+                            <header class="reference-section-heading">
+                                <h4 id="street-view-title">Street View references</h4>
+                                <p>The same views before the flood.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Thirty-one reference images show Google Street View imagery from December
+                                    2011 to June 2025, for comparison with 38 field photographs. Each looks the
+                                    same way as its photographs from the same stretch of road, with a wider frame
+                                    so that the surroundings show. The survey team reviewed every pair.</p>
+                                <p>Close-ups, photographs taken off the road and views that Street View does
+                                    not reach have no such reference. Smooth patches at the bottom of these
+                                    images are where Google blurs out its own car. The imagery is older than
+                                    the flood by as much as 15 years, so some differences are not flood damage.</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="mani-admin-title">
+                            <header class="reference-section-heading">
+                                <h4 id="mani-admin-title">Settlements and communities</h4>
+                                <p>Official names and codes.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Each location is named after the settlement where the observations were
+                                    made, with the official names, codes and 2021 population of the Hellenic
+                                    Statistical Authority (ELSTAT), <a href="https://www.statistics.gr/el/statistics/-/publication/SAM03/2021"
+                                    target="_blank" rel="noopener noreferrer">Population-Housing Census 2021</a>.
+                                    Community boundaries come from Eurostat GISCO, <a
+                                    href="https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/local-administrative-units"
+                                    target="_blank" rel="noopener noreferrer">Local Administrative Units 2024</a>.</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="mani-guide-source-title">
+                            <header class="reference-section-heading">
+                                <h4 id="mani-guide-source-title">Flash flood definition</h4>
+                                <p>Source for the explanation in the Flash floods guide.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Gaume, E., Bain, V., Bernardara, P., Newinger, O., Barbuc, M., Bateman, A.,
+                                    et al. (2009). A compilation of data on European flash floods. <em>Journal
+                                    of Hydrology</em>, 367(1–2), 70–78. <a
+                                    href="https://doi.org/10.1016/j.jhydrol.2008.12.028" target="_blank"
+                                    rel="noopener noreferrer">doi:10.1016/j.jhydrol.2008.12.028</a></p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="rights-title">
+                            <header class="reference-section-heading">
+                                <h4 id="rights-title">Licence &amp; reuse</h4>
+                                <p>Terms for original platform content and field photographs.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Except where third-party data, basemaps, imagery, logos, or source
+                                    materials are separately credited, the original text, interface,
+                                    visualisation design, field photographs, and research outputs of this
+                                    application are licensed under the <a
+                                    href="https://creativecommons.org/licenses/by/4.0/" target="_blank"
+                                    rel="license noopener noreferrer">Creative Commons Attribution 4.0
+                                    International licence (CC BY 4.0)</a>.</p>
+                                <p>You may share and adapt this material provided that you give appropriate
+                                    credit, link to the licence, and indicate whether changes were made.
+                                    Reference images labelled Google Street View are third-party material
+                                    and remain subject to Google's terms; they are not covered by this
+                                    licence.</p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="submit-data-modal" class="modal submit-data-modal" role="dialog" aria-modal="true"
+             aria-labelledby="submit-data-title" aria-hidden="true">
+            <div class="modal-content" tabindex="-1">
+                <div class="modal-header">
+                    <h3 id="submit-data-title">Submit flood observations</h3>
+                    <button class="modal-close" id="close-submit-data" type="button"
+                            aria-label="Close submission instructions">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="submit-data-intro">
+                        <p>Submit an observation of the 15 August 2026 flood in Mani, or a correction to an
+                            existing placemark. Use one row per observation point and describe how its
+                            position was obtained.</p>
+                    </div>
+                    <div class="submit-data-section">
+                        <h4>Prepare your submission</h4>
+                        <p>Fill in the blank Data sheet in the XLSX workbook. The Field guide describes every
+                            column, its format and an example. You can also use the CSV with the same headers.</p>
+                        <p class="submit-data-note">Leave unknown values blank. For a correction, include the
+                            existing placemark code (for example S03b) and explain the change in
+                            submission_notes.</p>
+                        <div class="submit-data-actions">
+                            <a class="btn-primary" href="./templates/mani-floods-2026-data-template.xlsx?v=20261103-1" download="mani-floods-2026-data-template.xlsx">Download XLSX</a>
+                            <a class="btn-primary" href="./templates/mani-floods-2026-data-template.csv?v=20261103-1" download="mani-floods-2026-data-template.csv">Download CSV</a>
+                            <a class="btn-primary" href="mailto:alexliaskos@geol.uoa.gr,evelpidou@geol.uoa.gr?subject=Floods%20in%20Mani%202026%20data%20submission&amp;body=Dear%20Floods%20in%20Mani%20team%2C%0A%0AI%20would%20like%20to%20submit%20observations%20of%20the%2015%20August%202026%20flood.%0A%0AContributor%20names%0A%5BPlease%20complete%5D%0A%0AAffiliation%0A%5BPlease%20complete%5D%0A%0AContact%20email%0A%5BPlease%20complete%5D%0A%0ANew%20observations%20or%20corrections%20and%20locations%0A%5BPlease%20complete%5D%0A%0APlease%20attach%20the%20completed%20XLSX%20or%20CSV%20and%20any%20photographs%20manually.%0A%0APhotograph%20reuse%20permission%0A%5BPlease%20complete%5D">Send by email</a>
+                        </div>
+                    </div>
+                    <div class="submit-data-section">
+                        <h4>Required fields</h4>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Field and column</th><th scope="col">Format and unit</th><th scope="col">What to provide</th></tr></thead>
+                            <tbody id="submission-required-fields">
+                            <tr><th scope="row">Latitude<br><code>latitude</code></th><td>WGS84 (degrees)</td><td>WGS84 decimal latitude of the observation point.</td></tr>
+                            <tr><th scope="row">Longitude<br><code>longitude</code></th><td>WGS84 (degrees)</td><td>WGS84 decimal longitude of the observation point.</td></tr>
+                            <tr><th scope="row">Observation date<br><code>observation_date</code></th><td>YYYY-MM-DD</td><td>Date of the observation or of the photographs.</td></tr>
+                            <tr><th scope="row">Location<br><code>location_name</code></th><td>Text</td><td>Village, locality or road nearest the observation point.</td></tr>
+                            <tr><th scope="row">Observation<br><code>observation</code></th><td>Text</td><td>What was observed, for example erosion, deposited sediment, debris, a high-water mark or damage to a structure.</td></tr>
+                            <tr><th scope="row">Observer or source<br><code>observer</code></th><td>Text</td><td>Who made the observation, or the report, publication or URL it comes from.</td></tr>
+                            </tbody>
+                        </table></div>
+                    </div>
+                    <details class="submit-data-section submission-optional">
+                        <summary id="submission-optional-summary">Optional fields (8)</summary>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Field and column</th><th scope="col">Format and unit</th><th scope="col">What to provide</th></tr></thead>
+                            <tbody id="submission-optional-fields">
+                            <tr><th scope="row">Existing placemark<br><code>placemark_id</code></th><td>Text</td><td>For a correction, the placemark code shown on the map. Leave blank for a new observation.</td></tr>
+                            <tr><th scope="row">Observation time<br><code>observation_time</code></th><td>HH:MM (local time)</td><td>Local time of the observation or of the first photograph.</td></tr>
+                            <tr><th scope="row">Position method<br><code>position_method</code></th><td>Text</td><td>How the position was obtained: GPS receiver, phone GPS, or picked on a map such as Google Earth.</td></tr>
+                            <tr><th scope="row">Position uncertainty<br><code>position_uncertainty_m</code></th><td>Decimal (m)</td><td>Estimated horizontal uncertainty of the position. Leave blank if unknown.</td></tr>
+                            <tr><th scope="row">Observation type<br><code>observation_type</code></th><td>Text</td><td>One short category: erosion, deposition, debris, high-water mark, structural damage, road damage or other.</td></tr>
+                            <tr><th scope="row">Photograph files<br><code>photo_files</code></th><td>Text</td><td>File names of the photographs attached to the email, separated by semicolons.</td></tr>
+                            <tr><th scope="row">Photograph permission<br><code>photo_licence</code></th><td>Text</td><td>Whether the attached photographs may be published under CC BY 4.0, and the name to credit.</td></tr>
+                            <tr><th scope="row">Submission notes<br><code>submission_notes</code></th><td>Text</td><td>Explain corrections, measurement methods and any uncertainty. Identify attachments here.</td></tr>
+                            </tbody>
+                        </table></div>
+                    </details>
+                    <div class="submit-data-section">
+                        <h4>Observation guidance</h4>
+                        <ul class="notes-list">
+                            <li>Record positions as WGS84 decimal degrees and state whether they come from a GPS
+                                receiver, a phone, or a map such as Google Earth.</li>
+                            <li>Describe what you observed, such as erosion, deposited sediment, debris, high-water
+                                marks or damage to structures. Do not estimate depths or discharges you did not
+                                measure.</li>
+                            <li>Name each attached photograph in photo_files and state whether it may be published
+                                under CC BY 4.0.</li>
+                        </ul>
+                    </div>
+                    <p class="submit-data-note">Include contributor names, affiliation and contact details in your
+                        email. Attach the completed file and photographs manually. The research team reviews each
+                        submission before publication.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="photo-viewer" class="modal photo-viewer" role="dialog" aria-modal="true"
+             aria-labelledby="photo-viewer-title" aria-hidden="true">
+            <div class="modal-content photo-viewer-content" tabindex="-1">
+                <div class="photo-viewer-header">
+                    <div class="photo-viewer-heading">
+                        <h2 class="photo-viewer-title" id="photo-viewer-title">Photograph</h2>
+                        <span class="photo-viewer-counter" id="photo-viewer-counter" aria-live="polite"></span>
+                    </div>
+                    <a class="photo-viewer-full" id="photo-viewer-full" href="#" target="_blank"
+                       rel="noopener noreferrer">Full resolution</a>
+                    <button class="modal-close" id="close-photo-viewer" type="button"
+                            aria-label="Close photograph">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <figure class="photo-viewer-stage">
+                    <button class="photo-viewer-nav photo-viewer-prev" id="photo-viewer-prev" type="button"
+                            aria-label="Previous photograph">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.75" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <img id="photo-viewer-image" alt="" decoding="async">
+                    <button class="photo-viewer-nav photo-viewer-next" id="photo-viewer-next" type="button"
+                            aria-label="Next photograph">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.75" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                    <figcaption class="photo-viewer-caption" id="photo-viewer-caption"></figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+    <script src="/webgis-shared/common-map.js?v=20261026-filters-display-1"></script>
+    <script src="/webgis-shared/map-display.js?v=20261026-filters-display-1"></script>
+    <script src="/webgis-shared/common-ui.js?v=20261026-filters-display-1"></script>
+    <script src="./measurement-tool.js?v=20260913-13"></script>
+    <script type="module" src="./js/main.js?v=20261105-refs-1"></script>
+    <dialog id="feature-guide-modal" class="feature-guide-dialog" aria-labelledby="feature-guide-title">
+        <header class="feature-guide-header">
+            <h2 id="feature-guide-title">What is a flash flood?</h2>
+            <button class="feature-guide-close" type="button" aria-label="Close explanation">&times;</button>
+        </header>
+        <div class="feature-guide-body">
+            <p class="feature-guide-definition">A flash flood is a flood that develops within a few hours of
+                intense, short-lived rainfall, usually in small and steep catchments. Water rises and recedes
+                quickly and can carry large amounts of sediment and debris, which makes these floods
+                especially destructive.</p>
+            <figure class="feature-guide-figure mani-guide-figure">
+                <img src="./media/L01_Oitylo/S03/preview/2026-08-18_10-59_06.jpg" width="540" height="960"
+                     alt="Dry-stone wall breached by floodwater above a road near Oitylo, with washed-out soil and stones."
+                     loading="lazy" decoding="async">
+                <figcaption>
+                    <span>A breached dry-stone wall and flood deposits at placemark S03b, Οίτυλο (Oitylo).</span>
+                    <span>Photo: NKUA field survey, 18 August 2026 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a>.</span>
+                </figcaption>
+            </figure>
+            <p class="feature-guide-source">Definition source: <a href="https://doi.org/10.1016/j.jhydrol.2008.12.028" target="_blank" rel="noopener noreferrer">Gaume et al. (2009), Journal of Hydrology</a>.</p>
+        </div>
+    </dialog>
+    <script src="/webgis-shared/feature-guide.js?v=20260905-1"></script>
+</body>
+</html>

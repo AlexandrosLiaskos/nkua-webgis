@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0.0",
+  "project": {
+    "id": "new-study",
+    "title": "New research catalogue",
+    "subtitle": "",
+    "language": "en",
+    "updatedAt": "2026-09-09T08:50:30+00:00",
+    "siteUrl": null,
+    "basePath": "/catalogues/new-study/",
+    "status": "draft",
+    "authors": [],
+    "institution": "",
+    "webgisUrl": null,
+    "contactEmail": null,
+    "heroImage": null,
+    "citation": ""
+  },
+  "protocol": {
+    "objective": "",
+    "eligibility": "",
+    "searchStrategy": "",
+    "screeningMethod": "",
+    "countingUnit": "resources",
+    "status": "draft",
+    "registeredAt": null,
+    "completeThrough": null,
+    "notes": ""
+  },
+  "providers": [],
+  "resources": [],
+  "assets": [],
+  "searches": [],
+  "acquisitions": [],
+  "screening": [],
+  "references": []
+}

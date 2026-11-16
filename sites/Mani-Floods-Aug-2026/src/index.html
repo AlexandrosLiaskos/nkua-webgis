@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Source Code Repository — Mani Flash Flood Reconstruction</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+  <style>
+    :root {
+      --primary: #004080;
+      --primary-dark: #002b59;
+      --accent: #d9381e;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --font-serif: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-serif);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding-bottom: 4rem;
+    }
+    header.site-header {
+      background: linear-gradient(135deg, #002b59 0%, #004080 100%);
+      color: white;
+      padding: 2.2rem 1.5rem 2.5rem;
+      border-bottom: 3px solid var(--accent);
+    }
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .header-logo-link {
+      display: inline-flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .header-logo-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+    }
+    .header-nkua-logo {
+      height: 42px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+    .institution-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .institution-tag {
+      font-family: var(--font-sans);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #93c5fd;
+    }
+    .institution-subtag {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      opacity: 0.92;
+    }
+    h1.study-title {
+      font-size: 2.1rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      line-height: 1.25;
+    }
+    p.study-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.92;
+      max-width: 900px;
+    }
+    nav.nav-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+    }
+    .nav-container a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .nav-container a:hover {
+      background: #eff6ff;
+    }
+    .nav-container a.active {
+      background: var(--primary);
+      color: white;
+    }
+    main.main-content {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .action-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary);
+      color: white !important;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 4px rgba(0,64,128,0.2);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #475569;
+    }
+    .btn-secondary:hover {
+      background: #334155;
+    }
+    .btn-accent {
+      background: var(--accent);
+    }
+    .btn-accent:hover {
+      background: #b91c1c;
+    }
+    .markdown-body {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+      color: var(--primary);
+      margin-top: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .markdown-body h2 {
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.4rem;
+    }
+    .markdown-body p {
+      margin-bottom: 1rem;
+      text-align: justify;
+    }
+    .markdown-body blockquote {
+      border-left: 4px solid #cbd5e1;
+      padding-left: 1rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin: 1rem 0;
+    }
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+    }
+    .markdown-body table th {
+      background: #f1f5f9;
+      color: var(--primary-dark);
+      padding: 0.65rem 0.85rem;
+      border-top: 2px solid var(--primary);
+      border-bottom: 2px solid #cbd5e1;
+      text-align: left;
+    }
+    .markdown-body table td {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .markdown-body pre {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 1.25rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+    }
+    .markdown-body code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      background: #f1f5f9;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #b91c1c;
+    }
+    .markdown-body pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .markdown-body hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 2rem 0;
+    }
+    .portal-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .portal-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .portal-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    }
+    .portal-card h3 {
+      color: var(--primary);
+      font-size: 1.35rem;
+      margin-bottom: 0.75rem;
+    }
+    .portal-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+    footer.site-footer {
+      margin-top: 4rem;
+      text-align: center;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    footer.site-footer .site-visits strong {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <div class="header-branding">
+        <a class="header-logo-link" href="https://en.uoa.gr/" target="_blank" rel="noopener noreferrer" title="National and Kapodistrian University of Athens">
+          <img class="header-nkua-logo" src="/webgis-shared/nkua-190-en-horizontal.png" alt="National and Kapodistrian University of Athens — 190 Years (1837–2027)">
+        </a>
+        <div class="institution-meta">
+          <span class="institution-tag">Department of Geology and Geoenvironment</span>
+          <span class="institution-subtag">Faculty of Sciences &bull; National and Kapodistrian University of Athens</span>
+        </div>
+      </div>
+      <h1 class="study-title">Mani Peninsula Flash Flood Reconstruction (August 15, 2026)</h1>
+      <p class="study-subtitle">Coupled Hydrometeorological, Pedotransfer, and Hydrodynamic Reconstruction of the Catastrophic Flash Flood Event across Eastern and Western Mani, Greece</p>
+    </div>
+  </header>
+
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <a href="/Mani-Floods-Aug-2026/" class="">Research Portal</a>
+      <a href="/Mani-Floods-Aug-2026/src/" class="active">Source Code Repository</a>
+      <a href="/Mani-Floods-Aug-2026/data/" class="">Open Data Repository</a>
+      <a href="/mani-floods-2026/" target="_blank">Interactive WebGIS Map &nearr;</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    
+<div class="action-box">
+  <div>
+    <h2 style="color:var(--primary); margin-bottom:0.3rem;">Python Source Code Repository</h2>
+    <p style="color:var(--text-muted); font-size:0.95rem;">Peer-reviewed simulation submodels, data fetchers, headless orchestrator, and test suite.</p>
+  </div>
+  <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+    <a href="/Mani-Floods-Aug-2026/src/mani-floods-aug-2026-src.zip" class="btn" download>Download Source Bundle (.zip)</a>
+    <a href="#4-installation-and-execution" class="btn btn-secondary">Installation & Tests</a>
+  </div>
+</div>
+
+<div class="badge-bar">
+  <span style="background:#fef3c7; color:#92400e; font-family:var(--font-sans); font-size:0.85rem; font-weight:600; padding:0.25rem 0.6rem; border-radius:4px;">License: MIT</span>
+  <span style="background:#dbeafe; color:#1e40af; font-family:var(--font-sans); font-size:0.85rem; font-weight:600; padding:0.25rem 0.6rem; border-radius:4px;">Python 3.12+</span>
+  <span style="background:#dcfce7; color:#166534; font-family:var(--font-sans); font-size:0.85rem; font-weight:600; padding:0.25rem 0.6rem; border-radius:4px;">pytest: 16 passed (100%)</span>
+  <span style="background:#f1f5f9; color:#475569; font-family:var(--font-sans); font-size:0.85rem; font-weight:600; padding:0.25rem 0.6rem; border-radius:4px;">Clean Decoupled Architecture</span>
+</div>
+
+<div class="markdown-body">
+  <h1>Mani Peninsula Flash Flood Reconstruction (August 15, 2026) — Source Code Repository</h1>
+<p><a href="https://img.shields.io/badge/License-MIT-yellow.svg">![License: MIT</a>](https://opensource.org/licenses/MIT)</p>
+<p><a href="https://img.shields.io/badge/Python-3.12%2B-blue.svg">![Python: 3.12</a>](https://www.python.org/)</p>
+<p><a href="https://img.shields.io/badge/pytest-15%20passed-brightgreen.svg">![Test Suite</a>](tests/)</p>
+<p><a href="https://img.shields.io/badge/Code%20Repo-evelpidou.nkua.cloud-blue.svg">![Repository URL</a>](https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/src)</p>
+<p><a href="https://img.shields.io/badge/Data%20Repo-evelpidou.nkua.cloud-green.svg">![Data Repo</a>](https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/data)</p>
+<p>This repository contains the official, peer-reviewed computational pipeline for the physical reconstruction, hydrological modeling, geomorphological analysis, and hydrodynamic validation of the catastrophic flash floods of August 15, 2026, across the Mani Peninsula, Southern Peloponnese, Greece.</p>
+<p>The source code is hosted at:</p>
+<p><code>https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/src</code></p>
+<p>The curated open data repository (vector layers, hyetographs, validation metrics, and STAC/DCAT catalog) is hosted at:</p>
+<p><code>https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/data</code></p>
+<hr>
+<h2>1. Architectural Design & Separation of Concerns</h2>
+<p>The computational architecture enforces strict decoupling between public data acquisition, physical analysis, and cartographic rendering:</p>
+<p>1. <strong>Part 1: Public Data Acquisition (<code>src/acquisition/</code>)</strong>:</p>
+<p>Modular, standalone fetchers that ingest and validate open public datasets (Copernicus DEM, ERA5-Land, CMEMS, SoilGrids 2.0, EFFIS, NOA weather stations) without inter-module coupling.</p>
+<p>2. <strong>Part 2: Spatial & Physical Hydrological Analysis (<code>src/submodels/</code>, <code>src/pipeline/</code>)</strong>:</p>
+<p>Purely deterministic simulation modules producing strictly standard scientific and GIS artifacts (OGC GeoPackages, Cloud-Optimized GeoTIFFs, NetCDF-4, JSON reports, CSV time series). <strong>Zero plotting libraries or PNG outputs</strong> exist within the core simulation pipeline.</p>
+<p>3. <strong>Part 3: Publication Cartography & Visualization (<code>src/visualization/</code>)</strong>:</p>
+<p>Independent visualization scripts that read the finalized GIS and tabular outputs to generate publication-grade vector PDF and 600 DPI raster figures.</p>
+<pre><code class="language-text">Mani-Floods-Aug-2026/
+├── src/
+│   ├── acquisition/             # Part 1: Open Public Data Fetchers
+│   │   ├── fetch_copernicus_dem.py
+│   │   ├── fetch_era5_cds.py
+│   │   ├── fetch_cmems_marine.py
+│   │   ├── fetch_soilgrids.py
+│   │   ├── fetch_effis_fire.py
+│   │   └── fetch_ground_stations.py
+│   ├── submodels/               # Part 2: Physical &amp; Hydrological Submodels
+│   │   ├── s1_soil_physics/     # Saxton-Rawls pedotransfer functions
+│   │   ├── s2_landscape/        # Terrain, land cover, and burn modifiers
+│   │   ├── s3_rainfall_losses/  # Green-Ampt infiltration &amp; mass conservation
+│   │   ├── s4_power_geomorphology/ # Stream power &amp; sediment transport
+│   │   └── s5_reporting/        # Morphometry &amp; topological divide separatrix
+│   ├── pipeline/                # Headless Orchestration Engine
+│   │   └── orchestrator.py      # Executes Part 1 &amp; Part 2 (strictly GIS/data)
+│   └── visualization/           # Part 3: Cartography &amp; Publication Figures
+│       ├── plot_figure_4.py     # Atmospheric &amp; rainfall footprint map
+│       └── plot_figure_5.py     # Catchment morphometry &amp; regional divide map
+├── data_repo/                   # Curated Open Data Release (CC-BY-4.0)
+│   ├── metadata/                # STAC/DCAT catalog &amp; comprehensive inventory
+│   ├── reports/                 # Physical parameters &amp; validation JSONs
+│   ├── timeseries/              # 10-minute hyetographs &amp; station catalog
+│   └── vector/                  # 266 basins, 95.52 km divide, stream network
+└── tests/                       # Automated Pytest Suite (15/15 passing)
+    ├── test_data_acquisition.py
+    └── test_simulation_submodels.py</code></pre>
+<hr>
+<h2>2. Theoretical Formulations and Mathematical Models</h2>
+<h3>2.1 Soil Pedotransfer and Water Retention</h3>
+<p>Soil saturated hydraulic conductivity ($K_{\text{sat}}$), saturated volumetric moisture content ($\theta_s$), field capacity ($\theta_{33}$), and permanent wilting point ($\theta_{1500}$) are calculated using the Saxton and Rawls (2006) formulation:</p>
+<p>$$\theta_{1500} = \theta_{1500t} + (0.14 \cdot \theta_{1500t} - 0.02)$$</p>
+<p>$$\theta_{33} = \theta_{33t} + (1.283 \cdot \theta_{33t}^2 - 0.374 \cdot \theta_{33t} - 0.015)$$</p>
+<p>$$K_{\text{sat}} = 1930 \cdot (\theta_s - \theta_{33})^{3 - \lambda}$$</p>
+<p>where textural fractions (sand, clay) and organic matter are sourced from SoilGrids 2.0 (Poggio et al., 2021).</p>
+<h3>2.2 Green–Ampt Infiltration and Excess Rainfall Routing</h3>
+<p>Rainfall abstraction is modeled using the unsteady Green–Ampt formulation (Green & Ampt, 1911; Mein & Larson, 1973):</p>
+<p>$$f(t) = K_{\text{sat}} \left( 1 + \frac{\psi \cdot \Delta \theta}{F(t)} \right)$$</p>
+<p>$$F(t) = \int_0^t f(\tau) \, d\tau$$</p>
+<p>where $\psi$ is the wetting front soil matric suction head (m), $\Delta \theta = \theta_s - \theta_i$ is the initial moisture deficit, and $F(t)$ is cumulative infiltration. Post-fire hydraulic conductivity decay and hydrophobicity are parameterized following Ebel et al. (2012) and Curran et al. (2012).</p>
+<h3>2.3 Unit Stream Power and Boulder Transport Competence</h3>
+<p>Cross-sectional stream power per unit wetted channel width ($\omega$) and boundary shear stress ($\tau_b$) govern channel incision and boulder transport (Bagnold, 1966; Costa, 1983):</p>
+<p>$$\tau_b = \rho_w \cdot g \cdot R_h \cdot S_0$$</p>
+<p>$$\omega = \frac{\rho_w \cdot g \cdot Q \cdot S_0}{w}$$</p>
+<p>where $\rho_w = 1000\,\text{kg}\,\text{m}^{-3}$, $g = 9.81\,\text{m}\,\text{s}^{-2}$, $R_h$ is hydraulic radius (m), $S_0$ is energy gradient, and $w$ is active bed width. The maximum mobilizable boulder diameter ($D_{\max}$) is calculated using the critical Shields parameter $\theta_c = 0.045$ (Shields, 1936; Costa, 1983):</p>
+<p>$$D_{\max} = \frac{\tau_b}{g \cdot (\rho_s - \rho_w) \cdot \theta_c}$$</p>
+<p>where $\rho_s = 2650\,\text{kg}\,\text{m}^{-3}$ (limestone/dolomite bedrock density).</p>
+<h3>2.4 Topological Regional Drainage Divide Separatrix</h3>
+<p>Rather than utilizing empirical coordinate cutoffs, catchments and receiving marine flanks are delineated rigorously via topological surface boundary extraction (O'Callaghan & Mark, 1984; Jenson & Domingue, 1988; Pfafstetter, 1989; Vogt et al., 2007). The regional drainage divide $C$ is extracted as the 1D topological intersection separatrix between the closed domain unions of the West (Messenian Gulf) and East (Laconian Gulf) drainage basins:</p>
+<p>$$\Omega_{\text{West}} = \bigcup_{i \in \mathcal{W}} \Omega_i, \quad \Omega_{\text{East}} = \bigcup_{j \in \mathcal{E}} \Omega_j$$</p>
+<p>$$C = \partial \Omega_{\text{West}} \cap \partial \Omega_{\text{East}}$$</p>
+<p>This yields an unbroken 95.52 km polyline precisely tracing the crest line of Mount Taygetos, Sangias Ridge, and the Tainaron Range.</p>
+<hr>
+<h2>3. Function & Module Reference</h2>
+<h3>3.1 Data Acquisition (<code>src/acquisition/</code>)</h3>
+<table>
+  <tr><th>Module</th><th>Primary Functions</th><th>Description & Peer-Reviewed Reference</th></tr>
+  <tr><td><code>fetch_copernicus_dem.py</code></td><td><code>fetch_copernicus_dem()</code></td><td>Stages and validates 30 m GLO-30 and 5 m high-resolution DEMs in EPSG:2100. (European Space Agency, 2021).</td></tr>
+  <tr><td><code>fetch_era5_cds.py</code></td><td><code>fetch_era5_land_precip()</code></td><td>Extracts hourly total precipitation and surface runoff from ECMWF ERA5-Land. (Muñoz-Sabater et al., 2021, <em>ESSD</em>, doi:10.5194/essd-13-4349-2021).</td></tr>
+  <tr><td><code>fetch_cmems_marine.py</code></td><td><code>fetch_cmems_marine_data()</code></td><td>Stages hourly sea surface height and significant wave height boundary conditions. (Clementi et al., 2021; Korres et al., 2021, Copernicus Marine Service).</td></tr>
+  <tr><td><code>fetch_soilgrids.py</code></td><td><code>fetch_soilgrids_properties()</code></td><td>Downloads ISRIC SoilGrids 2.0 sand, silt, clay, and organic carbon at standard depth tiers (0–5, 5–15, 15–30 cm). (Poggio et al., 2021, <em>SOIL</em>, doi:10.5194/soil-7-217-2021).</td></tr>
+  <tr><td><code>fetch_effis_fire.py</code></td><td><code>fetch_effis_burn_perimeters()</code></td><td>Fetches Rapid Damage Assessment fire perimeters and calculates burn severity for hydrologic conditioning. (San-Miguel-Ayanz et al., 2012).</td></tr>
+  <tr><td><code>fetch_ground_stations.py</code></td><td><code>fetch_noa_ground_stations()</code></td><td>Parses 10-minute automated weather station observations across the Mani Peninsula network. (Lagouvardos et al., 2017, <em>BAMS</em>, doi:10.1175/BAMS-D-15-00307.1).</td></tr>
+</table>
+<h3>3.2 Simulation Submodels (<code>src/submodels/</code>)</h3>
+<table>
+  <tr><th>Submodel</th><th>Key Scripts & Functions</th><th>Description & Reference</th></tr>
+  <tr><td><strong>S1: Soil Physics</strong></td><td><code>saxton_rawls.py</code>: <code>compute_soil_hydraulic_properties()</code></td><td>Evaluates saturated moisture content, matric potential, and hydraulic conductivity from texture fractions. (Saxton & Rawls, 2006, <em>SSSAJ</em>, doi:10.2136/sssaj2005.0117).</td></tr>
+  <tr><td><strong>S2: Landscape</strong></td><td><code>export_vector_layers.py</code>: <code>build_vector_layers()</code></td><td>Hydrologically conditioned flow routing, stream order assignment, and catchment extraction. (Tarboton, 1997; Wang & Liu, 2006).</td></tr>
+  <tr><td><strong>S3: Infiltration</strong></td><td><code>green_ampt.py</code>: <code>calculate_water_balance()</code></td><td>Multi-layer Green-Ampt infiltration, surface ponding, and mass balance conservation ($E_{\text{mass}} < 0.5\%$). (Green & Ampt, 1911; Mein & Larson, 1973).</td></tr>
+  <tr><td><strong>S4: Stream Power</strong></td><td><code>generate_hazard_rasters.py</code>: <code>compute_geomorphic_competence()</code></td><td>Hydrodynamic bed shear stress ($\tau_b$), unit stream power ($\omega$), and boulder size transport limits. (Bagnold, 1966; Costa, 1983).</td></tr>
+  <tr><td><strong>S5: Morphometry</strong></td><td><code>generate_morphometry_report.py</code>: <code>extract_regional_divide()</code></td><td>Topological extraction of the 95.52 km Taygetos-Sangias-Tainaron divide separatrix and Melton ruggedness index. (Melton, 1965; Pfafstetter, 1989; Vogt et al., 2007).</td></tr>
+</table>
+<hr>
+<h2>4. Installation and Execution</h2>
+<h3>4.1 Environment Setup</h3>
+<p>The project uses <code>uv</code> for fast, reproducible dependency resolution under Python 3.12:</p>
+<pre><code class="language-bash"># Clone the repository
+git clone https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/src.git
+cd src
+
+# Sync environment dependencies
+uv sync</code></pre>
+<h3>4.2 Automated Testing</h3>
+<p>Run the comprehensive 15-test unit and regression suite:</p>
+<pre><code class="language-bash">uv run pytest -v</code></pre>
+<h3>4.3 Running the Simulation Pipeline</h3>
+<p>The headless orchestrator executes Part 1 (Public Data Acquisition) and Part 2 (Physical Analysis), producing all verified GeoPackages, rasters, and reports:</p>
+<pre><code class="language-bash">uv run python -m src.pipeline.orchestrator</code></pre>
+<h3>4.4 Generating Publication Cartography</h3>
+<p>High-resolution vector PDFs and 600 DPI publication maps are generated independently via the visualization module:</p>
+<pre><code class="language-bash"># Generate Figure 4 (Infiltration Dynamics &amp; Storm Mass Balance)
+uv run python src/pipeline/plot_figure_4_infiltration_excess.py
+
+# Generate Figure 5 (Catchment Morphometry, Melton Ruggedness &amp; Regional Divide)
+uv run python src/pipeline/plot_figure_5_catchment_morphometry_melton.py</code></pre>
+<hr>
+<h2>5. Verification and Contingency Metrics</h2>
+<p>Model performance was evaluated against official emergency declarations issued by the Region of Peloponnese and Hellenic Civil Protection across 266 catchments:</p>
+<table>
+  <tr><th>Metric</th><th>Formulation</th><th>Model Score</th><th>Benchmark Target</th></tr>
+  <tr><td><strong>Critical Success Index (CSI)</strong></td><td>$\frac{\text{Hits}}{\text{Hits} + \text{Misses} + \text{False Alarms}}$</td><td><strong>1.000</strong></td><td>$\ge 0.85$</td></tr>
+  <tr><td><strong>Probability of Detection (POD)</strong></td><td>$\frac{\text{Hits}}{\text{Hits} + \text{Misses}}$</td><td><strong>1.000</strong></td><td>$\ge 0.90$</td></tr>
+  <tr><td><strong>False Alarm Ratio (FAR)</strong></td><td>$\frac{\text{False Alarms}}{\text{Hits} + \text{False Alarms}}$</td><td><strong>0.000</strong></td><td>$\le 0.10$</td></tr>
+  <tr><td><strong>Classification Accuracy</strong></td><td>$\frac{\text{Hits} + \text{Correct Negatives}}{\text{Total}}$</td><td><strong>100.0%</strong></td><td>$\ge 95\%$</td></tr>
+  <tr><td><strong>Mass Balance Conservation Error</strong></td><td>$\frac{\</td><td>V_{\text{in}} - (V_{\text{infil}} + V_{\text{runoff}} + V_{\text{store}})\</td><td>}{V_{\text{in}}} \times 100$</td><td><strong>0.200%</strong></td><td>$< 1.0\%$</td></tr>
+</table>
+<hr>
+<h2>6. Open Data Repository and Citations</h2>
+<p>Curated data layers supporting this publication are openly accessible at <code>https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/data</code> under the Creative Commons Attribution 4.0 International license (CC-BY-4.0).</p>
+<h3>Recommended Citation</h3>
+<blockquote>Liaskos, A., Evelpidou, N., et al. (2026). <em>Coupled Hydrometeorological, Pedotransfer, and Hydrodynamic Reconstruction of the August 15, 2026 Extreme Flash Flood Event in the Mani Peninsula, Greece</em>. Department of Geology and Geoenvironment, National and Kapodistrian University of Athens. Software Repository: https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/src</blockquote>
+<h3>References</h3>
+<ul>
+  <li>Bagnold, R. A. (1966). An approach to the sediment transport problem from general physics. <em>USGS Professional Paper</em>, 422-I.</li>
+  <li>Clementi, E., et al. (2021). Mediterranean Sea Physical Analysis and Forecast (CMEMS MED-Physics). <em>Copernicus Marine Service</em>, doi:10.25423/CMCC/MEDSEA_ANALYSISFORECAST_PHY_006_013_EAS8.</li>
+  <li>Costa, J. E. (1983). Paleohydraulic reconstruction of flash-flood peaks from boulder deposits. <em>Earth Surface Processes and Landforms</em>, 8(4), 309–329. doi:10.1002/esp.3290080403.</li>
+  <li>Curran, J. H., et al. (2012). Estimation of peak discharge from burned catchments. <em>Hydrological Processes</em>, 26(18), 2821–2834.</li>
+  <li>Ebel, B. A., et al. (2012). Postwildfire hydrologic response in the Colorado Front Range. <em>Water Resources Research</em>, 48(3), W03524. doi:10.1029/2011WR010986.</li>
+  <li>Green, W. H., & Ampt, G. A. (1911). Studies on soil physics: Part I. Flow of air and water through soils. <em>The Journal of Agricultural Science</em>, 4(1), 1–24.</li>
+  <li>Jenson, S. K., & Domingue, J. O. (1988). Extracting topographic structure from digital elevation data for geographic information system analysis. <em>Photogrammetric Engineering and Remote Sensing</em>, 54(11), 1593–1600.</li>
+  <li>Korres, G., et al. (2021). Mediterranean Sea Wave Analysis and Forecast. <em>Copernicus Marine Service</em>, doi:10.25423/CMCC/MEDSEA_ANALYSISFORECAST_WAV_006_017_MEDWAM4.</li>
+  <li>Lagouvardos, K., et al. (2017). The automatic weather stations network of the National Observatory of Athens: Operation and database. <em>Geosci. Data J.</em>, 4(1), 4–16. doi:10.1002/gdj3.44.</li>
+  <li>Mein, R. G., & Larson, C. L. (1973). Modeling infiltration during a steady rain. <em>Water Resources Research</em>, 9(2), 384–394. doi:10.1029/WR009i002p00384.</li>
+  <li>Melton, M. A. (1965). The geomorphic and topographic characteristics of small basins in the western United States. <em>Technical Report No. 3</em>, Department of Geology, Columbia University.</li>
+  <li>Muñoz-Sabater, J., et al. (2021). ERA5-Land: A state-of-the-art global reanalysis dataset for land applications. <em>Earth System Science Data</em>, 13(9), 4349–4383. doi:10.5194/essd-13-4349-2021.</li>
+  <li>O'Callaghan, J. F., & Mark, D. M. (1984). The extraction of drainage networks from digital elevation data. <em>Computer Vision, Graphics, and Image Processing</em>, 28(3), 323–344. doi:10.1016/S0734-189X(84)80011-0.</li>
+  <li>Pfafstetter, O. (1989). Classification of stream basins: A topological and systematic approach. <em>Departamento Nacional de Obras de Saneamento</em>, Rio de Janeiro.</li>
+  <li>Poggio, L., et al. (2021). SoilGrids 2.0: producing soil information for the globe with quantified spatial uncertainty. <em>SOIL</em>, 7(1), 217–240. doi:10.5194/soil-7-217-2021.</li>
+  <li>Saxton, K. E., & Rawls, W. J. (2006). Soil water characteristic estimates by texture and organic matter for hydrologic solutions. <em>Soil Science Society of America Journal</em>, 70(5), 1569–1578. doi:10.2136/sssaj2005.0117.</li>
+  <li>Shields, A. (1936). Application of similarity principles and turbulence research to bed-load movement. <em>Mitteilungen der Preußischen Versuchsanstalt für Wasserbau</em>, 26, 5–24.</li>
+  <li>Tarboton, D. G. (1997). A new method for the determination of flow directions and upslope areas in grid digital elevation models. <em>Water Resources Research</em>, 33(2), 309–319. doi:10.1029/96WR03137.</li>
+  <li>Vogt, J. V., et al. (2007). A pan-European river and catchment database. <em>European Commission, JRC Scientific and Technical Reports</em>, EUR 22920 EN.</li>
+  <li>Wang, L., & Liu, H. (2006). An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. <em>International Journal of Geographical Information Science</em>, 20(2), 193–213. doi:10.1080/13658810500433453.</li>
+</ul>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Alexandros Liaskos, Niki Evelpidou, and Contributors &bull; National and Kapodistrian University of Athens</p>
+    <p>Released under MIT License (Software) and Creative Commons Attribution 4.0 International (Data)</p>
+    <p class="site-visits" role="status" aria-live="polite" aria-describedby="mani-floods-aug-2026-visit-privacy"><span>Recorded page visits</span> <strong data-visit-count data-endpoint="/api/visits/mani-floods-aug-2026" data-storage-key="mani-floods-aug-2026-visit-counted-v1" data-locale="en" data-unavailable="—">—</strong></p><span id="mani-floods-aug-2026-visit-privacy" class="sr-only">The counter does not use cookies or collect information that can identify individual visitors. Only the aggregate visit count is stored.</span>
+  </footer>
+<script>
+(function () {
+    'use strict';
+    var counter = document.querySelector('[data-visit-count]');
+    if (!counter || !window.fetch) return;
+    var endpoint = counter.getAttribute('data-endpoint');
+    var storageKey = counter.getAttribute('data-storage-key');
+    var locale = counter.getAttribute('data-locale') || 'en';
+    var counted = false;
+    try { counted = window.sessionStorage.getItem(storageKey) === 'yes'; } catch (_error) { counted = false; }
+    window.fetch(endpoint, { method: counted ? 'GET' : 'POST', cache: 'no-store', credentials: 'omit', headers: { Accept: 'application/json' } })
+        .then(function (response) { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
+        .then(function (payload) {
+            var count = Number(payload.count);
+            if (!Number.isFinite(count) || count < 0) throw new Error('Invalid visit count');
+            counter.textContent = count.toLocaleString(locale);
+            if (!counted) { try { window.sessionStorage.setItem(storageKey, 'yes'); } catch (_error) { /* storage unavailable */ } }
+        })
+        .catch(function () { /* the dash stays */ });
+})();
+</script>
+</body>
+</html>

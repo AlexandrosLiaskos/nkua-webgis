@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Beachrocks of Earth</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Interactive WebGIS of the global distribution of beachrocks, with site locations, geological characteristics, dating information and scientific references.">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="National and Kapodistrian University of Athens">
+    <meta property="og:title" content="Beachrocks of Earth">
+    <meta property="og:description" content="Explore the global distribution of beachrocks with site locations, geological characteristics, dating information and scientific references.">
+    <meta property="og:url" content="https://evelpidou.geo.nkua.cloud/beachrocks/">
+    <meta property="og:image" content="https://evelpidou.geo.nkua.cloud/beachrocks/map-preview.jpg?v=20261116-previews-1">
+    <meta property="og:image:secure_url" content="https://evelpidou.geo.nkua.cloud/beachrocks/map-preview.jpg?v=20261116-previews-1">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:image:alt" content="Beachrocks WebGIS by the National and Kapodistrian University of Athens">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Beachrocks of Earth">
+    <meta name="twitter:description" content="Explore the global distribution of beachrocks with site locations, geological characteristics, dating information and scientific references.">
+    <meta name="twitter:image" content="https://evelpidou.geo.nkua.cloud/beachrocks/map-preview.jpg?v=20261116-previews-1">
+    <meta name="twitter:image:alt" content="Beachrocks WebGIS by the National and Kapodistrian University of Athens">
+
+    <link rel="canonical" href="https://evelpidou.geo.nkua.cloud/beachrocks/">
+    <link rel="icon" type="image/png" sizes="48x48" href="/Nepal-Flood-2026/favicon.png?v=20260828-3">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Italianno&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/webgis-shared/lagoons-ui.css?v=20261116-footer-1">
+    <link rel="stylesheet" href="/webgis-shared/map-display.css?v=20261026-filters-display-1">
+    <style>
+        #map .custom-tooltip {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+        #map .custom-tooltip .lagoon-hover-name-en {
+            min-width: 0;
+            max-width: 100%;
+        }
+        #map .custom-tooltip .lagoon-hover-stat {
+            display: grid;
+            grid-template-columns: max-content minmax(0, 1fr);
+            align-items: start;
+            column-gap: 0.75rem;
+        }
+        #map .custom-tooltip .lagoon-hover-basis-tag.is-empty {
+            display: none;
+        }
+        #map .custom-tooltip .lagoon-hover-stat-value {
+            min-width: 0;
+            max-width: 100%;
+            margin-left: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="/webgis-shared/last-updated.css?v=20260905-4">
+    <link rel="stylesheet" href="/webgis-shared/feature-guide.css?v=20260905-1">
+    <script src="/webgis-shared/feature-guide.js?v=20260905-1" defer></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Welcome Modal — editorial poster -->
+        <div id="welcome-modal" class="modal welcome-modal wm">
+            <div class="modal-content wm-content">
+                <button class="wm-close" id="close-welcome" aria-label="Close welcome modal">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <article class="wm-poster">
+                    <div class="wm-cred">
+                        <div class="wm-institution">
+                            <img class="wm-institution-emblem" src="/webgis-shared/nkua-190-en-horizontal.png" alt="National and Kapodistrian University of Athens — 190 years, 1837–2027">
+                        </div>
+                    </div>
+                    <header class="wm-masthead">
+                        <div class="wm-eyebrow">A WebGIS · 2026</div>
+                        <h1 class="wm-title">Beachrocks<br><em class="wm-title-italic">of Earth</em></h1>
+                        <p class="wm-deck">
+                            Explore beachrock sites worldwide and the natural cementation of coastal sediments.
+                            Compare their settings, cement mineralogy, reported formation processes,
+                            and dating methods through records linked to published research.
+                        </p>
+                        <div class="wm-entry-row">
+                            <div class="wm-coverage" role="group" aria-label="Database coverage">
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Sites mapped</span>
+                                <span class="wm-cov-value">384</span>
+                            </div>
+                            <span class="wm-cov-divider" aria-hidden="true"></span>
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Countries covered</span>
+                                <span class="wm-cov-value-text">50 countries</span>
+                            </div>
+                            </div>
+                        </div>
+                    </header>
+                    <footer class="wm-foot">
+                        <div class="wm-team" aria-label="Research and project team">
+                            <span class="wm-team-eyebrow">Research &amp; project team</span>
+                            <div class="wm-team-list">
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt=""></a><figcaption>Prof. Niki Evelpidou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt=""></a><figcaption>Dr. Eleana Karkani</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Email Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt=""></a><figcaption>Dr. Giannis Saitis</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Email Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt=""></a><figcaption>Evangelos Spyrou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt=""></a><figcaption>Alexandros Liaskos</figcaption></figure>
+                            </div>
+                        </div>
+                        <div class="wm-sig-tag">
+                            <span class="wm-sig-tag-eyebrow">Website developed by</span>
+                            <a class="wm-signature wm-signature-sm" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu">
+                                <img src="/webgis-shared/signature.png" alt="">
+                                <span class="wm-signature-name">Alexandros Liaskos</span>
+                            </a>
+                        </div>
+                        <span class="wm-visits" role="status" aria-live="polite" aria-describedby="beachrocks-visit-privacy">
+                            <span>Recorded page visits</span>
+                            <strong data-visit-count data-endpoint="./api/page-summary" data-storage-key="beachrocks-visit-counted-v1" data-locale="en">—</strong>
+                        </span>
+                        <span id="beachrocks-visit-privacy" class="sr-only">The counter does not use cookies or collect information that can identify individual visitors. Only the aggregate visit count is stored.</span>
+                    </footer>
+                </article>
+            </div>
+        </div>
+
+        <!-- Error Banner -->
+        <div id="error-banner" class="error-banner hidden">
+            <div class="error-banner-content">
+                <div class="error-banner-icon">⚠️</div>
+                <div class="error-banner-message" id="error-banner-message"></div>
+                <button class="error-banner-close" id="error-banner-close" aria-label="Close error banner">×</button>
+            </div>
+        </div>
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a class="header-institution-link" href="/" aria-label="Home page — National and Kapodistrian University of Athens">
+                    <img class="header-institution-emblem" src="/webgis-shared/nkua-190-en-horizontal.png" alt="">
+                </a>
+                <nav class="header-nav"></nav>
+                <div class="header-title">
+                    <span class="header-rule" aria-hidden="true"></span>
+                    <h1>Beachrocks <em>of Earth</em></h1>
+                    <span class="header-rule" aria-hidden="true"></span>
+                </div>
+                <div class="header-actions">
+                    <span class="last-updated" lang="en">Last updated: <time datetime="2026-09-05">5 September 2026</time></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <button id="mobile-filters-toggle" class="mobile-toggle-btn">Filters</button>
+            <button id="mobile-search-toggle" class="mobile-toggle-btn">Search</button>
+            <button id="mobile-stats-toggle" class="mobile-toggle-btn">Statistics</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <button class="mobile-sidebar-close" id="mobile-sidebar-close" aria-label="Close sidebar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="sidebar-content">
+                    <div class="tab-nav" aria-label="Sidebar tabs">
+                        <button class="tab-button active" data-tab="filters" title="Filters" aria-label="Filters">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Filters</span>
+                        </button>
+                        <button class="tab-button" data-tab="search" title="Search" aria-label="Search">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Search</span>
+                        </button>
+                        <button class="tab-button" data-tab="stats" title="Statistics" aria-label="Statistics">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+                                    <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    <rect x="5" y="11" width="3" height="9"></rect>
+                                    <rect x="10" y="6" width="3" height="14"></rect>
+                                    <rect x="15" y="14" width="3" height="6"></rect>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Statistics</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Filters Tab Content -->
+                    <div class="tab-content active" id="filters-tab">
+                        <div id="filter-loading" class="filter-loading hidden">
+                            <div class="spinner-small"></div>
+                            <span>Loading filters...</span>
+                        </div>
+                        
+                        <div id="filter-controls">
+                            <!-- Country Filter -->
+                            <div class="filter-group">
+                                <label for="country-filter">Country:</label>
+                                <select id="country-filter" name="country" class="filter-select">
+                                    <option value="">All Countries</option>
+                                </select>
+                            </div>
+
+                            <!-- Ocean/Sea Filter -->
+                            <div class="filter-group">
+                                <label for="ocean-filter">Ocean / Sea:</label>
+                                <select id="ocean-filter" name="ocean" class="filter-select">
+                                    <option value="">All Oceans/Seas</option>
+                                </select>
+                            </div>
+
+                            <!-- Cement Type Filter -->
+                            <div class="filter-group">
+                                <label for="cement-filter">Cement Type:</label>
+                                <select id="cement-filter" name="cement" class="filter-select">
+                                    <option value="">All Cement Types</option>
+                                </select>
+                            </div>
+
+                            <!-- Formation Process Filter -->
+                            <div class="filter-group">
+                                <label for="process-filter">Formation Process:</label>
+                                <select id="process-filter" name="process" class="filter-select">
+                                    <option value="">All Processes</option>
+                                </select>
+                            </div>
+
+                            <!-- Formation Location Filter -->
+                            <div class="filter-group">
+                                <label for="location-filter">Formation Location:</label>
+                                <select id="location-filter" name="location" class="filter-select">
+                                    <option value="">All Locations</option>
+                                </select>
+                            </div>
+
+                            <!-- Dating Method Filter -->
+                            <div class="filter-group">
+                                <label for="dating-filter">Dating Method:</label>
+                                <select id="dating-filter" name="dating" class="filter-select">
+                                    <option value="">All Methods</option>
+                                </select>
+                            </div>
+                            
+                            <div id="active-filters-summary" class="active-filters-summary hidden">
+                                <h4>Active Filters:</h4>
+                                <div id="active-filters-list" class="active-filters-list"></div>
+                            </div>
+                            
+                            <button id="clear-filters" class="btn-secondary" style="width: 100%; margin-top: 1rem;">Clear All Filters</button>
+                        </div>
+                        
+                        <div id="filter-error" class="filter-error hidden"></div>
+                    </div>
+                    
+                    <!-- Search Tab Content -->
+                    <div class="tab-content" id="search-tab">
+                        <p class="stats-hint stats-hint-top">
+                            Find a site by name, area, country, ocean, or sea.
+                        </p>
+                        <div class="search-panel">
+                            <label for="global-search-input" class="search-label">Global Search</label>
+                            <input id="global-search-input" type="text" class="search-input"
+                                placeholder="Search sites, countries, oceans…" autocomplete="off">
+                            <div id="global-search-results" class="search-results" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Tab Content -->
+                    <div class="tab-content" id="stats-tab">
+                        <div class="statistics-panel">
+                            <p class="stats-hint stats-hint-top">
+                                Filter changes apply to statistics; clear all filters to view the full dataset.
+                            </p>
+                            <div class="stats-sample">Loading visible records…</div>
+                            <figure class="stats-figure">
+                                <figcaption class="stats-figcaption">
+                                    <span class="stats-fig-num">Fig.</span>
+                                    <span class="stats-figure-title">Beachrocks by country</span>
+                                </figcaption>
+                                <div class="stats-chart-wrap" aria-live="polite"></div>
+                                <div class="stats-axis-label">Country</div>
+                            </figure>
+                            <div class="stats-summary-head">
+                                <span class="stats-summary-eyebrow">Summary statistics</span>
+                            </div>
+                            <div class="stats-summary" aria-live="polite">
+                                <div class="stats-row"><span class="stats-row-label">Catalogue total</span><span class="stats-row-dots"></span><strong class="stats-row-value" id="total-beachrocks">—</strong></div>
+                                <div class="stats-row"><span class="stats-row-label">Visible countries</span><span class="stats-row-dots"></span><strong class="stats-row-value" id="visible-countries">—</strong></div>
+                                <div class="stats-row"><span class="stats-row-label">Visible oceans / seas</span><span class="stats-row-dots"></span><strong class="stats-row-value" id="visible-oceans">—</strong></div>
+                                <div class="stats-row"><span class="stats-row-label">Visible cement types</span><span class="stats-row-dots"></span><strong class="stats-row-value" id="visible-cement-types">—</strong></div>
+                                <div class="stats-row"><span class="stats-row-label">Visible records</span><span class="stats-row-dots"></span><strong class="stats-row-value" id="visible-points">0</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Container -->
+            <main class="map-container">
+                <div id="map"></div>
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading beachrock data...</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Beachrock Detail Modal -->
+        <div id="beachrock-modal" class="modal">
+            <div class="modal-content lagoon-modal-content">
+                <div class="modal-header lagoon-modal-header">
+                    <div class="lagoon-modal-titleblock" id="beachrock-modal-titleblock"></div>
+                    <button class="close modal-close" aria-label="Close modal">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="beachrock-details"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-authorship">
+                    <div class="footer-project-team">
+                        <span class="footer-authorship-label">Research &amp; project team</span>
+                        <div class="footer-team-list">
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt="Prof. Niki Evelpidou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt="Dr. Eleana Karkani"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Email Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt="Dr. Giannis Saitis"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Email Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt="Evangelos Spyrou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt="Alexandros Liaskos"></a></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-credit" aria-label="Copyright and licence">
+                    <a class="footer-collection-link" href="/">
+                        <span class="footer-collection-name"><span class="footer-current-catalogue">Beachrocks</span></span>
+                    </a>
+                    <span class="footer-credit-meta">
+                        <span>© 2026</span><span class="footer-credit-dot" aria-hidden="true">·</span>
+                        <span>Content under <a class="footer-license-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a></span>
+                    </span>
+                </div>
+                <nav class="footer-nav" aria-label="Site links">
+                    <button id="feature-guide-btn" class="footer-link" type="button" aria-haspopup="dialog" aria-controls="feature-guide-modal">Beachrocks</button>
+                    <span class="footer-dot" aria-hidden="true">&middot;</span>
+                    <button id="about-btn" class="footer-link" type="button">About</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="references-btn" class="footer-link" type="button">Sources</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="submit-data-btn" class="footer-link" type="button">Submit&nbsp;data</button>
+                </nav>
+            </div>
+        </footer>
+
+        <!-- References Modal -->
+        <div id="references-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="reference-modal-heading">
+                        <h3>Sources &amp; citations</h3>
+                        <p>Use the reference that matches what you are citing.</p>
+                    </div>
+                    <button class="modal-close" id="close-references" aria-label="Close sources and citations">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="reference-sections">
+                        <section class="reference-section" aria-labelledby="beachrocks-platform-title">
+                            <header class="reference-section-heading">
+                                <h4 id="beachrocks-platform-title">Web platform</h4>
+                                <p>Cite the interactive website and interface.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Evelpidou, N., Karkani, E., Saitis, G., Spyrou, E., &amp; Liaskos, A. (2026). <em>Beachrocks</em> [Interactive WebGIS]. <a href="https://evelpidou.geo.nkua.cloud/beachrocks" target="_blank" rel="noopener noreferrer">evelpidou.geo.nkua.cloud/beachrocks</a></p>
+                                <p><strong>Author affiliation</strong><br>National and Kapodistrian University of Athens</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="beachrocks-dataset-title">
+                            <header class="reference-section-heading">
+                                <h4 id="beachrocks-dataset-title">Dataset</h4>
+                                <p>Cite the dataset that underpins this catalogue.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Evelpidou, N., Saitis, G., Karkani, A., &amp; Spyrou, E. (2025). <em>Global database of beachrock distribution</em> (v.1.0) [Data set]. Zenodo. <a href="https://doi.org/10.5281/zenodo.16408107" target="_blank" rel="noopener noreferrer">https://doi.org/10.5281/zenodo.16408107</a></p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="beachrocks-supporting-title">
+                            <header class="reference-section-heading">
+                                <h4 id="beachrocks-supporting-title">Supporting publication</h4>
+                                <p>Additional evidence for the 11 updated Sri Lankan records.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Nayanthara, P.G.N., Dassanayake, A.B.N., Nakashima, K., &amp; Kawasaki, S. (2021). Distribution and cementation characteristics of beachrocks along southern, southwestern and western coast of Sri Lanka. <em>Journal of Sedimentary Environments</em>, 6, 93–106. <a href="https://doi.org/10.1007/s43217-020-00036-1" target="_blank" rel="noopener noreferrer">doi:10.1007/s43217-020-00036-1</a>.</p>
+                            </div>
+                        </section>
+                        <section class="reference-section" aria-labelledby="beachrocks-licence-title">
+                            <header class="reference-section-heading">
+                                <h4 id="beachrocks-licence-title">Licence &amp; reuse</h4>
+                                <p>Terms for original platform content.</p>
+                            </header>
+                            <div class="reference-section-copy">
+                                <p>Except where third-party data, basemaps, imagery, logos, or source materials are separately credited, the original text, interface, visualisation design, and research outputs of this application are licensed under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">Creative Commons Attribution 4.0 International licence (CC BY 4.0)</a>.</p>
+                                <p>You may share and adapt this material provided that you give appropriate credit, link to the licence, and indicate whether changes were made. Third-party materials remain subject to their respective terms and licences.</p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Data Modal -->
+        <div id="submit-data-modal" class="modal submit-data-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Submit Beachrocks data</h3>
+                    <button class="modal-close" id="close-submit-data" aria-label="Close submission instructions">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="submit-data-intro"><p>Submit a beachrock occurrence or a correction supported by a scientific source. Use one row per occurrence and source. Describe location accuracy and retain the terminology used in the cited study.</p></div>
+                    <div class="submit-data-section">
+                        <h4>Prepare your submission</h4>
+                        <p>Fill in the blank Data sheet in the XLSX workbook. The Field guide describes every column, its units and examples. You can also use the CSV with the same headers.</p>
+                        <p class="submit-data-note">Leave unknown values blank. For a correction, include the existing id and explain the change in submission_notes.</p>
+                        <div class="submit-data-actions">
+                            <a class="btn-primary" href="/beachrocks/templates/beachrocks-data-template.xlsx?v=20260905-1" download="beachrocks-data-template.xlsx">Download XLSX</a>
+                            <a class="btn-primary" href="/beachrocks/templates/beachrocks-data-template.csv?v=20260905-1" download="beachrocks-data-template.csv">Download CSV</a>
+                            <a class="btn-primary" href="mailto:alexliaskos@geol.uoa.gr,evelpidou@geol.uoa.gr?subject=Beachrocks%20data%20submission&amp;body=Dear%20Beachrocks%20team%2C%0A%0AI%20would%20like%20to%20submit%20data%20for%20Beachrocks.%0A%0AContributor%20names%0A%5BPlease%20complete%5D%0A%0AAffiliation%0A%5BPlease%20complete%5D%0A%0AContact%20email%0A%5BPlease%20complete%5D%0A%0ANew%20records%20or%20corrections%20and%20geographic%20coverage%0A%5BPlease%20complete%5D%0A%0APlease%20attach%20the%20completed%20XLSX%20or%20CSV%20and%20supporting%20sources%20manually.%0A%0ANotes%20and%20attachment%20reuse%20permissions%0A%5BPlease%20complete%5D">Send by email</a>
+                        </div>
+                    </div>
+                    <div class="submit-data-section">
+                        <h4>Required fields</h4>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Field and column</th><th scope="col">Format and unit</th><th scope="col">What to provide</th></tr></thead>
+                            <tbody><tr><th scope="row">Site<br><code>site</code></th><td>Text</td><td>Name of the beachrock occurrence or site.</td></tr>
+                            <tr><th scope="row">Country<br><code>country</code></th><td>Text</td><td>Country containing the submitted site. Contributions are not limited to the current geographic coverage.</td></tr>
+                            <tr><th scope="row">Latitude<br><code>latitude</code></th><td>WGS84 (degrees)</td><td>WGS84 decimal latitude. Use a minus sign south of the equator.</td></tr>
+                            <tr><th scope="row">Longitude<br><code>longitude</code></th><td>WGS84 (degrees)</td><td>WGS84 decimal longitude. Use a minus sign west of Greenwich.</td></tr>
+                            <tr><th scope="row">Supporting source<br><code>reference</code></th><td>Text</td><td>Traceable publication, DOI, report or source URL supporting this record. Include page or figure numbers where relevant.</td></tr></tbody>
+                        </table></div>
+                    </div>
+                    <details class="submit-data-section submission-optional">
+                        <summary>Optional fields (20)</summary>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Field and column</th><th scope="col">Format and unit</th><th scope="col">What to provide</th></tr></thead>
+                            <tbody><tr><th scope="row">Existing record ID<br><code>id</code></th><td>Whole number</td><td>For a correction, copy the ID of the existing map record. Leave blank for a new record.</td></tr>
+                            <tr><th scope="row">Source record number<br><code>record_no</code></th><td>Text</td><td>Identifier used in the source inventory, where available. This is separate from the website ID.</td></tr>
+                            <tr><th scope="row">Locality<br><code>area</code></th><td>Text</td><td>Island, region or locality containing the occurrence. This is a place name.</td></tr>
+                            <tr><th scope="row">Ocean or sea<br><code>ocean_sea</code></th><td>Text</td><td>Named ocean or sea adjoining the site.</td></tr>
+                            <tr><th scope="row">Position accuracy<br><code>pos_type</code></th><td>Text</td><td>Describe whether the position was measured or approximated from a source map or locality.</td></tr>
+                            <tr><th scope="row">Maximum altitude<br><code>maximum_altitude</code></th><td>Text</td><td>Reported upper elevation, including unit, datum and uncertainty.</td></tr>
+                            <tr><th scope="row">Minimum altitude<br><code>minimum_altitude</code></th><td>Text</td><td>Reported lower elevation, including unit, datum and uncertainty.</td></tr>
+                            <tr><th scope="row">Number of slabs<br><code>no_of_slabs</code></th><td>Whole number</td><td>Number of distinct slabs reported at the occurrence.</td></tr>
+                            <tr><th scope="row">Tidal range<br><code>tidal_range</code></th><td>Text</td><td>Reported tidal range, including unit and the tidal reference where stated.</td></tr>
+                            <tr><th scope="row">Sediment composition<br><code>main_composition</code></th><td>Text</td><td>Main sediment or clast composition reported by the source.</td></tr>
+                            <tr><th scope="row">Cement mineralogy<br><code>cement_type</code></th><td>Text</td><td>Reported cement mineralogy. Preserve the source terminology and explain abbreviations in submission_notes.</td></tr>
+                            <tr><th scope="row">Cement microstructure<br><code>cement_microstructure</code></th><td>Text</td><td>Reported cement texture or microstructure.</td></tr>
+                            <tr><th scope="row">Formation process<br><code>formation_process</code></th><td>Text</td><td>Formation process or mechanism reported by the cited study.</td></tr>
+                            <tr><th scope="row">Formation environment<br><code>formation_location</code></th><td>Text</td><td>Reported coastal or tidal zone of formation.</td></tr>
+                            <tr><th scope="row">Water table<br><code>water_table</code></th><td>Text</td><td>Reported water table position or behaviour, including units where relevant.</td></tr>
+                            <tr><th scope="row">Dating method<br><code>dating_method</code></th><td>Text</td><td>Method used to date the material. Preserve the reported method.</td></tr>
+                            <tr><th scope="row">Dated material<br><code>dated_sample</code></th><td>Text</td><td>Sample or material dated by the cited study.</td></tr>
+                            <tr><th scope="row">Reported age<br><code>estimated_age</code></th><td>Text</td><td>Reported age, unit, uncertainty and calibration or reference convention. Do not convert an age to a publication year.</td></tr>
+                            <tr><th scope="row">Publication year<br><code>publication_year</code></th><td>Whole number</td><td>Year of publication of the supporting study.</td></tr>
+                            <tr><th scope="row">Submission notes<br><code>submission_notes</code></th><td>Text</td><td>Explain corrections, coordinate accuracy, measurement methods, vertical datum and any uncertainty. Identify attachments here.</td></tr></tbody>
+                        </table></div>
+                    </details>
+                    <div class="submit-data-section">
+                        <h4>Site guidance</h4>
+                        <ul class="notes-list"><li>Keep reported altitude, tidal range and water table values together with their units and vertical reference. Preserve reported ranges rather than inventing a single value.</li><li>For ages, retain the reported uncertainty, unit, dating convention and calibration information. Record the dated material and method separately.</li><li>Use reported mineralogy and formation interpretations. Leave unreported properties blank. The field area describes a locality, not a measured surface area.</li></ul>
+                    </div>
+                    <p class="submit-data-note">Include contributor names, affiliation and contact details in your email. Attach the completed file and supporting sources manually. The research team reviews each submission before publication.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+    
+    <!-- NKUA VPS data client -->
+    <script src="/webgis-shared/vps-data-client.js?v=20261026-filters-display-1"></script>
+    <script src="/webgis-shared/common-map.js?v=20261026-filters-display-1"></script>
+    <script src="/webgis-shared/map-display.js?v=20261026-filters-display-1"></script>
+        <script src="/webgis-shared/common-ui.js?v=20261026-filters-display-1"></script>
+    <script src="./measurement-tool.js"></script>
+    <script src="./app.js?v=20261116-data-functions-1"></script>
+        <dialog id="feature-guide-modal" class="feature-guide-dialog" aria-labelledby="feature-guide-title">
+            <header class="feature-guide-header">
+                <h2 id="feature-guide-title">What is a beachrock?</h2>
+                <button class="feature-guide-close" type="button" aria-label="Close explanation">&times;</button>
+            </header>
+            <div class="feature-guide-body">
+                <p class="feature-guide-definition">Beachrock is sand, gravel or other beach sediment naturally bound into rock by carbonate minerals. It commonly forms between high and low tide, or just above that zone.</p>
+                <figure class="feature-guide-figure">
+                    <img src="/webgis-shared/feature-guide/beachrock-liguria.jpg" width="1280" height="720" alt="Aerial view of fractured, submerged beachrock beside the beach at Pietra Ligure, Italy." loading="lazy" decoding="async">
+                    <figcaption>
+                        <span>Submerged beachrock at Pietra Ligure, Italy.</span>
+                        <span>Photo: Alessio Rovere · <a href="https://commons.wikimedia.org/wiki/File:Beachrock_aerial_view.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="license noopener noreferrer">CC BY-SA 4.0</a>.</span>
+                    </figcaption>
+                </figure>
+                <p class="feature-guide-source">Definition source: <a href="https://doi.org/10.1007/s43217-020-00036-1" target="_blank" rel="noopener noreferrer">Nayanthara et al. (2021), Journal of Sedimentary Environments</a>.</p>
+            </div>
+        </dialog>
+</body>
+</html>

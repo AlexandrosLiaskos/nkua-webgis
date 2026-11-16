@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Historic Floods of Earth</title>
+
+    <!-- SEO Meta Tags -->
+    
+    <meta name="description"
+        content="An interactive WebGIS collection of peer-reviewed datasets of historic floods from around the world.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="National and Kapodistrian University of Athens">
+    <meta property="og:title" content="Historic Floods of Earth">
+    
+    <meta property="og:description"
+        content="An interactive WebGIS collection of peer-reviewed datasets of historic floods from around the world.">
+    <meta property="og:url" content="https://historicfloods.org/">
+    <meta property="og:image" content="https://evelpidou.geo.nkua.cloud/floods/map-preview.jpg?v=20261116-previews-1">
+    <meta property="og:image:secure_url" content="https://evelpidou.geo.nkua.cloud/floods/map-preview.jpg?v=20261116-previews-1">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:image:alt" content="Floods WebGIS by the National and Kapodistrian University of Athens">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Historic Floods of Earth">
+    
+    <meta name="twitter:description"
+        content="An interactive WebGIS collection of peer-reviewed datasets of historic floods from around the world.">
+    <meta name="twitter:image" content="https://evelpidou.geo.nkua.cloud/floods/map-preview.jpg?v=20261116-previews-1">
+    <meta name="twitter:image:alt" content="Floods WebGIS by the National and Kapodistrian University of Athens">
+
+    <link rel="canonical" href="https://historicfloods.org/">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=20261004-historicfloods-1">
+    <link rel="manifest" href="./site.webmanifest">
+
+    <!-- Load the title's exact font early, without a cursive fallback flash. -->
+    <link rel="preload" href="./fonts/italianno-latin-400.woff2?v=20261004-startup-ui-1" as="font" type="font/woff2" crossorigin>
+    <style>
+        @font-face {
+            font-family: 'Floods Title';
+            src: url('./fonts/italianno-latin-400.woff2?v=20261004-startup-ui-1') format('woff2');
+            font-style: normal;
+            font-weight: 400;
+            font-display: block;
+        }
+        #app .header h1 { font-family: 'Floods Title', Georgia, serif; }
+        .flood-title-loading #app .header h1 { visibility: hidden; }
+        .flood-title-fallback #app .header h1 {
+            font-family: Georgia, serif;
+            font-style: italic;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+        }
+        #filters-tab:has(#fbc-panel) .flood-filter-loading { display: none; }
+        .flood-filter-loading .fbc-picker-btn { cursor: default; }
+        .flood-filter-loading .fbc-list-search { opacity: 1; }
+        .flood-filter-status {
+            padding: 1rem 0.45rem;
+            color: var(--text-secondary);
+            font: 400 0.75rem/1.5 var(--font-sans);
+        }
+    </style>
+    <script>
+        (() => {
+            if (!document.fonts) return;
+            const root = document.documentElement;
+            root.classList.add('flood-title-loading');
+            let finished = false;
+            let timer;
+            const finish = fallback => {
+                if (finished) return;
+                finished = true;
+                clearTimeout(timer);
+                if (fallback) root.classList.add('flood-title-fallback');
+                root.classList.remove('flood-title-loading');
+            };
+            // A failed font request must not leave the heading invisible.
+            timer = setTimeout(() => finish(true), 5000);
+            document.fonts.load('400 1em "Floods Title"', 'Historic floods of Earth')
+                .then(faces => finish(!faces.length), () => finish(true));
+        })();
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/webgis-shared/lagoons-ui.css?v=20261116-footer-1">
+    <link rel="stylesheet" href="./css/river-network.css?v=20261004-layer-menu-polish-1">
+    <style>
+        #map .lagoon-hover-name-en {
+            min-width: 0;
+            max-width: 100%;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+        #map .hanze-tooltip {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+        #map .hanze-tooltip .lagoon-hover-stat {
+            display: grid;
+            grid-template-columns: max-content minmax(0, 1fr);
+            align-items: start;
+            column-gap: 0.75rem;
+        }
+        #map .hanze-tooltip .lagoon-hover-basis-tag.is-empty {
+            display: none;
+        }
+        #map .hanze-tooltip .lagoon-hover-stat-value {
+            min-width: 0;
+            max-width: 100%;
+            margin-left: 0;
+        }
+        #map .flood-preview-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            font: 0.75rem var(--font-sans);
+        }
+    </style>
+    <link rel="stylesheet" href="/webgis-shared/last-updated.css?v=20260905-4">
+    <link rel="stylesheet" href="/webgis-shared/feature-guide.css?v=20260905-1">
+    <link rel="stylesheet" href="./css/display-settings.css?v=20261004-display-cleanup-1">
+    <link rel="stylesheet" href="./css/search-ui.css?v=20261004-search-ui-1">
+    <link rel="stylesheet" href="./css/sources-ui.css?v=20261004-sources-reader-1">
+    <link rel="stylesheet" href="./css/flood-guide.css?v=20261004-guide-sidebar-1">
+    <script src="/webgis-shared/feature-guide.js?v=20260905-1" defer></script>
+    <script src="./js/ui/sources-reader.js?v=20261004-sources-reader-1" defer></script>
+    <script src="./js/ui/flood-guide-sidebar.js?v=20261004-guide-sidebar-1" defer></script>
+    <link rel="stylesheet" href="./css/webgis-platform.css?v=20261005-data-section-1">
+    <link rel="stylesheet" href="./css/record-maps.css?v=20261005-record-maps-3">
+    <script type="module" src="./js/ui/record-maps.js?v=20261005-record-maps-3"></script>
+</head>
+
+<body data-active-tab="filters">
+    <div id="app">
+        <!-- Welcome Modal — editorial poster -->
+        <div id="welcome-modal" class="modal welcome-modal wm">
+            <div class="modal-content wm-content">
+                <button class="wm-close" id="close-welcome" aria-label="Close welcome modal">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <article class="wm-poster">
+                    <div class="wm-cred">
+                        <div class="wm-institution">
+                            <img class="wm-institution-emblem" src="/webgis-shared/nkua-190-en-horizontal.png" alt="National and Kapodistrian University of Athens — 190 years, 1837–2027">
+                        </div>
+                    </div>
+                    <header class="wm-masthead">
+                        <div class="wm-eyebrow">A WebGIS · 2026</div>
+                        <h1 class="wm-title">Historic floods<br><em class="wm-title-italic">of Earth</em></h1>
+                        <p class="wm-deck">
+                            An interactive WebGIS collection of peer-reviewed datasets of historic floods from around the world.
+                        </p>
+                        <div class="wm-entry-row">
+                            <div class="wm-coverage" role="group" aria-label="Current dataset coverage">
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Records</span>
+                                <span class="wm-cov-value" id="welcome-record-count" aria-live="polite">—</span>
+                            </div>
+                            <span class="wm-cov-divider" aria-hidden="true"></span>
+                            <div class="wm-cov-block">
+                                <span class="wm-cov-label">Regions covered</span>
+                                <span class="wm-cov-value-text">Europe</span>
+                            </div>
+                            </div>
+                        </div>
+                    </header>
+                    <footer class="wm-foot">
+                        <div class="wm-team" aria-label="Research and project team">
+                            <span class="wm-team-eyebrow">Research &amp; project team</span>
+                            <div class="wm-team-list">
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt=""></a><figcaption>Prof. Niki Evelpidou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt=""></a><figcaption>Dr. Eleana Karkani</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Email Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt=""></a><figcaption>Dr. Giannis Saitis</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Email Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt=""></a><figcaption>Evangelos Spyrou</figcaption></figure>
+                                <figure class="wm-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt=""></a><figcaption>Alexandros Liaskos</figcaption></figure>
+                            </div>
+                        </div>
+                        <div class="wm-sig-tag">
+                            <span class="wm-sig-tag-eyebrow">Website developed by</span>
+                            <a class="wm-signature wm-signature-sm" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu">
+                                <img src="/webgis-shared/signature.png" alt="">
+                                <span class="wm-signature-name">Alexandros Liaskos</span>
+                            </a>
+                        </div>
+                        <span class="wm-visits" role="status" aria-live="polite" aria-describedby="floods-visit-privacy">
+                            <span>Recorded page visits</span>
+                            <strong data-visit-count data-endpoint="./api/page-summary" data-storage-key="floods-visit-counted-v1" data-locale="en">—</strong>
+                        </span>
+                        <span id="floods-visit-privacy" class="sr-only">The counter does not use cookies or collect information that can identify individual visitors. Only the aggregate visit count is stored.</span>
+                    </footer>
+                </article>
+            </div>
+        </div>
+
+        <!-- Error Banner -->
+        <div id="error-banner" class="error-banner hidden">
+            <div class="error-banner-content">
+                <div class="error-banner-icon">⚠️</div>
+                <div class="error-banner-message" id="error-banner-message"></div>
+                <button class="error-banner-close" id="error-banner-close" aria-label="Close error banner">×</button>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a class="header-institution-link" href="/" aria-label="Home page — National and Kapodistrian University of Athens">
+                    <img class="header-institution-emblem" src="/webgis-shared/nkua-190-en-horizontal.png" alt="">
+                </a>
+                <nav class="header-nav">
+                </nav>
+                <div class="header-title">
+                    <span class="header-rule" aria-hidden="true"></span>
+                    <h1>Historic floods <em>of Earth</em></h1>
+                    <span class="header-rule" aria-hidden="true"></span>
+                </div>
+                <div class="header-actions">
+                    <span class="last-updated" lang="en">Last updated: <time datetime="2026-10-04">4 October 2026</time></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <button id="mobile-filters-toggle" class="mobile-toggle-btn">Filters</button>
+            <button id="mobile-search-toggle" class="mobile-toggle-btn">Search</button>
+            <button id="mobile-stats-toggle" class="mobile-toggle-btn">Statistics</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <!-- Mobile Close Button -->
+                <button class="mobile-sidebar-close" id="mobile-sidebar-close" aria-label="Close sidebar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="sidebar-content">
+                    <!-- Top Tabs -->
+                    <div class="tab-nav" aria-label="Sidebar tabs">
+                        <button class="tab-button active" data-tab="filters" title="Filters" aria-label="Filters">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Filters</span>
+                        </button>
+
+                        <button class="tab-button" data-tab="search" title="Search" aria-label="Search">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Search</span>
+                        </button>
+                        <button class="tab-button" data-tab="stats" title="Statistics" aria-label="Statistics">
+                            <span class="tab-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="square">
+                                    <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    <rect x="5" y="11" width="3" height="9"></rect>
+                                    <rect x="10" y="6" width="3" height="14"></rect>
+                                    <rect x="15" y="14" width="3" height="6"></rect>
+                                </svg>
+                            </span>
+                            <span class="tab-label">Statistics</span>
+                        </button>
+                    </div>
+
+                    <!-- Filters Tab Content -->
+                    <div class="tab-content active" id="filters-tab">
+                        <!-- Filter Loading Indicator -->
+                        <div id="filter-loading" class="filter-loading hidden">
+                            <div class="spinner-small"></div>
+                            <span>Loading filters...</span>
+                        </div>
+
+                        <!-- The editorial shell is visible immediately; data populates it after initialization. -->
+                        <div class="fbc-panel flood-filter-loading" role="status" aria-label="Loading filters">
+                            <div class="fbc-picker-btn" aria-hidden="true">
+                                <span class="fbc-picker-eyebrow">filter by</span>
+                                <span class="fbc-picker-row">
+                                    <span class="fbc-picker-value">Country / territory</span>
+                                    <svg class="fbc-picker-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </span>
+                            </div>
+                            <div class="fbc-content">
+                                <div class="fbc-list">
+                                    <input class="fbc-list-search" type="search" placeholder="Search country / territory…" disabled aria-hidden="true" tabindex="-1">
+                                    <div class="flood-filter-status">Loading filters…</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filter Controls Container -->
+                        <div id="filter-controls" class="nkua-legacy-controls" hidden>
+                            <input type="hidden" id="country-filter" value="">
+                            <input type="hidden" id="dataset-filter" value="">
+                            <input type="hidden" id="flood-type-filter" value="">
+                            <input type="hidden" id="water-source-filter" value="">
+                            <input type="hidden" id="onset-filter" value="">
+                            <input type="hidden" id="process-filter" value="">
+                            <input type="hidden" id="mechanism-filter" value="">
+                            <input type="hidden" id="sediment-filter" value="">
+                            <input type="hidden" id="setting-filter" value="">
+                            <input type="hidden" id="compound-filter" value="">
+                            <!-- Year Filter -->
+                            <div class="filter-group">
+                                <label>Year:</label>
+                                <button class="filter-selector" data-filter="year" id="year-filter-btn">
+                                    <span class="filter-selector-value">All Years</span>
+                                    <span class="filter-selector-badge" id="year-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="year-filter" name="year" value="">
+                            </div>
+
+                            <!-- Month Filter -->
+                            <div class="filter-group">
+                                <label>Month:</label>
+                                <button class="filter-selector" data-filter="month" id="month-filter-btn">
+                                    <span class="filter-selector-value">All Months</span>
+                                    <span class="filter-selector-badge" id="month-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="month-filter" name="month" value="">
+                            </div>
+
+                            <!-- Location Filter -->
+                            <div class="filter-group">
+                                <label>Location:</label>
+                                <button class="filter-selector" data-filter="location" id="location-filter-btn">
+                                    <span class="filter-selector-value">All Locations</span>
+                                    <span class="filter-selector-badge" id="location-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="location-filter" name="location" value="">
+                            </div>
+
+                            <!-- Death Toll Filter -->
+                            <div class="filter-group">
+                                <label>Death Toll:</label>
+                                <button class="filter-selector" data-filter="deathsToll" id="deaths-toll-filter-btn">
+                                    <span class="filter-selector-value">All Events</span>
+                                    <span class="filter-selector-badge" id="deaths-toll-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="deaths-toll-filter" name="deathsToll" value="">
+                            </div>
+
+                            <!-- Event Name Filter -->
+                            <div class="filter-group">
+                                <label>Event Name:</label>
+                                <button class="filter-selector" data-filter="eventName" id="event-name-filter-btn">
+                                    <span class="filter-selector-value">All Events</span>
+                                    <span class="filter-selector-badge" id="event-name-filter-badge"></span>
+                                    <svg class="filter-selector-arrow" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <input type="hidden" id="event-name-filter" name="eventName" value="">
+                            </div>
+
+                            <!-- Active Filters Summary -->
+                            <div id="active-filters-summary" class="active-filters-summary hidden">
+                                <h4>Active Filters:</h4>
+                                <div id="active-filters-list" class="active-filters-list"></div>
+                            </div>
+
+                            <!-- SQL Filter Button -->
+                            <button id="sql-filter-btn" class="btn-primary" style="width: 100%; margin-top: 1rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="margin-right: 6px; vertical-align: middle;">
+                                    <polyline points="4 17 10 11 4 5"></polyline>
+                                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                                </svg>
+                                SQL Query Filter
+                            </button>
+
+                            <!-- Clear Filters Button -->
+                            <button id="clear-filters" class="btn-secondary"
+                                style="width: 100%; margin-top: 0.5rem;">Clear All Filters</button>
+                        </div>
+
+                        <!-- Filter Error Message -->
+                        <div id="filter-error" class="filter-error hidden"></div>
+                    </div>
+
+                    <!-- Search Tab Content -->
+                    <div class="tab-content" id="search-tab">
+                        <div class="search-panel">
+                            <label for="global-search-input" class="search-label">Search locations, events, countries and catalogues</label>
+                            <input id="global-search-input" type="search" class="eds-search flood-search-input"
+                                placeholder="Search the catalogue…" autocomplete="off" spellcheck="false"
+                                aria-describedby="global-search-hint" />
+                            <p id="global-search-hint" class="flood-search-hint">Select a result to filter the map and statistics.</p>
+                            <div id="global-search-selected" class="search-selected hidden"></div>
+                            <div id="global-search-results" class="search-results hidden" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Tab Content -->
+                    <div class="tab-content" id="stats-tab">
+                        <div class="statistics-panel">
+                            <p class="stats-hint stats-hint-top">
+                                Filter changes apply to statistics; clear all filters to view the full dataset.
+                            </p>
+                            <div class="stats-sample">Loading visible records…</div>
+                            <figure class="stats-figure">
+                                <figcaption class="stats-figcaption">
+                                    <span class="stats-fig-num">Fig.</span>
+                                    <span class="stats-figure-title">Flood source records by year</span>
+                                </figcaption>
+                                <div class="stats-chart-wrap" aria-live="polite"></div>
+                                <div class="stats-axis-label">Year</div>
+                            </figure>
+                            <div class="stats-summary-head">
+                                <span class="stats-summary-eyebrow">Summary statistics</span>
+                            </div>
+                            <div class="stats-summary" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Container -->
+            <main class="map-container">
+                <div id="map"></div>
+
+                <!-- Loading Indicator -->
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading flood data...</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Flood Detail Modal -->
+        <div id="flood-modal" class="modal">
+            <div class="modal-content lagoon-modal-content">
+                <div class="modal-header lagoon-modal-header">
+                    <div class="lagoon-modal-titleblock" id="flood-modal-titleblock"></div>
+                    <button class="modal-close" id="close-flood" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="flood-details">
+                        <!-- Details will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-authorship">
+                    <div class="footer-project-team">
+                        <span class="footer-authorship-label">Research &amp; project team</span>
+                        <div class="footer-team-list">
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evelpidou@geol.uoa.gr" aria-label="Email Niki Evelpidou" title="evelpidou@geol.uoa.gr"><img src="/team/niki-evelpidou.webp" alt="Prof. Niki Evelpidou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:ekarkani@geol.uoa.gr" aria-label="Email Eleana Karkani" title="ekarkani@geol.uoa.gr"><img src="/team/eleana-karkani.webp" alt="Dr. Eleana Karkani"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:saitij@geol.uoa.gr" aria-label="Email Giannis Saitis" title="saitij@geol.uoa.gr"><img src="/team/ioannis-saitis.webp" alt="Dr. Giannis Saitis"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="mailto:evspyrou@geol.uoa.gr" aria-label="Email Evangelos Spyrou" title="evspyrou@geol.uoa.gr"><img src="/team/evangelos-spyrou.webp" alt="Evangelos Spyrou"></a></figure>
+                            <figure class="footer-team-member"><a class="team-photo-link" href="https://liaskos.eu" target="_blank" rel="noopener" aria-label="Website of Alexandros Liaskos" title="liaskos.eu"><img src="/team/alexandros-liaskos.webp" alt="Alexandros Liaskos"></a></figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-credit" aria-label="Copyright and licence">
+                    <!-- Footer collection label hidden.
+                    <a class="footer-collection-link" href="/">
+                        <span class="footer-collection-name"><span class="footer-current-catalogue">Floods</span></span>
+                    </a>
+                    -->
+                    <span class="footer-credit-meta">
+                        <span>© 2026</span><span class="footer-credit-dot" aria-hidden="true">·</span>
+                        <span>Platform content under <a class="footer-license-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a></span>
+                    </span>
+                </div>
+                <nav class="footer-nav" aria-label="Site links">
+                    <button id="feature-guide-btn" class="footer-link" type="button" aria-haspopup="dialog" aria-controls="feature-guide-modal">Floods</button>
+                    <span class="footer-dot" aria-hidden="true">&middot;</span>
+                    <button id="about-btn" class="footer-link" type="button">About</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="references-btn" class="footer-link" type="button">Sources</button>
+                    <span class="footer-dot" aria-hidden="true">·</span>
+                    <button id="submit-data-btn" class="footer-link" type="button">Submit&nbsp;data</button>
+                </nav>
+            </div>
+        </footer>
+
+        <!-- References Modal -->
+<div id="references-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="sources-modal-title">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="reference-modal-heading">
+                        <h3 id="sources-modal-title">Sources &amp; citations</h3>
+                        <p>Explore the WebGIS, its data and supporting references.</p>
+                    </div>
+                    <button class="modal-close" id="close-references" aria-label="Close sources and citations">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="reference-sections">
+                        <div class="source-entry" id="source-platform"><button type="button" id="open-source-platform" class="source-entry-summary" data-open-source="source-platform"><h4 class="source-entry-label"><span class="source-entry-title" id="floods-platform-title">This WebGIS</span><span class="source-entry-meta">Overview, maps &amp; citation</span></h4><svg class="source-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 6 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+                        <div class="source-entry" id="source-nkua"><button type="button" id="open-source-nkua" class="source-entry-summary" data-open-source="source-nkua"><h4 class="source-entry-label"><span class="source-entry-title" id="floods-publication-title">NKUA catalogue</span><span class="source-entry-meta">Greece · 1886–2022 · 1,992 records</span></h4><svg class="source-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 6 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+                        <div class="source-entry" id="source-hanze"><button type="button" id="open-source-hanze" class="source-entry-summary" data-open-source="source-hanze"><h4 class="source-entry-label"><span class="source-entry-title" id="floods-hanze-title">HANZE catalogue</span><span class="source-entry-meta">Europe · 1870–2025 · 2,961 records</span></h4><svg class="source-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 6 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+                        <!-- CNIH is inactive pending peer-reviewed validation; source information is preserved.
+                        <section class="reference-section" aria-labelledby="floods-cnih-title">
+                            <header class="reference-section-heading"><h4 id="floods-cnih-title">CNIH catalogue</h4></header>
+                            <div class="reference-section-copy">
+                                <p>Ministerio para la Transición Ecológica y el Reto Demográfico (n.d.). <em>Catálogo Nacional de Inundaciones Históricas (CNIH)</em> (Version v27) [Data set]. <a href="https://www.miteco.gob.es/es/agua/temas/gestion-de-los-riesgos-de-inundacion/cnih.html" target="_blank" rel="noopener noreferrer">Official catalogue</a>. Retrieved 4 October 2026.</p>
+                                <p>Instituto Geográfico Nacional (2025). <em>Municipios</em> [Municipality reference locations; NGMEP]. Revision 20 October 2025. <a href="https://www.ign.es/resources/ane/Informacion_Geografica_Destacada/IGN_INFOGEO_MUNICIPIOS.html" target="_blank" rel="noopener noreferrer">Official data description</a>. <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0 ign.es</a>.</p>
+                                <p class="reference-scope">3,402 basin-event records from Spain, including ancient documentary entries and floods through 2023.</p>
+                                <p class="reference-scope">1,034 records have approximate municipal display locations from IGN, matched to explicitly affected municipalities. These map pins do not identify observed flood sites or inundation boundaries. The other 2,368 records remain searchable and included in statistics, without a map pin.</p>
+                                <details class="reference-notes">
+                                    <summary>Catalogue notes &amp; source files</summary>
+                                    <p>The catalogue preserves basin-specific records: one wider flood episode can appear in several records. Counts refer to source records, rather than unique episodes; records are not automatically merged with HANZE.</p>
+                                    <p>95 records contain native classifications of flood origin, mechanism or characteristics. Missing classifications in the 3,307 legacy records remain Unclassified. Only classifications explicitly supplied for the event are used.</p>
+                                    <p>Year-only, month-only and approximate dates retain their source precision. Three BCE documentary entries are preserved as historical date labels. Original identifiers, references, reported impacts and hydrological observations are retained; missing values remain unknown.</p>
+                                    <p>Municipality codes and names are corroborated before assigning an IGN display location. CNIH is reused under <a href="https://www.miteco.gob.es/es/atencion-al-ciudadano/aviso-legal.html" target="_blank" rel="license noopener noreferrer">MITECO public-sector information reuse terms</a>; the IGN reference locations carry their own CC BY 4.0 attribution.</p>
+                                    <div class="reference-links">
+                                        <a href="https://www.miteco.gob.es/content/dam/miteco/es/agua/temas/gestion-de-los-riesgos-de-inundacion/cnih/CNIH_Eventos_Inundacion_v27.zip" target="_blank" rel="noopener noreferrer">Original Access database</a>
+                                        <a href="https://www.miteco.gob.es/content/dam/miteco/es/agua/temas/gestion-de-los-riesgos-de-inundacion/cnih/Guia_CNIH_web.pdf" target="_blank" rel="noopener noreferrer">Official catalogue guide</a>
+                                        <a href="https://www.ign.es/resources/ane/Informacion_Geografica_Destacada/IGN_INFOGEO_MUNICIPIOS.xlsx" target="_blank" rel="noopener noreferrer">IGN municipality locations</a>
+                                        <a href="https://www.ign.es/resources/licencia/Condiciones_licenciaUso_IGN.pdf" target="_blank" rel="license noopener noreferrer">IGN licence &amp; attribution</a>
+                                        <a href="./data/cnih/v27-20261004/manifest.json" target="_blank" rel="noopener noreferrer">Coverage &amp; provenance</a>
+                                    </div>
+                                </details>
+                            </div>
+                        </section>
+                        -->
+                        <!-- NOAA integration is inactive; preserve source information for future use.
+                        <section class="reference-section" aria-labelledby="floods-noaa-title">
+                            <header class="reference-section-heading"><h4 id="floods-noaa-title">NOAA Storm Events</h4></header>
+                            <div class="reference-section-copy">
+                                <p>NOAA National Centers for Environmental Information (2026). <em>Storm Events Database</em> [Data set; flood-event subset]. National Weather Service reports. <a href="https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncdc:C00510" target="_blank" rel="noopener noreferrer">Dataset metadata &amp; citation</a>. Accessed 4 October 2026.</p>
+                                <p class="reference-scope">187,785 event reports from U.S. states and territories (1996–June 2026): Flood, Flash Flood, Coastal Flood and Lakeshore Flood. The 2026 data are partial.</p>
+                                <p class="reference-scope">132,324 reports have provider coordinates. The other 55,461 remain searchable and included in statistics; they have no map point. This includes all Coastal Flood and Lakeshore Flood reports in this snapshot.</p>
+                                <details class="reference-notes">
+                                    <summary>Catalogue notes &amp; source files</summary>
+                                    <p>Counts refer to NOAA event reports, identified by <code>EVENT_ID</code>. Several reports can belong to one storm episode (<code>EPISODE_ID</code>); the counts do not represent unique flood episodes.</p>
+                                    <p>Map points use the reported begin coordinates or the first valid location supplied by NOAA. They do not delineate flooded areas. No coordinates are inferred for reports without a provider location.</p>
+                                    <p>Original types, local time intervals, time zones, reporting sources, causes, narratives and source fields are retained. Direct and indirect fatalities and injuries remain separate; damage estimates are nominal US dollars. Blank values remain unknown and explicit zeros remain zero.</p>
+                                    <p>Coastal Flood identifies coastal water and Lakeshore Flood identifies lake water. Flash Flood identifies rapid onset; it does not by itself establish a water source. Classes use the recorded event type and flood cause; parameters not established by these fields remain Unclassified. The provider’s reported or estimated cause is shown separately.</p>
+                                    <p>These are U.S. government data under NOAA’s access and use policies. Cite NOAA when reusing the dataset; the platform’s CC BY 4.0 licence does not replace the source terms.</p>
+                                    <div class="reference-links">
+                                        <a href="https://www.ncei.noaa.gov/stormevents/" target="_blank" rel="noopener noreferrer">Official database</a>
+                                        <a href="https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/" target="_blank" rel="noopener noreferrer">Original annual downloads</a>
+                                        <a href="https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/Storm-Data-Bulk-csv-Format.pdf" target="_blank" rel="noopener noreferrer">Field definitions</a>
+                                        <a href="./data/noaa/storm-events/20261004/manifest.json" target="_blank" rel="noopener noreferrer">Coverage &amp; provenance</a>
+                                        <a href="https://www.noaa.gov/information-technology/open-data-dissemination" target="_blank" rel="noopener noreferrer">NOAA data policies</a>
+                                    </div>
+                                </details>
+                            </div>
+                        </section>
+                        -->
+                        <div class="source-entry" id="source-rivers"><button type="button" id="open-source-rivers" class="source-entry-summary" data-open-source="source-rivers"><h4 class="source-entry-label"><span class="source-entry-title" id="floods-rivers-title">Greek rivers &amp; river basins</span><span class="source-entry-meta">1,322 river sections · 46 river basins</span></h4><svg class="source-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 6 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+                        <div class="source-entry" id="source-basemaps"><button type="button" id="open-source-basemaps" class="source-entry-summary" data-open-source="source-basemaps"><h4 class="source-entry-label"><span class="source-entry-title" id="floods-basemaps-title">Basemaps</span><span class="source-entry-meta">Esri World Imagery · OpenFreeMap Positron</span></h4><svg class="source-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 6 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+                        <div class="source-entry" id="source-licence"><button type="button" id="open-source-licence" class="source-entry-summary" data-open-source="source-licence"><h4 class="source-entry-label"><span class="source-entry-title" id="floods-licence-title">Licence &amp; reuse</span><span class="source-entry-meta">Platform licence and source terms</span></h4><svg class="source-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 6 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<div id="source-reader-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="source-reader-title"><div class="modal-content source-reader-shell">
+            <div class="modal-header">
+                <div class="reference-modal-heading">
+                    <button type="button" id="source-reader-back" class="source-reader-back"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m11 5-5 5 5 5M6 10h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>Sources</button>
+                    <h3 id="source-reader-title" tabindex="-1">Source</h3>
+                    <p id="source-reader-meta"></p>
+                </div>
+                <button class="modal-close" id="close-source-reader" type="button" aria-label="Close source">×</button>
+            </div>
+            <div class="source-reader-layout">
+                <nav id="source-reader-sidebar" aria-label="Source sections"></nav>
+                <div id="source-reader-content"><section class="source-document" data-source-id="source-platform" data-title="This WebGIS" data-meta="Overview, maps &amp; citation" hidden><section class="source-reader-panel source-entry-body reference-section-copy" id="platform-overview" data-topic-id="platform-overview" data-topic-title="Overview" hidden><h4 class="source-reader-section-title" tabindex="-1">Overview</h4><p class="webgis-guide-intro">An interactive WebGIS collection of peer-reviewed datasets of historic floods from around the world. The current flood catalogues are NKUA for Greece and HANZE for Europe. Greek rivers and river basins are available as geographic reference layers.</p><section class="source-part"><h5>Application architecture</h5><figure class="webgis-diagram webgis-architecture" aria-label="Application architecture"><div class="webgis-node webgis-branch-origin"><strong>WebGIS</strong><span>Interactive map, per-record attribute tables, filters, search and statistics.</span></div><ul class="webgis-branches" role="list" style="--branch-columns:3"><li class="webgis-branch"><div class="webgis-node"><strong>NKUA catalogue API</strong><span>Read-only PostgREST API backed by PostgreSQL/PostGIS.</span></div></li><li class="webgis-branch"><div class="webgis-node"><strong>Published geospatial data</strong><span>JSON and GeoJSON files.</span></div><ul class="webgis-subbranches" role="list"><li class="webgis-subbranch"><div class="webgis-node"><strong>HANZE catalogue</strong><span>Flood records and affected regions.</span></div></li><li class="webgis-subbranch"><div class="webgis-node"><strong>Greek reference layers</strong><span>Rivers and river basins.</span></div></li></ul></li><li class="webgis-branch"><div class="webgis-node"><strong>Basemap services</strong><span>External tile services.</span></div><ul class="webgis-subbranches" role="list"><li class="webgis-subbranch"><div class="webgis-node"><strong>OpenFreeMap Positron</strong><span>Vector basemap.</span></div></li><li class="webgis-subbranch"><div class="webgis-node"><strong>Esri World Imagery</strong><span>Satellite and aerial imagery (raster tiles).</span></div></li></ul></li></ul><figcaption>Figure 1. Current application architecture.</figcaption></figure></section></section><section class="source-reader-panel source-entry-body reference-section-copy" id="platform-record-density" data-topic-id="platform-record-density" data-topic-title="Number of records" hidden><h4 class="source-reader-section-title" tabindex="-1">Number of records</h4><div class="record-map-section" data-record-map="density"><div class="record-map-controls"></div><div class="record-map-canvas" role="region" aria-label="Number of records map"></div><div class="record-map-legend"></div><div class="record-map-status" role="status" aria-live="polite"></div></div></section><section class="source-reader-panel source-entry-body reference-section-copy" id="platform-record-dates" data-topic-id="platform-record-dates" data-topic-title="Dates of records" hidden><h4 class="source-reader-section-title" tabindex="-1">Dates of records</h4><div class="record-map-section" data-record-map="dates"><div class="record-map-controls"></div><div class="record-map-canvas" role="region" aria-label="Dates of records map"></div><div class="record-map-legend"></div><div class="record-map-status" role="status" aria-live="polite"></div></div></section><section class="source-reader-panel source-entry-body reference-section-copy" id="platform-record-sources" data-topic-id="platform-record-sources" data-topic-title="Dataset sources" hidden><h4 class="source-reader-section-title" tabindex="-1">Dataset sources</h4><div class="record-map-section" data-record-map="sources"><div class="record-map-controls"></div><div class="record-map-canvas" role="region" aria-label="Dataset sources map"></div><div class="record-map-legend"></div><div class="record-map-status" role="status" aria-live="polite"></div></div></section><section class="source-reader-panel source-entry-body reference-section-copy" id="platform-citation" data-topic-id="platform-citation" data-topic-title="Citation" hidden><h4 class="source-reader-section-title" tabindex="-1">Citation</h4><p class="source-citation">Evelpidou, N., Karkani, E., Saitis, G., Spyrou, E., &amp; Liaskos, A. (2026). <em>Historic Floods</em> [Interactive WebGIS]. National and Kapodistrian University of Athens. <a href="https://historicfloods.org/" target="_blank" rel="noopener noreferrer">historicfloods.org</a>.</p></section></section><section class="source-document" data-source-id="source-nkua" data-title="NKUA catalogue" data-meta="Greece · 1886–2022 · 1,992 records" hidden=""><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-1" data-topic-id="source-nkua-section-1" data-topic-title="Publication" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Publication</h4><p class="source-citation">Evelpidou, N., Cartalis, C., Karkani, A., Saitis, G., Philippopoulos, K., &amp; Spyrou, E. (2023). A GIS-Based Assessment of Flood Hazard through Track Records over the 1886–2022 Period in Greece. <em>Climate, 11</em>(11), Article 226. <a href="https://doi.org/10.3390/cli11110226" target="_blank" rel="noopener noreferrer">doi:10.3390/cli11110226</a></p><p class="reference-scope">1,992 historic riverine flood records from Greece (1886–2022).</p></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-2" data-topic-id="source-nkua-section-2" data-topic-title="Riverine floods" hidden=""><h4 class="source-reader-section-title" tabindex="-1" id="nkua-riverine-title">Riverine floods</h4><p>Riverine, or fluvial, flooding is the temporary inundation of normally dry land when water from a river or stream extends beyond the usual natural or artificial confines of its channel.<sup class="nkua-cite"><a href="#nkua-ref-1" aria-label="Reference 1: WMO &amp; UNESCO (2012)">1</a>,<a href="#nkua-ref-2" aria-label="Reference 2: UNDRR">2</a>,<a href="#nkua-ref-3" aria-label="Reference 3: NOAA / National Weather Service">3</a>,<a href="#nkua-ref-4" aria-label="Reference 4: IPCC (2022)">4</a>,<a href="#nkua-ref-5" aria-label="Reference 5: European Parliament &amp; Council (2007)">5</a>,<a href="#nkua-ref-6" aria-label="Reference 6: Merz, B., et al. (2021)">6</a>,<a href="#nkua-ref-7" aria-label="Reference 7: Humphries, P., et al. (2024)">7</a>,<a href="#nkua-ref-8" aria-label="Reference 8: Green, J., et al. (2025)">8</a></sup></p><ul class="nkua-clarifications">
+                                                <li>Damage is not required.<sup class="nkua-cite"><a href="#nkua-ref-3" aria-label="Reference 3: NOAA / National Weather Service">3</a>,<a href="#nkua-ref-7" aria-label="Reference 7: Humphries, P., et al. (2024)">7</a></sup></li>
+                                                <li>Seasonal overflow also qualifies.<sup class="nkua-cite"><a href="#nkua-ref-7" aria-label="Reference 7: Humphries, P., et al. (2024)">7</a></sup></li>
+                                                <li>These inundation definitions set no fixed minimum extent, depth or return period.<sup class="nkua-cite"><a href="#nkua-ref-1" aria-label="Reference 1: WMO &amp; UNESCO (2012)">1</a>,<a href="#nkua-ref-2" aria-label="Reference 2: UNDRR">2</a>,<a href="#nkua-ref-4" aria-label="Reference 4: IPCC (2022)">4</a>,<a href="#nkua-ref-7" aria-label="Reference 7: Humphries, P., et al. (2024)">7</a></sup></li>
+                                            </ul></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-3" data-topic-id="source-nkua-section-3" data-topic-title="Triggers and contributing mechanisms" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Triggers and contributing mechanisms</h4><p>These mechanisms can act alone or in combination.</p><div class="template-table-wrapper">
+                                                    <table class="template-table nkua-table nkua-mechanisms">
+                                                        <caption class="sr-only">Triggers and contributing mechanisms of riverine floods</caption>
+                                                        <thead><tr><th scope="col">Mechanism</th><th scope="col">Contribution</th></tr></thead>
+                                                        <tbody><tr><th scope="row">Rainfall</th><td>Rainfall-generated runoff.<sup class="nkua-cite"><a href="#nkua-ref-9" aria-label="Reference 9: Tarasova, L., et al. (2023)">9</a></sup></td></tr>
+                                <tr><th scope="row">Snow and ice melt</th><td>Snow or glacier-ice melt.<sup class="nkua-cite"><a href="#nkua-ref-10" aria-label="Reference 10: Merz, R., &amp; Blöschl, G. (2003)">10</a></sup></td></tr>
+                                <tr><th scope="row">Water releases</th><td>Releases from reservoirs or natural lakes.<sup class="nkua-cite"><a href="#nkua-ref-11" aria-label="Reference 11: Macrae, M. L., et al. (2011)">11</a>,<a href="#nkua-ref-12" aria-label="Reference 12: Ancey, C., et al. (2019)">12</a></sup></td></tr>
+                                <tr><th scope="row">Blockages</th><td>Ice or debris blockages and their sudden release.<sup class="nkua-cite"><a href="#nkua-ref-13" aria-label="Reference 13: Beltaos, S. (2008)">13</a>,<a href="#nkua-ref-14" aria-label="Reference 14: Valera-Prieto, L., et al. (2026)">14</a></sup></td></tr>
+                                <tr><th scope="row">Failures and backwater</th><td>Failure of natural or artificial dams or embankments.<sup class="nkua-cite"><a href="#nkua-ref-15" aria-label="Reference 15: Chen, T.-Y. K., &amp; Capart, H. (2020)">15</a>,<a href="#nkua-ref-16" aria-label="Reference 16: Ferrari, A., et al. (2020)">16</a></sup> Downstream backwater effects, including high sea levels impeding river discharge.<sup class="nkua-cite"><a href="#nkua-ref-17" aria-label="Reference 17: Eilander, D., et al. (2020)">17</a></sup></td></tr>
+                                <tr><th scope="row">Earthquake effects</th><td>Earthquake-induced channel deformation or diversion through surface fault rupture.<sup class="nkua-cite"><a href="#nkua-ref-18" aria-label="Reference 18: McEwan, E., et al. (2023)">18</a></sup></td></tr>
+                                <tr><th scope="row">Reduced conveyance</th><td>Sediment accumulation, channel narrowing or structural constrictions that reduce channel capacity.<sup class="nkua-cite"><a href="#nkua-ref-19" aria-label="Reference 19: Stover, S. C., &amp; Montgomery, D. R. (2001)">19</a>,<a href="#nkua-ref-20" aria-label="Reference 20: Wang, Z., et al. (2019)">20</a></sup></td></tr>
+                                <tr><th scope="row">Groundwater contribution</th><td>Groundwater discharge into rivers, which can contribute to and sustain flooding.<sup class="nkua-cite"><a href="#nkua-ref-21" aria-label="Reference 21: Pinault, J.-L., Amraoui, N., &amp; Golaz, C. (2005)">21</a></sup></td></tr></tbody>
+                                                    </table>
+                                                </div></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-4" data-topic-id="source-nkua-section-4" data-topic-title="Sources of flood records" hidden=""><h4 class="source-reader-section-title" tabindex="-1" id="nkua-record-sources-title">Sources of flood records</h4><p>Evelpidou et al. (2023) compiled the catalogue from six source groups:<sup class="nkua-cite"><a href="#nkua-ref-22" aria-label="Reference 22: Evelpidou, N., et al. (2023)">22</a></sup></p><ol class="nkua-source-list">
+                                                <li>Ministry of Environment and Energy</li>
+                                                <li>National Observatory of Athens</li>
+                                                <li>Municipality websites</li>
+                                                <li>Scientific literature</li>
+                                                <li>Research programmes</li>
+                                                <li>Newspapers</li>
+                                            </ol><p>Newspaper-derived events were cross-checked against ministry material, municipal archives or scientific papers. Information from municipality websites was confirmed through scientific publications.<sup class="nkua-cite"><a href="#nkua-ref-22" aria-label="Reference 22: Evelpidou, N., et al. (2023)">22</a></sup></p></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-5" data-topic-id="source-nkua-section-5" data-topic-title="Recorded information" hidden=""><h4 class="source-reader-section-title" tabindex="-1" id="nkua-information-title">Recorded information</h4><p>The catalogue records flood locations, with additional observations where available and applicable.<sup class="nkua-cite"><a href="#nkua-ref-22" aria-label="Reference 22: Evelpidou, N., et al. (2023)">22</a></sup></p><div class="template-table-wrapper">
+                                                <table class="template-table nkua-table nkua-fields">
+                                                    <caption class="sr-only">Information recorded in the NKUA flood catalogue</caption>
+                                                    <thead><tr><th scope="col">Information</th><th scope="col">Availability</th></tr></thead>
+                                                    <tbody>
+                                                        <tr><th scope="row">Coordinates</th><td>Flood location</td></tr>
+                                                        <tr><th scope="row">Administrative units</th><td>Regional unit and municipality</td></tr>
+                                                        <tr><th scope="row">Rainfall duration</th><td>Where available and applicable</td></tr>
+                                                        <tr><th scope="row">Rainfall amount</th><td>Where available and applicable</td></tr>
+                                                        <tr><th scope="row">Deaths</th><td>Where available and applicable</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-6" data-topic-id="source-nkua-section-6" data-topic-title="Study figures" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Study figures</h4><p>Original results from the published catalogue of 1,994 events. These figures remain unchanged when WebGIS filters are applied.<sup class="nkua-cite"><a href="#nkua-ref-22" aria-label="Reference 22: Evelpidou, N., et al. (2023)">22</a></sup></p><section class="source-part"><h5>Methodology flowchart</h5><figure class="nkua-figure">
+                                        <a href="./images/nkua-methodology/20261004/methodology.png" target="_blank" rel="noopener noreferrer" aria-label="Open Figure 2 at full resolution">
+                                            <img src="./images/nkua-methodology/20261004/methodology.png" width="2174" height="1214" alt="Dataset methodology flowchart showing documentary sources, GIS processing, statistical analysis and atmospheric analysis." loading="lazy" decoding="async">
+                                        </a>
+                                        <figcaption><span>Figure 2 · Study workflow: documentary data collection, GIS mapping and analysis.</span></figcaption>
+                                    </figure></section><section class="source-part"><h5>Annual distribution</h5><figure class="nkua-figure">
+                                        <a href="./images/nkua-methodology/20261004/annual-distribution.png" target="_blank" rel="noopener noreferrer" aria-label="Open Figure 5a at full resolution">
+                                            <img src="./images/nkua-methodology/20261004/annual-distribution.png" width="1784" height="1116" alt="Annual counts of recorded floods from 1886 to 2022, with a ten-year running mean." loading="lazy" decoding="async">
+                                        </a>
+                                        <figcaption><span>Figure 5a · Annual frequency of recorded floods and the 10-year running mean.</span></figcaption>
+                                    </figure></section><section class="source-part"><h5>Monthly distribution</h5><figure class="nkua-figure">
+                                        <a href="./images/nkua-methodology/20261004/monthly-distribution.png" target="_blank" rel="noopener noreferrer" aria-label="Open Figure 4 at full resolution">
+                                            <img src="./images/nkua-methodology/20261004/monthly-distribution.png" width="1486" height="1066" alt="Monthly counts of recorded floods in Greece from January to December." loading="lazy" decoding="async">
+                                        </a>
+                                        <figcaption><span>Figure 4 · Monthly distribution of recorded floods in Greece.</span></figcaption>
+                                    </figure></section><section class="source-part"><h5>Regional distribution</h5><figure class="nkua-figure">
+                                        <a href="./images/nkua-methodology/20261004/regional-distribution.png" target="_blank" rel="noopener noreferrer" aria-label="Open Figure 7 at full resolution">
+                                            <img src="./images/nkua-methodology/20261004/regional-distribution.png" width="1482" height="1500" alt="Map of Greece showing recorded flood counts by region." loading="lazy" decoding="async">
+                                        </a>
+                                        <figcaption><span>Figure 7 · Number of recorded floods by Greek region.</span></figcaption>
+                                    </figure></section><section class="source-part"><h5>Spatial hotspots</h5><figure class="nkua-figure">
+                                        <a href="./images/nkua-methodology/20261004/spatial-hotspots.png" target="_blank" rel="noopener noreferrer" aria-label="Open Figure 14 at full resolution">
+                                            <img src="./images/nkua-methodology/20261004/spatial-hotspots.png" width="1412" height="1406" alt="Getis–Ord Gi-star hotspot map of recorded floods in Greece, showing spatial clustering significance." loading="lazy" decoding="async">
+                                        </a>
+                                        <figcaption><span>Figure 14 · Getis–Ord Gi* hotspots of recorded flood occurrences. The 90%, 95% and 99% levels indicate statistical clustering significance.</span></figcaption>
+                                    </figure></section><p class="nkua-figure-credit">Figures: Evelpidou et al. (2023), <a href="https://doi.org/10.3390/cli11110226" target="_blank" rel="noopener noreferrer">Climate 11(11), 226</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a>.</p></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-7" data-topic-id="source-nkua-section-7" data-topic-title="In this WebGIS" hidden=""><h4 class="source-reader-section-title" tabindex="-1" id="nkua-webgis-title">In this WebGIS</h4><section class="source-part"><h6>Records &amp; locations</h6><p>The NKUA dataset contains 1,992 source records for Greece (1886–2022). Map pins show catalogue locations. Record details retain the recorded dates, locations, causes, impacts and supporting sources where available. Records that share a reviewed map pin retain their individual source references and observations.</p></section><section class="source-part"><h6>Flood classification</h6><p>NKUA records are assigned <em>Riverine</em> under <em>Water source</em>, following the catalogue’s river, stream and torrent overflow scope.<sup class="nkua-cite"><a href="#nkua-ref-22" aria-label="Reference 22: Evelpidou, N., et al. (2023)">22</a></sup> The other criteria—onset / response, generating process, inundation mechanism, sediment behaviour, setting and interacting drivers—remain <em>Unclassified</em>. The mechanisms described above are background information, not individual event assignments.</p></section><section class="source-part"><h6>Map &amp; statistics</h6><p>Search and filters update the map and statistics, which count source records. Map layers control visibility. Display settings let you colour records by dataset, a classification criterion or year classes. Year boundaries and colours remain stable while filters update the class counts.</p></section><section class="source-part"><h6>Missing information</h6><p>Missing information is left unreported; an explicit zero remains a recorded value. Published study figures and interactive WebGIS statistics are presented separately.</p></section></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-nkua-section-8" data-topic-id="source-nkua-section-8" data-topic-title="References" hidden=""><h4 class="source-reader-section-title" tabindex="-1">References</h4><ol><li id="nkua-ref-1" tabindex="-1">WMO &amp; UNESCO (2012). <a href="https://library.wmo.int/records/item/35589-international-glossary-of-hydrology" target="_blank" rel="noopener noreferrer">International Glossary of Hydrology</a>. <span>WMO-No. 385, 3rd edition, entry 552: Flooding (inundation).</span></li>
+                                <li id="nkua-ref-2" tabindex="-1">UNDRR. <a href="https://www.undrr.org/understanding-disaster-risk/terminology/hips/mh0604" target="_blank" rel="noopener noreferrer">Riverine Flood (MH0604)</a>. <span>Hazard Information Profiles; definition and “Metrics and numeric limits”.</span></li>
+                                <li id="nkua-ref-3" tabindex="-1">NOAA / National Weather Service. <a href="https://www.weather.gov/safety/flood-hazards" target="_blank" rel="noopener noreferrer">Flood Related Hazards</a>. <span>River Flooding.</span></li>
+                                <li id="nkua-ref-4" tabindex="-1">IPCC (2022). <a href="https://www.ipcc.ch/report/ar6/wg2/chapter/annex-ii/" target="_blank" rel="noopener noreferrer">Annex II: Glossary</a>. <span>Climate Change 2022: Impacts, Adaptation and Vulnerability; entry “Flood”.</span></li>
+                                <li id="nkua-ref-5" tabindex="-1">European Parliament &amp; Council (2007). <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32007L0060" target="_blank" rel="noopener noreferrer">Directive 2007/60/EC on the assessment and management of flood risks</a>. <span>Article 2(1).</span></li>
+                                <li id="nkua-ref-6" tabindex="-1">Merz, B., et al. (2021). <a href="https://doi.org/10.1038/s43017-021-00195-3" target="_blank" rel="noopener noreferrer">Causes, impacts and patterns of disastrous river floods</a>. <span>Nature Reviews Earth &amp; Environment, 2, 592–609.</span></li>
+                                <li id="nkua-ref-7" tabindex="-1">Humphries, P., et al. (2024). <a href="https://doi.org/10.1093/biosci/biae038" target="_blank" rel="noopener noreferrer">Flood ecology</a>. <span>BioScience, 74(6), 355–368; “People and floods”.</span></li>
+                                <li id="nkua-ref-8" tabindex="-1">Green, J., et al. (2025). <a href="https://doi.org/10.5194/nhess-25-747-2025" target="_blank" rel="noopener noreferrer">Review article: A comprehensive review of compound flooding literature with a focus on coastal and estuarine regions</a>. <span>Natural Hazards and Earth System Sciences, 25, 747–816, §3.1.</span></li>
+                                <li id="nkua-ref-9" tabindex="-1">Tarasova, L., et al. (2023). <a href="https://doi.org/10.1038/s43247-023-00714-8" target="_blank" rel="noopener noreferrer">Shifts in flood generation processes exacerbate regional flood anomalies in Europe</a>. <span>Communications Earth &amp; Environment, 4, 49.</span></li>
+                                <li id="nkua-ref-10" tabindex="-1">Merz, R., &amp; Blöschl, G. (2003). <a href="https://doi.org/10.1029/2002WR001952" target="_blank" rel="noopener noreferrer">A process typology of regional floods</a>. <span>Water Resources Research, 39(12), 1340.</span></li>
+                                <li id="nkua-ref-11" tabindex="-1">Macrae, M. L., et al. (2011). <a href="https://doi.org/10.4296/cwrj3604810" target="_blank" rel="noopener noreferrer">Subsurface mobilization of phosphorus in an agricultural riparian zone in response to flooding from an upstream reservoir</a>. <span>Canadian Water Resources Journal, 36(4), 293–311.</span></li>
+                                <li id="nkua-ref-12" tabindex="-1">Ancey, C., et al. (2019). <a href="https://doi.org/10.1029/2019WR025274" target="_blank" rel="noopener noreferrer">Hydraulic reconstruction of the 1818 Giétro glacial lake outburst flood</a>. <span>Water Resources Research, 55(11), 8840–8863.</span></li>
+                                <li id="nkua-ref-13" tabindex="-1">Beltaos, S. (2008). <a href="https://doi.org/10.1016/j.coldregions.2007.09.001" target="_blank" rel="noopener noreferrer">Progress in the study and management of river ice jams</a>. <span>Cold Regions Science and Technology, 51(1), 2–19.</span></li>
+                                <li id="nkua-ref-14" tabindex="-1">Valera-Prieto, L., et al. (2026). <a href="https://doi.org/10.1016/j.ejrh.2025.103032" target="_blank" rel="noopener noreferrer">Breaking the jam: Bridge wood-jam break during a flash flood in a Mediterranean river, insights from hydrodynamic modeling and post flood observations</a>. <span>Journal of Hydrology: Regional Studies, 63, 103032.</span></li>
+                                <li id="nkua-ref-15" tabindex="-1">Chen, T.-Y. K., &amp; Capart, H. (2020). <a href="https://doi.org/10.1016/j.jhydrol.2019.124381" target="_blank" rel="noopener noreferrer">Kinematic wave solutions for dam-break floods in non-uniform valleys</a>. <span>Journal of Hydrology, 582, 124381.</span></li>
+                                <li id="nkua-ref-16" tabindex="-1">Ferrari, A., et al. (2020). <a href="https://doi.org/10.5194/nhess-20-59-2020" target="_blank" rel="noopener noreferrer">Enhancing the resilience to flooding induced by levee breaches in lowland areas: a methodology based on numerical modelling</a>. <span>Natural Hazards and Earth System Sciences, 20, 59–72.</span></li>
+                                <li id="nkua-ref-17" tabindex="-1">Eilander, D., et al. (2020). <a href="https://doi.org/10.1088/1748-9326/ab8ca6" target="_blank" rel="noopener noreferrer">The effect of surge on riverine flood hazard and impact in deltas globally</a>. <span>Environmental Research Letters, 15(10), 104007.</span></li>
+                                <li id="nkua-ref-18" tabindex="-1">McEwan, E., et al. (2023). <a href="https://doi.org/10.1126/sciadv.add2932" target="_blank" rel="noopener noreferrer">Coseismic river avulsion on surface rupturing faults: Assessing earthquake-induced flood hazard</a>. <span>Science Advances, 9(18), eadd2932.</span></li>
+                                <li id="nkua-ref-19" tabindex="-1">Stover, S. C., &amp; Montgomery, D. R. (2001). <a href="https://doi.org/10.1016/S0022-1694(00)00421-2" target="_blank" rel="noopener noreferrer">Channel change and flooding, Skokomish River, Washington</a>. <span>Journal of Hydrology, 243(3–4), 272–286.</span></li>
+                                <li id="nkua-ref-20" tabindex="-1">Wang, Z., et al. (2019). <a href="https://doi.org/10.3390/su11030761" target="_blank" rel="noopener noreferrer">The influence of river channel occupation on urban inundation and sedimentation induced by floodwater in mountainous areas: A case study in the Loess Plateau, China</a>. <span>Sustainability, 11(3), 761.</span></li>
+                                <li id="nkua-ref-21" tabindex="-1">Pinault, J.-L., Amraoui, N., &amp; Golaz, C. (2005). <a href="https://doi.org/10.1029/2004WR003169" target="_blank" rel="noopener noreferrer">Groundwater-induced flooding in macropore-dominated hydrological system in the context of climate changes</a>. <span>Water Resources Research, 41(5), W05001.</span></li>
+                                <li id="nkua-ref-22" tabindex="-1">Evelpidou, N., et al. (2023). <a href="https://doi.org/10.3390/cli11110226" target="_blank" rel="noopener noreferrer">A GIS-Based Assessment of Flood Hazard through Track Records over the 1886–2022 Period in Greece</a>. <span>Climate, 11(11), 226; §3, Data and Methods.</span></li></ol></section></section><section class="source-document" data-source-id="source-hanze" data-title="HANZE catalogue" data-meta="Europe · 1870–2025 · 2,961 records" hidden=""><section class="source-reader-panel source-entry-body reference-section-copy" id="source-hanze-section-1" data-topic-id="source-hanze-section-1" data-topic-title="Coverage &amp; locations" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Coverage &amp; locations</h4><p class="reference-scope">2,961 records across 40 countries and territories (1870–2025), including 127 in Greece. Dataset licence: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a>.</p><p class="reference-scope">Map pins are display locations within affected administrative regions, rather than observed flood-site coordinates. The region polygons do not represent inundation boundaries.</p></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-hanze-section-2" data-topic-id="source-hanze-section-2" data-topic-title="Publications &amp; dataset citations" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Publications &amp; dataset citations</h4><section class="source-part"><h6>Flood-impact database</h6><p class="source-citation">Paprotny, D. (2026). <em>HANZE database of historical flood impacts in Europe, 1870–2025</em> (Version 3.0.1 beta) [Data set]. Zenodo. <a href="https://doi.org/10.5281/zenodo.20478847" target="_blank" rel="noopener noreferrer">doi:10.5281/zenodo.20478847</a></p><p class="source-citation">Paprotny, D., Terefenko, P., &amp; Śledziowski, J. (2024). HANZE v2.1: an improved database of flood impacts in Europe from 1870 to 2020. <em>Earth System Science Data, 16</em>(11), 5145–5170. <a href="https://doi.org/10.5194/essd-16-5145-2024" target="_blank" rel="noopener noreferrer">doi:10.5194/essd-16-5145-2024</a></p></section><section class="source-part"><h6>Historical List B</h6><p class="source-citation">Paprotny, D. (2024). <em>HANZE catalogue of modelled and historical floods in Europe, 1950–2020</em> (Version 1.2, historical List B only) [Data set]. Zenodo. <a href="https://doi.org/10.5281/zenodo.12635205" target="_blank" rel="noopener noreferrer">doi:10.5281/zenodo.12635205</a></p><p class="source-citation">Paprotny, D., Rhein, B., Vousdoukas, M. I., Terefenko, P., Dottori, F., Treu, S., Śledziowski, J., Feyen, L., &amp; Kreibich, H. (2024). Merging modelled and reported flood impacts in Europe in a combined flood event catalogue for 1950–2020. <em>Hydrology and Earth System Sciences, 28</em>, 3983–4010. <a href="https://doi.org/10.5194/hess-28-3983-2024" target="_blank" rel="noopener noreferrer">doi:10.5194/hess-28-3983-2024</a></p></section></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-hanze-section-3" data-topic-id="source-hanze-section-3" data-topic-title="Catalogue &amp; WebGIS notes" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Catalogue &amp; WebGIS notes</h4><section class="source-part"><h6>Flood classification</h6><p>HANZE retains its river, flash, coastal and combined river/coastal types. The main catalogue also supplies flood profiles distinguishing fluvial, flash, coastal, estuarine, snowmelt and ice-jam flooding. Other criteria remain Unclassified where the catalogue provides no classification.</p></section><section class="source-part"><h6>Record counts</h6><p>Counts refer to source records, which can describe the same wider flood episode. Unresolved cross-catalogue matches remain separate.</p></section><section class="source-part"><h6>Dataset releases</h6><p>The collection combines 2,724 records from the v3.0.1 beta flood-impact database with 237 documented historical floods from List B (1950–2020). The main release was published on 31 May 2026 and is a preliminary update supported by the European Commission Joint Research Centre. List B does not provide precise impact totals; missing values remain unknown. Only historical records are included from the companion release.</p></section><section class="source-part"><h6>Recorded information &amp; geometry</h6><p>Original IDs, date intervals, approximation flags, types, profiles, notes and references are retained, with the release identified in each record. Main-catalogue losses are adjusted to 2025 euros. Its geometry uses the provider’s 2024 administrative regions; List B retains simplified 2021 regions. Both are transformed from EPSG:3035 to EPSG:4326.</p></section></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-hanze-section-4" data-topic-id="source-hanze-section-4" data-topic-title="Bibliographies &amp; source files" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Bibliographies &amp; source files</h4><div class="reference-links">
+                                        <a href="./data/hanze/v3.0.1-beta/bibliography.json" target="_blank" rel="noopener noreferrer">v3.0.1 beta bibliography</a>
+                                        <a href="./data/hanze/historical-list-b/v1.2/bibliography.json" target="_blank" rel="noopener noreferrer">List B bibliography</a>
+                                        <a href="./data/hanze/v3.0.1-beta/manifest.json" target="_blank" rel="noopener noreferrer">v3.0.1 beta provenance &amp; downloads</a>
+                                        <a href="./data/hanze/historical-list-b/v1.2/manifest.json" target="_blank" rel="noopener noreferrer">List B provenance &amp; downloads</a>
+                                    </div></section></section><section class="source-document" data-source-id="source-rivers" data-title="Greek rivers &amp; river basins" data-meta="1,322 river sections · 46 river basins" hidden=""><section class="source-reader-panel source-entry-body reference-section-copy" id="source-rivers-section-1" data-topic-id="source-rivers-section-1" data-topic-title="Source &amp; coverage" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Source &amp; coverage</h4><p class="source-citation">Ministry of Environment and Energy, General Directorate of Water. <em>River Basin Management Plans</em> [Geospatial data]. <a href="https://wfdver.ypeka.gr/el/geoportal-gr/" target="_blank" rel="noopener noreferrer">Official geoportal</a>.</p><p class="reference-scope">The reference layers show 1,322 river sections from the second revision of the management plans and 46 river basins.</p><p class="reference-scope">The river inventory does not include every small stream or torrent. These layers show reference rivers and basin boundaries, rather than historic river courses or flood extents.</p></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-rivers-section-2" data-topic-id="source-rivers-section-2" data-topic-title="Layer notes" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Layer notes</h4><section class="source-part"><h6>Rivers</h6><p>The official river dataset is <em>Ποτάμια Υδατικά Συστήματα – 2η Αναθεώρηση</em> (<code>gr_rwb_greece_2rev</code>). Its 1,322 features represent river sections, not distinct rivers, with 1,319 unique official identifiers. It includes natural, heavily modified and artificial water bodies; their official status is shown in the river details.</p></section><section class="source-part"><h6>River basins</h6><p>The basin dataset (<code>egy_rb_new_2014</code>) retains its original names and boundaries; it is not a newly mapped second-revision layer. Official designation alone does not establish that every river section was individually surveyed.</p></section><section class="source-part"><h6>Coordinates &amp; map display</h6><p>Original Shapefiles retain source attributes and geometry in EPSG:2100, with ISO-8859-7 Greek text encoding. For map display, river lines use 50 m generalisation at overview scales and full geometry when zoomed in; basin outlines use 100 m generalisation.</p></section></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-rivers-section-3" data-topic-id="source-rivers-section-3" data-topic-title="Downloads &amp; source documentation" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Downloads &amp; source documentation</h4><div class="reference-links">
+                                    <a href="./data/rivers/ypeka/gr_rwb_greece_2rev.zip" download="">Rivers · Shapefile ZIP</a>
+                                    <a href="./data/rivers/ypeka/egy_rb_new_2014.zip" download="">River basins · Shapefile ZIP</a>
+                                    <a href="https://wfdver.ypeka.gr/el/terms-references-gr/" target="_blank" rel="noopener noreferrer">Source terms</a>
+                                </div><div class="reference-links">
+                                        <a href="./data/rivers/ypeka/manifest.json" target="_blank" rel="noopener noreferrer">Coverage &amp; provenance</a>
+                                        <a href="https://wfdver.ypeka.gr/wp-content/uploads/2023/11/EL13_2REV_P4.2_Taxinomisi-EYS.pdf#page=27" target="_blank" rel="noopener noreferrer">Official river coding</a>
+                                    </div></section><!-- The inactive water-district export is retained for future use: ./data/rivers/ypeka/egy_rbd_2010.zip --></section><section class="source-document" data-source-id="source-basemaps" data-title="Basemaps" data-meta="Esri World Imagery · OpenFreeMap Positron" hidden=""><section class="source-reader-panel source-entry-body reference-section-copy" id="source-basemaps-section-1" data-topic-id="source-basemaps-section-1" data-topic-title="Satellite imagery" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Satellite imagery</h4><p>Esri. <em>World Imagery</em> [Satellite basemap]. <a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9" target="_blank" rel="noopener noreferrer">Source &amp; terms</a>.</p></section><section class="source-reader-panel source-entry-body reference-section-copy" id="source-basemaps-section-2" data-topic-id="source-basemaps-section-2" data-topic-title="Positron" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Positron</h4><p><a href="https://openfreemap.org/" target="_blank" rel="noopener noreferrer">OpenFreeMap</a>. <em>Positron</em> [Basemap]. © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener noreferrer">OpenMapTiles</a>, with data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.</p></section></section><section class="source-document" data-source-id="source-licence" data-title="Licence &amp; reuse" data-meta="Platform licence and source terms" hidden=""><section class="source-reader-panel source-entry-body reference-section-copy" id="source-licence-section-1" data-topic-id="source-licence-section-1" data-topic-title="Licence &amp; reuse" hidden=""><h4 class="source-reader-section-title" tabindex="-1">Licence &amp; reuse</h4><p class="reference-scope">Original platform text, interface, visualisation design and research outputs are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">CC BY 4.0</a>. Give appropriate credit, link to the licence and identify changes when reusing them. Third-party datasets, basemaps, imagery, logos and source materials retain their own terms.</p></section></section></div>
+            </div>
+        </div></div>
+
+        <!-- Submit Data Modal -->
+        <div id="submit-data-modal" class="modal submit-data-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Submit Historic Floods data</h3>
+                    <button class="modal-close" id="close-submit-data" aria-label="Close submission instructions">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="submit-data-intro"><p>Submit a historic flood event or correct an existing record. Use one row per affected location and event date, with a traceable source and documented impacts.</p></div>
+                    <div class="submit-data-section">
+                        <h4>Prepare your submission</h4>
+                        <p>Fill in the blank Data sheet in the XLSX workbook. The Field guide describes every column, its units and examples. You can also use the CSV with the same headers.</p>
+                        <p class="submit-data-note">Leave unknown values blank. For a correction, include the existing id and explain the change in submission_notes.</p>
+                        <div class="submit-data-actions">
+                            <a class="btn-primary" href="/floods/templates/floods-data-template.xlsx?v=20260905-1" download="floods-data-template.xlsx">Download XLSX</a>
+                            <a class="btn-primary" href="/floods/templates/floods-data-template.csv?v=20260905-1" download="floods-data-template.csv">Download CSV</a>
+                            <a class="btn-primary" href="mailto:alexliaskos@geol.uoa.gr,evelpidou@geol.uoa.gr?subject=Historic%20Floods%20data%20submission&amp;body=Dear%20Historic%20Floods%20team%2C%0A%0AI%20would%20like%20to%20submit%20data%20for%20Historic%20Floods.%0A%0AContributor%20names%0A%5BPlease%20complete%5D%0A%0AAffiliation%0A%5BPlease%20complete%5D%0A%0AContact%20email%0A%5BPlease%20complete%5D%0A%0ANew%20records%20or%20corrections%20and%20geographic%20coverage%0A%5BPlease%20complete%5D%0A%0APlease%20attach%20the%20completed%20XLSX%20or%20CSV%20and%20supporting%20sources%20manually.%0A%0ANotes%20and%20attachment%20reuse%20permissions%0A%5BPlease%20complete%5D">Send by email</a>
+                        </div>
+                    </div>
+                    <div class="submit-data-section">
+                        <h4>Required fields</h4>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Field and column</th><th scope="col">Format and unit</th><th scope="col">What to provide</th></tr></thead>
+                            <tbody><tr><th scope="row">Event start date<br><code>date_of_commencement</code></th><td>YYYY-MM-DD (text)</td><td>Documented start date as YYYY-MM-DD text, including dates before 1900. If the exact date is uncertain, explain the documented date in submission_notes.</td></tr>
+                            <tr><th scope="row">Country<br><code>country</code></th><td>Text</td><td>Country containing the submitted site. Contributions are not limited to the current geographic coverage.</td></tr>
+                            <tr><th scope="row">Administrative area or locality<br><code>location_name</code></th><td>Text</td><td>Administrative area or locality affected by the flood.</td></tr>
+                            <tr><th scope="row">Affected place or event<br><code>flood_event_name</code></th><td>Text</td><td>Specific affected settlement, site or recognised event name.</td></tr>
+                            <tr><th scope="row">Latitude<br><code>latitude</code></th><td>WGS84 (degrees)</td><td>WGS84 decimal latitude. Use a minus sign south of the equator.</td></tr>
+                            <tr><th scope="row">Longitude<br><code>longitude</code></th><td>WGS84 (degrees)</td><td>WGS84 decimal longitude. Use a minus sign west of Greenwich.</td></tr>
+                            <tr><th scope="row">Supporting source<br><code>source</code></th><td>Text</td><td>Traceable publication, DOI, report or source URL supporting this record. Include page or figure numbers where relevant.</td></tr></tbody>
+                        </table></div>
+                    </div>
+                    <details class="submit-data-section submission-optional">
+                        <summary>Optional fields (7)</summary>
+                        <div class="template-table-wrapper"><table class="template-table submission-field-guide">
+                            <thead><tr><th scope="col">Field and column</th><th scope="col">Format and unit</th><th scope="col">What to provide</th></tr></thead>
+                            <tbody><tr><th scope="row">Existing record ID<br><code>id</code></th><td>Whole number</td><td>For a correction, copy the ID of the existing map record. Leave blank for a new record.</td></tr>
+                            <tr><th scope="row">Recorded fatalities<br><code>deaths_toll_int</code></th><td>Whole number</td><td>Number of recorded deaths. Blank means unknown. Zero means explicitly none.</td></tr>
+                            <tr><th scope="row">Reported cause<br><code>cause_of_flood</code></th><td>Text</td><td>Cause of the flood as documented by the source.</td></tr>
+                            <tr><th scope="row">Rainfall duration<br><code>rainfall_duration</code></th><td>Text</td><td>Reported duration including its unit, such as hours or days.</td></tr>
+                            <tr><th scope="row">Rainfall amount<br><code>rainfall_height</code></th><td>Text</td><td>Reported precipitation depth including unit and measurement period.</td></tr>
+                            <tr><th scope="row">Documented impacts<br><code>relevant_information</code></th><td>Text</td><td>Recorded damage, affected infrastructure and other relevant event details.</td></tr>
+                            <tr><th scope="row">Submission notes<br><code>submission_notes</code></th><td>Text</td><td>Explain corrections, coordinate accuracy, measurement methods, vertical datum and any uncertainty. Identify attachments here.</td></tr></tbody>
+                        </table></div>
+                    </details>
+                    <div class="submit-data-section">
+                        <h4>Site guidance</h4>
+                        <ul class="notes-list"><li>Enter historic dates as YYYY-MM-DD text so dates before 1900 are preserved in Excel.</li><li>Do not invent a day or month when the source gives only a year. Describe an uncertain date in submission_notes so the team can assess it.</li><li>A blank death toll means unknown. Enter zero only when the source explicitly records no fatalities.</li><li>Keep rainfall duration and rainfall height separate. Retain the reported units, period and any ranges or uncertainty.</li><li>Place names may use their normal spelling. Uppercase text is not required.</li></ul>
+                    </div>
+                    <p class="submit-data-note">Include contributor names, affiliation and contact details in your email. Attach the completed file and supporting sources manually. The research team reviews each submission before publication.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Issue Modal -->
+        <div id="report-bug-modal" class="modal report-bug-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Report an Issue</h3>
+                    <button class="modal-close" id="close-report-bug">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="submit-data-intro">
+                        <p>Found something wrong? Help us improve by reporting bugs or data errors.</p>
+                    </div>
+
+                    <div class="submit-data-section">
+                        <h4>What You Can Report</h4>
+                        <ul class="format-list">
+                            <li><strong>Bugs</strong> - Something not working (filters, map, buttons)</li>
+                            <li><strong>Data errors</strong> - Wrong location, incorrect date, missing info</li>
+                        </ul>
+                    </div>
+
+                    <div class="submit-data-actions">
+                        <button id="send-bug-report-btn" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" style="margin-right: 6px; vertical-align: middle;">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Send via Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Suggestion Modal -->
+        <div id="submit-suggestion-modal" class="modal submit-suggestion-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Suggest a Feature</h3>
+                    <button class="modal-close" id="close-submit-suggestion">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="submit-data-intro">
+                        <p>Have an idea to make Historic Floods better? We welcome suggestions for new features and
+                            improvements.</p>
+                    </div>
+
+                    <div class="submit-data-section">
+                        <h4>Suggestion Ideas</h4>
+                        <ul class="format-list">
+                            <li><strong>New features</strong> - Tools or functionality you'd like to see</li>
+                            <li><strong>Improvements</strong> - Ways to enhance existing features</li>
+                            <li><strong>Data additions</strong> - New regions, time periods, or data types</li>
+                        </ul>
+                    </div>
+
+                    <div class="submit-data-actions">
+                        <button id="send-suggestion-btn" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" style="margin-right: 6px; vertical-align: middle;">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Send via Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SQL Filter Modal -->
+        <div id="sql-filter-modal" class="modal sql-filter-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Query Builder</h3>
+                    <button class="modal-close" id="close-sql-filter">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Query Conditions Container -->
+                    <div id="query-conditions" class="query-conditions">
+                        <!-- Conditions will be added here dynamically -->
+                    </div>
+
+                    <!-- Add Condition Button -->
+                    <div class="query-builder-controls">
+                        <button id="add-condition" class="btn-add-condition">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Condition
+                        </button>
+                        <button id="add-group" class="btn-add-group">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                            Add Group
+                        </button>
+                    </div>
+
+                    <!-- Generated Query Preview -->
+                    <div class="query-preview">
+                        <label>Generated Query:</label>
+                        <div id="query-preview-text" class="query-preview-text">
+                            <em>No conditions added</em>
+                        </div>
+                    </div>
+
+                    <div id="sql-filter-error" class="sql-filter-error hidden"></div>
+
+                    <div class="sql-filter-actions">
+                        <button id="apply-sql-filter" class="btn-primary">Apply Filter</button>
+                        <button id="clear-sql-filter" class="btn-secondary">Clear All</button>
+                    </div>
+
+                    <div id="sql-filter-active" class="sql-filter-active hidden">
+                        <span class="sql-active-label">Active Filter:</span>
+                        <code id="sql-active-query"></code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Selection Modal -->
+        <div id="filter-selection-modal" class="modal filter-selection-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="filter-modal-title">Select Value</h3>
+                    <button class="modal-close" id="close-filter-selection">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="filter-modal-search">
+                        <input type="text" id="filter-modal-search-input" placeholder="Search..." autocomplete="off">
+                        <svg class="filter-modal-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                    <div class="filter-modal-actions-top">
+                        <button id="filter-modal-clear" class="btn-filter-modal-clear">Clear Selection</button>
+                    </div>
+                    <div id="filter-modal-list" class="filter-modal-list">
+                        <!-- Available options will be populated here -->
+                    </div>
+                    <div id="filter-modal-unavailable-section" class="filter-modal-unavailable-section hidden">
+                        <div class="filter-modal-unavailable-header">Unavailable (filtered out)</div>
+                        <div id="filter-modal-unavailable-list" class="filter-modal-unavailable-list">
+                            <!-- Unavailable options will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+
+    <!-- NKUA VPS data client -->
+    <script src="/webgis-shared/vps-data-client.js?v=20261026-filters-display-1"></script>
+    <script src="/webgis-shared/common-map.js?v=20261026-filters-display-1"></script>
+        <script src="/webgis-shared/common-ui.js?v=20261026-filters-display-1"></script>
+
+    <!-- Measurement Tool -->
+    <script src="./measurement-tool.js"></script>
+
+    <!-- Modular Application (ES Modules) -->
+    <script type="module" src="./js/main.js?v=20261026-filters-display-1"></script>
+    <dialog id="feature-guide-modal" class="feature-guide-dialog flood-guide-dialog" aria-labelledby="feature-guide-title">
+        <header class="feature-guide-header">
+            <h2 id="feature-guide-title">What is a flood?</h2>
+            <button class="feature-guide-close" type="button" aria-label="Close explanation">×</button>
+        </header>
+        <div class="flood-guide-layout"><nav id="flood-guide-sidebar" aria-label="Flood explanation sections"><button type="button" data-flood-guide-section="flood-guide-definition-panel" aria-controls="flood-guide-definition-panel" class="active" aria-current="true">Definition</button><button type="button" data-flood-guide-section="flood-guide-classification-panel" aria-controls="flood-guide-classification-panel">Classification</button><button type="button" data-flood-guide-section="flood-guide-references-panel" aria-controls="flood-guide-references-panel">References</button></nav><div id="flood-guide-content"><section class="flood-guide-panel" id="flood-guide-definition-panel"><h3 class="flood-guide-panel-title">Definition</h3><p class="feature-guide-definition">A flood is the temporary covering by water of land that is normally dry.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-1" aria-label="Reference 1">1</a>,<a class="flood-guide-citation" href="#flood-ref-2" aria-label="Reference 2">2</a></sup></p><figure class="feature-guide-figure">
+                <div class="flood-photo-crop">
+                <img src="./images/flood-thessaly.jpg?v=20261004-guide-clean-1" width="960" height="539" alt="Floodwater covering agricultural fields near Palamas, Thessaly, with trees and hills visible." loading="lazy" decoding="async">
+                </div>
+                <figcaption>
+                    <span>Flooded fields near Palamas, Thessaly, September 2023.</span>
+                    <span>Photo: <a href="https://commons.wikimedia.org/wiki/File:Greece_Storm_Daniel_DJI_0207.jpg" target="_blank" rel="noopener noreferrer">Makis Theodorou</a> · <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="license noopener noreferrer">CC BY-SA 3.0</a> (cropped).</span>
+                </figcaption>
+            </figure></section><section class="flood-guide-panel" id="flood-guide-classification-panel" hidden=""><section class="flood-guide-section" aria-labelledby="flood-types-title">
+                <h3 id="flood-types-title">How floods are classified</h3>
+                <p class="flood-classification-intro">Floods are described using different criteria. A riverine flood can also be a flash flood: one describes its water source, the other its rapid response.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-3" aria-label="Reference 3">3</a>,<a class="flood-guide-citation" href="#flood-ref-4" aria-label="Reference 4">4</a>,<a class="flood-guide-citation" href="#flood-ref-5" aria-label="Reference 5">5</a></sup></p>
+                <div class="template-table-wrapper">
+                    <table class="template-table flood-types-table">
+                        <caption class="sr-only">Examples of flood classifications grouped by the criterion used</caption>
+                        <thead><tr><th scope="col">Criterion</th><th scope="col">Examples</th></tr></thead>
+                        <tbody>
+                            <tr><th scope="row">Water source</th><td>Riverine (fluvial), pluvial (surface water), groundwater, coastal (seawater), lake (lakeshore) and artificial water-bearing systems.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-3" aria-label="Reference 3">3</a>,<a class="flood-guide-citation" href="#flood-ref-6" aria-label="Reference 6">6</a>,<a class="flood-guide-citation" href="#flood-ref-9" aria-label="Reference 9">9</a></sup></td></tr>
+                            <tr><th scope="row">Onset and response</th><td>Flash, other rapid-onset, medium-onset and slow-onset floods.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-3" aria-label="Reference 3">3</a>,<a class="flood-guide-citation" href="#flood-ref-5" aria-label="Reference 5">5</a></sup></td></tr>
+                            <tr><th scope="row">Generating process</th><td>Long-rain, short-rain, rain-on-snow and snowmelt floods.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-7" aria-label="Reference 7">7</a></sup></td></tr>
+                            <tr><th scope="row">Inundation mechanism</th><td>Channel overflow, overtopping of defences, defence or infrastructure failure, and blockage.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-3" aria-label="Reference 3">3</a></sup></td></tr>
+                            <tr><th scope="row">Sediment behaviour</th><td>Clear-water floods, debris floods and hyperconcentrated flows.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-8" aria-label="Reference 8">8</a></sup></td></tr>
+                            <tr><th scope="row">Setting</th><td>Flooding in urban areas, river floodplains, and coastal or estuarine settings.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-6" aria-label="Reference 6">6</a></sup></td></tr>
+                            <tr><th scope="row">Interacting drivers</th><td>Compound flooding, such as river discharge combined with elevated sea levels or rainfall.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-6" aria-label="Reference 6">6</a></sup></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="flood-classification-note">Debris floods are water-driven events with intense coarse-sediment transport. Debris flows are sediment–water mass movements with different flow mechanics.<sup class="flood-guide-cite"><a class="flood-guide-citation" href="#flood-ref-8" aria-label="Reference 8">8</a></sup></p>
+            </section></section><section class="flood-guide-panel" id="flood-guide-references-panel" hidden=""><h3 class="flood-guide-panel-title">References</h3><ol class="flood-guide-references">
+                    <li id="flood-ref-1" tabindex="-1">European Parliament &amp; Council (2007). <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32007L0060" target="_blank" rel="noopener noreferrer"><em>Directive 2007/60/EC</em></a>, Article 2(1).</li>
+                    <li id="flood-ref-2" tabindex="-1">IPCC (2022). <a href="https://www.ipcc.ch/report/ar6/wg2/chapter/annex-ii/" target="_blank" rel="noopener noreferrer"><em>Annex II: Glossary</em></a>, entry “Flood”, in <em>Climate Change 2022: Impacts, Adaptation and Vulnerability</em>.</li>
+                    <li id="flood-ref-3" tabindex="-1">Common Implementation Strategy for the Floods Directive (2021). <a href="https://cdr.eionet.europa.eu/help/Floods/Floods_2018/GuidanceDocuments/FD_ReportingGuidance.pdf#page=79" target="_blank" rel="noopener noreferrer"><em>Floods Directive Reporting Guidance 2018</em></a>, version 5.0, 8 March 2021, §3.3.7, pp. 75–78.</li>
+                    <li id="flood-ref-4" tabindex="-1">Tarasova, L., et al. (2019). <a href="https://doi.org/10.1002/wat2.1353" target="_blank" rel="noopener noreferrer"><em>Causative classification of river flood events</em></a>. <em>WIREs Water</em>, 6(4), e1353.</li>
+                    <li id="flood-ref-5" tabindex="-1">NOAA, National Weather Service. <a href="https://www.weather.gov/safety/flood-hazards" target="_blank" rel="noopener noreferrer"><em>Flood Related Hazards</em></a>, “River Flooding” and “Flash Flooding”.</li>
+                    <li id="flood-ref-6" tabindex="-1">Green, J., et al. (2025). <a href="https://doi.org/10.5194/nhess-25-747-2025" target="_blank" rel="noopener noreferrer"><em>Review article: A comprehensive review of compound flooding literature with a focus on coastal and estuarine regions</em></a>. <em>Natural Hazards and Earth System Sciences</em>, 25, 747–816, §§2, 3.1–3.2, 6.3.</li>
+                    <li id="flood-ref-7" tabindex="-1">Merz, R., &amp; Blöschl, G. (2003). <a href="https://doi.org/10.1029/2002WR001952" target="_blank" rel="noopener noreferrer"><em>A process typology of regional floods</em></a>. <em>Water Resources Research</em>, 39(12), 1340, §3.</li>
+                    <li id="flood-ref-8" tabindex="-1">Church, M., &amp; Jakob, M. (2020). <a href="https://doi.org/10.1029/2020WR027144" target="_blank" rel="noopener noreferrer"><em>What Is a Debris Flood?</em></a> <em>Water Resources Research</em>, 56(8), e2020WR027144, §§1–2, 5–6.</li>
+                    <li id="flood-ref-9" tabindex="-1">NOAA, National Weather Service (2021). <a href="https://www.weather.gov/media/directives/010_pdfs/pd01016005curr.pdf" target="_blank" rel="noopener noreferrer"><em>Storm Data Preparation</em></a>, NWS Instruction 10-1605, Appendix A, §§4 (“Coastal Flood”) and 27 (“Lakeshore Flood”).</li>
+                </ol></section></div></div>
+    </dialog>
+</body>
+
+</html>

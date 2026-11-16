@@ -1,0 +1,12 @@
+# evelpidou.nkua.cloud
+# The pages are open to search engines. The data service and the data folders are not.
+User-agent: *
+Disallow: /webgis-api/
+Disallow: /floods/data/
+Disallow: /mani-floods-2026/data/
+Disallow: /Mani-Floods-Aug-2026/data/metadata/
+Disallow: /Mani-Floods-Aug-2026/data/reports/
+Disallow: /Mani-Floods-Aug-2026/data/timeseries/
+Disallow: /Mani-Floods-Aug-2026/data/vector/
+Disallow: /%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/data/
+Allow: /
