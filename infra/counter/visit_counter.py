@@ -96,14 +96,22 @@ LINKED_COUNTERS: dict[str, str] = {
 # They are listed with "comparable": false and the reason, and are left out of "total".
 NOT_COMPARABLE: dict[str, str] = {}
 
+# Notes on sites whose number is comparable but includes automated access recorded before the filters
+# of 17 November 2026 (their earlier figures were kept at the owner's decision). The notes appear only in
+# the API answer; the pages do not show them.
+AUTOMATED_BEFORE_FILTER = "The figure before 17 Nov 2026 includes automated access; since then automated access is filtered."
+SITE_NOTES: dict[str, str] = {
+    "nepal-flood-2026-catalogue": AUTOMATED_BEFORE_FILTER,
+    "evelpidou": AUTOMATED_BEFORE_FILTER,
+}
+
 SUMMARY_NOTE = (
     "Each number is the total recorded by the counter of the site itself: a script on the page adds one visit "
     "per browser session. Since 17 November 2026 the web servers do not count requests from self-identified "
     "robots and automation tools, except those of Lynkeus, the 2026 Nepal Cascade Hazard WebGIS and the WebGIS "
     "Builder, and the Nepal data resources catalogue and the site of Prof. Niki Evelpidou also leave out requests "
-    "from cloud and hosting networks. The numbers of these two sites were corrected on 17 November 2026 to the "
-    "visits of people measured in the front web server's log; the numbers of the other sites still include "
-    "automated visits recorded before that date. No cookies are used and the counters store only the totals. "
+    "from cloud and hosting networks. The numbers recorded before that date include automated visits. No "
+    "cookies are used and the counters store only the totals. "
     "\"total\" is the sum of the sites with \"comparable\": true; \"total_all\" also includes the sites whose "
     "number is not comparable."
 )
@@ -249,6 +257,8 @@ class VisitRequestHandler(BaseHTTPRequestHandler):
             entry: dict[str, object] = {"name": name, "url": url, "visits": visits, "comparable": key not in NOT_COMPARABLE}
             if key in NOT_COMPARABLE:
                 entry["note"] = NOT_COMPARABLE[key]
+            elif key in SITE_NOTES:
+                entry["note"] = SITE_NOTES[key]
             sites[key] = entry
         return {
             "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),

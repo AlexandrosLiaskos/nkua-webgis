@@ -30,6 +30,12 @@ All notable changes to this repository are recorded in this file. The format fol
   comparable again: their counters were corrected on 17 November 2026 to the visits of people measured in
   the front web server's log, and their web servers now leave out robots and cloud networks. The general
   note says which counters leave out automated requests.
+- `infra/counter/visit_counter.py` gives the Nepal data resources catalogue and the Evelpidou site the
+  note "The figure before 17 Nov 2026 includes automated access; since then automated access is
+  filtered." (new `SITE_NOTES`; the note appears only in the API answer). On 17 November 2026, at the
+  owner's decision, both counters were set back to their earlier figures plus the visits counted since
+  the correction (12,097 and 1,210); both stay comparable, and their web servers keep leaving out robots
+  and cloud networks. The general note no longer says that their numbers were corrected.
 - `infra/scripts/ship.ps1` stops with a message instead of copying a git bundle to the server and
   forcing a checkout there.
 
