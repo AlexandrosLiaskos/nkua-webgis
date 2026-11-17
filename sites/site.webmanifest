@@ -1,7 +1,7 @@
 {
-    "name": "NKUA geospatial research catalogues",
-    "short_name": "NKUA",
-    "description": "Geospatial research catalogues of Earth's geomorphic features and natural disasters.",
+    "name": "Collections of Geodatasets",
+    "short_name": "Geodatasets",
+    "description": "Collections of Geodatasets on Earth's geomorphic features and natural disasters.",
     "id": "/",
     "start_url": "/",
     "scope": "/",
