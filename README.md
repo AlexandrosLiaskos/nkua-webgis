@@ -254,9 +254,11 @@ These steps follow `infra/scripts/deploy.sh` and `compose.yaml`. An installation
 this repository has not been tested.
 
 The release scripts of September 2026 (`infra/scripts/release-20260905.sh`,
-`infra/scripts/release-floods-integration.sh`) and `infra/scripts/ship.ps1` belong to the earlier way of
-deploying, in which a git bundle from a local clone was copied to the server and checked out there with
-`git checkout -f`. They are kept as a record and are not used with this repository.
+`infra/scripts/release-floods-integration.sh`) belong to the earlier way of deploying, in which a git
+bundle from a local clone was copied to the server and checked out there with `git checkout -f`. They
+are kept as a record and are not used with this repository. `infra/scripts/ship.ps1`, which made and
+sent those bundles, now only stops with a message: changes reach the server through `git push` and
+`git pull`, and the page files are published with `infra/scripts/publish-static.py`.
 
 ## Checks
 

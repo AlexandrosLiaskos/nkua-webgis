@@ -18,6 +18,11 @@ All notable changes to this repository are recorded in this file. The format fol
 - The workflow `Checks`: the syntax of the JavaScript, JSON, Python and shell files, the
   well-formedness of the HTML files, the compose file, and a secret scan with gitleaks.
 
+### Changed
+
+- `infra/scripts/ship.ps1` stops with a message instead of copying a git bundle to the server and
+  forcing a checkout there.
+
 ### Earlier history
 
 The sites were developed in a git repository on the server from 4 September 2026 (155 commits). That
