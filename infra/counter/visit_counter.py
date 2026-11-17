@@ -94,16 +94,18 @@ LINKED_COUNTERS: dict[str, str] = {
 
 # Sites whose number is not a count of one visit per browser session of that site.
 # They are listed with "comparable": false and the reason, and are left out of "total".
-NOT_COMPARABLE: dict[str, str] = {
-    "nepal-flood-2026-catalogue": "The catalogue has several thousand pages and each of them records visits. Most of its page requests come from automated clients, so this number is not comparable with the other sites and is not part of the total.",
-    "evelpidou": "The recorded number is several times larger than the page requests in the log of the site's own web server, so it does not count visits of this site alone. It is not part of the total.",
-}
+NOT_COMPARABLE: dict[str, str] = {}
 
 SUMMARY_NOTE = (
     "Each number is the total recorded by the counter of the site itself: a script on the page adds one visit "
-    "per browser session. Automated clients that run scripts are included. No cookies are used and nothing "
-    "about a visitor is stored. \"total\" is the sum of the sites with \"comparable\": true; \"total_all\" also "
-    "includes the sites whose number is not comparable."
+    "per browser session. Since 17 November 2026 the web servers do not count requests from self-identified "
+    "robots and automation tools, except those of Lynkeus, the 2026 Nepal Cascade Hazard WebGIS and the WebGIS "
+    "Builder, and the Nepal data resources catalogue and the site of Prof. Niki Evelpidou also leave out requests "
+    "from cloud and hosting networks. The numbers of these two sites were corrected on 17 November 2026 to the "
+    "visits of people measured in the front web server's log; the numbers of the other sites still include "
+    "automated visits recorded before that date. No cookies are used and the counters store only the totals. "
+    "\"total\" is the sum of the sites with \"comparable\": true; \"total_all\" also includes the sites whose "
+    "number is not comparable."
 )
 
 SUMMARY_LIFETIME_SECONDS = 60
