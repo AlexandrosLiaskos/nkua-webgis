@@ -61,6 +61,9 @@ All notable changes to this repository are recorded in this file. The format fol
   catalogues — NKUA' and 'NKUA geospatial research catalogues' in the title of `sites/index.html`,
   its description, the titles and image descriptions for link previews, the structured data, the web
   manifest (short name 'Geodatasets') and the share dialog of `sites/geocollections.js`.
+- `infra/counter/visit_counter.py`: the visit summary names the home page 'Collections of
+  Geodatasets' and the four hazard pages by their page titles, 'Earthquakes of Earth', 'Tsunamis of
+  Earth', 'Landslides of Earth' and 'Wildfires of Earth' (before: 'Earthquakes WebGIS' and so on).
 
 ### Fixed
 
