@@ -11037,3 +11037,28 @@ html, body { overflow-x: hidden; }
         display: none;
     }
 }
+
+/* Map credits where the status bar lies over the map (above 720 px): the right box of the status
+   bar (coordinates and scale) covered the map credits button in the bottom-right corner, so a
+   click reached the box and the credits stayed closed. The button now sits above that box
+   (the box is 38 px high and 8 px from the bottom edge; 8 px are left between the two). */
+@media (min-width: 721px) {
+    .map-credits-control {
+        margin-bottom: 54px !important;
+    }
+}
+
+/* Phones and narrow windows (up to 768 px): the map container had a fixed height (screen height
+   minus 110 or 120 px), which is more than the space left between the header, the panel buttons
+   and the footer. Its lower part, with the status bar and the map credits button, lay outside
+   the visible area. The map container now takes the height of that space. */
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    .map-container {
+        height: auto;
+        min-height: 0;
+    }
+}

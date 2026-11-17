@@ -40,6 +40,15 @@ All notable changes to this repository are recorded in this file. The format fol
   from `MANI_PHOTO_GDB`. Without these variables they use the folder that holds the code and its
   subfolders `figures/`, `scratch/` and `data/photographs/`.
 
+### Fixed
+
+- The 'Map credits' button of the eleven WebGIS sites that load `sites/webgis-shared/lagoons-ui.css`
+  opens the basemap credits again. In windows wider than 720 px the right box of the status bar
+  covered the button, so the button now sits above that box. In windows up to 768 px wide the map
+  container was taller than the space between the header and the footer, and the status bar and the
+  button lay outside the visible area; the map container now takes the height of that space. The
+  pages load the file as `lagoons-ui.css?v=20261117-credits-1`.
+
 ### Earlier history
 
 The sites were developed in a git repository on the server from 4 September 2026 (155 commits). That
