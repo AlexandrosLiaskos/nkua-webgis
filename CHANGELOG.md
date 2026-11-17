@@ -26,6 +26,14 @@ All notable changes to this repository are recorded in this file. The format fol
 - `infra/scripts/ship.ps1` stops with a message instead of copying a git bundle to the server and
   forcing a checkout there.
 
+### Changed
+
+- `compose.yaml` stops the visit counter with SIGINT. `visit_counter.py` runs as PID 1 without a
+  SIGTERM handler, so it ignored the default stop signal and was killed after 10 seconds.
+- `infra/nginx/webgis.conf` looks the visit counter up through the resolver also for the
+  `/api/page-summary` addresses of the pages, as it already did for `/api/visits/`, so a recreated
+  counter is found without reloading nginx.
+
 ### Earlier history
 
 The sites were developed in a git repository on the server from 4 September 2026 (155 commits). That
