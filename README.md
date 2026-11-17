@@ -115,10 +115,12 @@ included.
 ### Mani Peninsula Flash Flood Reconstruction, Research Portal
 
 - Address: <https://evelpidou.nkua.cloud/Mani-Floods-Aug-2026/>
-- Files: `sites/Mani-Floods-Aug-2026/`: the portal page, its data page (`data/index.html`) and its
-  code page (`src/index.html`)
-- The data files of the portal and the model code that its code page offers are not in this
-  repository.
+- Files: `sites/Mani-Floods-Aug-2026/`: the portal page, its data page (`data/index.html`), its code
+  page (`src/index.html`) and the model code of the reconstruction in `src/`: the Python package
+  (`src/src/`, with the parts acquisition, pipeline, submodels and visualization), its tests
+  (`src/tests/`), `src/pyproject.toml` and `src/README.md`. The code is under the MIT License of
+  `src/LICENSE`, as the pages of the portal state.
+- The data files of the portal, the archive of its code and one helper script are not included.
 
 ### Κατανάλωση νερού άρδευσης στην Κύπρο 2018–2026
 
@@ -297,6 +299,12 @@ following parts of that folder were left out.
 | `sites/landslides/templates/landslides-data-template.xlsx.inspect.ndjson` | A listing that a program wrote while it inspected the template | Generated file |
 | `.impeccable/`, `PRODUCT.md` | Working files of a design-review tool | Not part of the sites |
 
+The live research portal of the Mani floods also holds files that were not copied into
+`sites/Mani-Floods-Aug-2026/`: its data files, the archive of its code
+(`src/mani-floods-aug-2026-src.zip`, which holds the same code) and
+`src/src/pipeline/export_project_and_history_for_ubuntu.py`, a helper that packages the conversation
+history and settings of an AI assistant on the developer's computer and is not part of the model.
+
 The passwords of the database are in `/opt/nkua-webgis/.env` on the server, outside the folder of the
 repository. The source folder of the server had a git history of 155 commits, from 4 to 5 September
 2026; it is not published, because it contains the datasets. `.gitignore` keeps all these files out
@@ -326,6 +334,9 @@ Mani floods).
 | [OpenFreeMap](https://openfreemap.org/) | | Credit: OpenFreeMap, © OpenMapTiles, data from OpenStreetMap (ODbL) | Vector basemap |
 | Esri World Imagery and World Hillshade | | Terms of use of Esri | Satellite and relief basemaps |
 
+The model code of the Mani research portal lists its own dependencies in
+`sites/Mani-Floods-Aug-2026/src/pyproject.toml`.
+
 ## Citation and licence
 
 To cite the sites, use the entry in [CITATION.cff](CITATION.cff); each site also gives its own reference
@@ -340,7 +351,8 @@ This covers the photographs of the home page (Twelve Apostles by Alex E. Proimos
 Louisiana floods by Melissa Leake, U.S. Coast Guard, via USDA, public domain), the logos of the
 university and of the partner institutions, and the software listed above. The pages of the Mani research
 portal (`sites/Mani-Floods-Aug-2026/`) state their own terms: the MIT License for the software of the
-portal and CC BY 4.0 for its data. The template assets of the builder
+portal and CC BY 4.0 for its data. Its model code (`sites/Mani-Floods-Aug-2026/src/`) is under the MIT
+License of `sites/Mani-Floods-Aug-2026/src/LICENSE`. The template assets of the builder
 (`sites/prisma-builder/template-assets/`) carry the licence notices that the builder copies into the
 catalogues it generates.
 

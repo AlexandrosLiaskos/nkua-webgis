@@ -18,6 +18,9 @@ All notable changes to this repository are recorded in this file. The format fol
 - The workflow `Checks`: the syntax of the JavaScript, JSON, Python and shell files, the
   well-formedness of the HTML files, the compose file, and a secret scan with gitleaks.
 
+- The model code of the Mani research portal (`sites/Mani-Floods-Aug-2026/src/`), copied from the
+  live site without its data files, the archive of the code and one helper script.
+
 ### Changed
 
 - `infra/scripts/ship.ps1` stops with a message instead of copying a git bundle to the server and
