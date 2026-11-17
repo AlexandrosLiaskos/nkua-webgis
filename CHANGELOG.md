@@ -33,6 +33,12 @@ All notable changes to this repository are recorded in this file. The format fol
 - `infra/nginx/webgis.conf` looks the visit counter up through the resolver also for the
   `/api/page-summary` addresses of the pages, as it already did for `/api/visits/`, so a recreated
   counter is found without reloading nginx.
+- Twelve scripts of the Mani model code in `sites/Mani-Floods-Aug-2026/src/src/pipeline/` no longer
+  name folders of one computer. They read the project folder from the environment variable
+  `MANI_PROJECT_ROOT`, the folder for a second copy of the figures from `MANI_FIGURE_COPY_DIR`, the
+  working folder of the figures from `MANI_SCRATCH_DIR` and the geodatabase of the field photographs
+  from `MANI_PHOTO_GDB`. Without these variables they use the folder that holds the code and its
+  subfolders `figures/`, `scratch/` and `data/photographs/`.
 
 ### Earlier history
 
