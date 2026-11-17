@@ -23,6 +23,13 @@ All notable changes to this repository are recorded in this file. The format fol
 
 ### Changed
 
+- `infra/nginx/webgis.conf` answers counting requests (POST) to the page-summary addresses and to
+  `/api/visits/` with 204, without passing them to the counter, when the user agent names a robot, an
+  automation tool or an HTTP library, or is empty. Reading the numbers (GET) is not affected.
+- `infra/counter/visit_counter.py` lists the Nepal data resources catalogue and the Evelpidou site as
+  comparable again: their counters were corrected on 17 November 2026 to the visits of people measured in
+  the front web server's log, and their web servers now leave out robots and cloud networks. The general
+  note says which counters leave out automated requests.
 - `infra/scripts/ship.ps1` stops with a message instead of copying a git bundle to the server and
   forcing a checkout there.
 
