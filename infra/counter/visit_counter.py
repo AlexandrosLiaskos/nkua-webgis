@@ -26,7 +26,7 @@ GITHUB_PAGES_TEAM = "https://uoa-gr.github.io"
 # Name and public address of every site in the summary, in the order of the list.
 # A WebGIS page that is missing here is listed under its key.
 SITE_DETAILS: dict[str, tuple[str, str]] = {
-    "geocollections": ("Geospatial research catalogues — NKUA", f"{EVELPIDOU}/"),
+    "geocollections": ("Collections of Geodatasets", f"{EVELPIDOU}/"),
     "storm": ("February 2026 Storm Surges WebGIS", f"{EVELPIDOU}/%CE%9A%CE%B1%CE%BA%CE%BF%CE%BA%CE%B1%CE%B9%CF%81%CE%AF%CE%B1-%CE%A6%CE%B5%CE%B2-2026/"),
     "floods": ("Historic Floods of Earth WebGIS", "https://historicfloods.org/"),
     "naxos": ("Geomorphological Map of Naxos WebGIS", f"{GITHUB_PAGES_TEAM}/naxos/"),
@@ -35,10 +35,10 @@ SITE_DETAILS: dict[str, tuple[str, str]] = {
     "lagoons": ("Coastal Lagoons of Earth WebGIS", f"{EVELPIDOU}/lagoons/"),
     "nepal-flood-2026": ("2026 Nepal Cascade Hazard WebGIS", f"{EVELPIDOU}/Nepal-Flood-2026/"),
     "nepal-flood-2026-catalogue": ("Public Data Resources for the 26 August 2026 Nepal Hazard Cascade", f"{EVELPIDOU}/Nepal-Flood-2026-Catalogue/"),
-    "earthquakes": ("Earthquakes WebGIS", f"{EVELPIDOU}/earthquakes/"),
-    "tsunamis": ("Tsunamis WebGIS", f"{EVELPIDOU}/tsunamis/"),
-    "landslides": ("Landslides WebGIS", f"{EVELPIDOU}/landslides/"),
-    "wildfires": ("Wildfires WebGIS", f"{EVELPIDOU}/wildfires/"),
+    "earthquakes": ("Earthquakes of Earth", f"{EVELPIDOU}/earthquakes/"),
+    "tsunamis": ("Tsunamis of Earth", f"{EVELPIDOU}/tsunamis/"),
+    "landslides": ("Landslides of Earth", f"{EVELPIDOU}/landslides/"),
+    "wildfires": ("Wildfires of Earth", f"{EVELPIDOU}/wildfires/"),
     "mani-floods-2026": ("Floods in Mani, Greece, 15 August 2026", f"{EVELPIDOU}/mani-floods-2026/"),
     "mani-floods-aug-2026": ("Mani Peninsula Flash Flood Reconstruction, Research Portal", f"{EVELPIDOU}/Mani-Floods-Aug-2026/"),
     "cyprus-irrigation-2026": ("Κατανάλωση νερού άρδευσης στην Κύπρο 2018–2026", f"{EVELPIDOU}/cyprus-irrigation-2026/"),
