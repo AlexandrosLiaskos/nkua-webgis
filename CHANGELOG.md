@@ -33,6 +33,11 @@ All notable changes to this repository are recorded in this file. The format fol
 - `infra/nginx/webgis.conf` looks the visit counter up through the resolver also for the
   `/api/page-summary` addresses of the pages, as it already did for `/api/visits/`, so a recreated
   counter is found without reloading nginx.
+- `infra/nginx/webgis.conf` takes the address of the visitor from the `X-Forwarded-For` header that
+  the front web server writes, and trusts only that server for it (`set_real_ip_from`,
+  `real_ip_header`, `real_ip_recursive`). The limits of the page counters and of the API that use
+  `$binary_remote_addr` now count each visitor; before, all visitors counted as the front server.
+  The limit for one-record requests already used the visitor address and is unchanged.
 - Twelve scripts of the Mani model code in `sites/Mani-Floods-Aug-2026/src/src/pipeline/` no longer
   name folders of one computer. They read the project folder from the environment variable
   `MANI_PROJECT_ROOT`, the folder for a second copy of the figures from `MANI_FIGURE_COPY_DIR`, the
