@@ -57,6 +57,10 @@ All notable changes to this repository are recorded in this file. The format fol
   working folder of the figures from `MANI_SCRATCH_DIR` and the geodatabase of the field photographs
   from `MANI_PHOTO_GDB`. Without these variables they use the folder that holds the code and its
   subfolders `figures/`, `scratch/` and `data/photographs/`.
+- The home page is named 'Collections of Geodatasets'. The name replaces 'Geospatial research
+  catalogues — NKUA' and 'NKUA geospatial research catalogues' in the title of `sites/index.html`,
+  its description, the titles and image descriptions for link previews, the structured data, the web
+  manifest (short name 'Geodatasets') and the share dialog of `sites/geocollections.js`.
 
 ### Fixed
 

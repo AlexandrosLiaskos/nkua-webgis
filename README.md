@@ -34,7 +34,7 @@ Each site is a folder of `sites/` with its own `index.html`. The pages are HTML,
 without a build step; the research catalogue builder is the one exception, and its built files are
 included.
 
-### Geospatial research catalogues — NKUA (home page)
+### Collections of Geodatasets (home page)
 
 - Address: <https://evelpidou.nkua.cloud/>
 - Files: `sites/index.html`, with its script, style sheet and images in `sites/`

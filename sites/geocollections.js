@@ -424,8 +424,8 @@
     if (!button || !status) return;
 
     const shareData = {
-        title: 'NKUA geospatial research catalogues',
-        text: 'Explore geospatial research catalogues of Earth’s landforms and natural disasters.',
+        title: 'Collections of Geodatasets',
+        text: 'Explore Collections of Geodatasets on Earth’s landforms and natural disasters.',
         url: 'https://evelpidou.geo.nkua.cloud/'
     };
 
