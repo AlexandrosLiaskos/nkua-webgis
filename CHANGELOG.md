@@ -71,6 +71,9 @@ All notable changes to this repository are recorded in this file. The format fol
   templates of ten pages and three scripts. `sites/index.html` loads the script as
   `geocollections.js?v=20261117-host-1`. `sites/floods/` keeps `https://historicfloods.org/` as its
   canonical address.
+- The home page names the group of the WebGIS Builder and Lynkeus 'Geospatial tools' (before: 'Web
+  applications'), in the heading of the section and in the list at the foot of the page. Every
+  entry of the page is a web application, so the former name told the two apart from nothing.
 
 ### Fixed
 
