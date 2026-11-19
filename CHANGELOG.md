@@ -20,6 +20,10 @@ All notable changes to this repository are recorded in this file. The format fol
 
 - The model code of the Mani research portal (`sites/Mani-Floods-Aug-2026/src/`), copied from the
   live site without its data files, the archive of the code and one helper script.
+- The home page lists CVIc as the third entry of the group 'Geospatial tools': a card with a
+  screenshot of its start page (`sites/cvic-site-preview.jpg`), its number of recorded visits (key
+  `cvic` of the visit summary) and a link at the foot of the page. The group uses the grid of three
+  columns, as the group 'Geomorphic features' does.
 
 ### Changed
 
