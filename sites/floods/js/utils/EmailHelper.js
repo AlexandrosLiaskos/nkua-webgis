@@ -50,7 +50,7 @@ Best regards,
 
 ---
 Please attach your completed XLSX template or a CSV file with matching headers.
-Download the template at: https://evelpidou.geo.nkua.cloud/floods/templates/floods-data-template.xlsx`
+Download the template at: https://evelpidou.nkua.cloud/floods/templates/floods-data-template.xlsx`
         );
 
         window.location.href = `mailto:${this.recipients}?subject=${subject}&body=${body}`;
