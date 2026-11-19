@@ -68,7 +68,7 @@ All notable changes to this repository are recorded in this file. The format fol
   `https://evelpidou.nkua.cloud`, which answers directly. The former host name of the collection
   answers with a redirect, and it stood in the canonical links, the addresses and images for link
   previews, the structured data, the share links, the suggested citations and the links to the data
-  templates of twelve pages and three scripts. `sites/index.html` loads the script as
+  templates of ten pages and three scripts. `sites/index.html` loads the script as
   `geocollections.js?v=20261117-host-1`. `sites/floods/` keeps `https://historicfloods.org/` as its
   canonical address.
 
