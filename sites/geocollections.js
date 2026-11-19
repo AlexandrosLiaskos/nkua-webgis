@@ -426,7 +426,7 @@
     const shareData = {
         title: 'Collections of Geodatasets',
         text: 'Explore Collections of Geodatasets on Earth’s landforms and natural disasters.',
-        url: 'https://evelpidou.geo.nkua.cloud/'
+        url: 'https://evelpidou.nkua.cloud/'
     };
 
     let statusTimer;
@@ -469,7 +469,7 @@
             await copyLink();
         } catch (error) {
             if (error?.name !== 'AbortError') {
-                announce('The link could not be copied. Use evelpidou.geo.nkua.cloud to share this page.');
+                announce('The link could not be copied. Use evelpidou.nkua.cloud to share this page.');
             }
         }
     });

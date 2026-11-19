@@ -78,7 +78,7 @@ class EmailHelper {
             d.reference || '',
             '',
             'Please attach your completed XLSX template or a CSV file with matching headers.',
-            'Download the template at: https://evelpidou.geo.nkua.cloud/lagoons/templates/lagoons-data-template.xlsx',
+            'Download the template at: https://evelpidou.nkua.cloud/lagoons/templates/lagoons-data-template.xlsx',
             '',
             'Best regards'
         ].join('\n');

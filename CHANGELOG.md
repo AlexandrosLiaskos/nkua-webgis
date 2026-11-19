@@ -64,6 +64,13 @@ All notable changes to this repository are recorded in this file. The format fol
 - `infra/counter/visit_counter.py`: the visit summary names the home page 'Collections of
   Geodatasets' and the four hazard pages by their page titles, 'Earthquakes of Earth', 'Tsunamis of
   Earth', 'Landslides of Earth' and 'Wildfires of Earth' (before: 'Earthquakes WebGIS' and so on).
+- The pages name their own address and the addresses of their own files on
+  `https://evelpidou.nkua.cloud`, which answers directly. The former host name of the collection
+  answers with a redirect, and it stood in the canonical links, the addresses and images for link
+  previews, the structured data, the share links, the suggested citations and the links to the data
+  templates of twelve pages and three scripts. `sites/index.html` loads the script as
+  `geocollections.js?v=20261117-host-1`. `sites/floods/` keeps `https://historicfloods.org/` as its
+  canonical address.
 
 ### Fixed
 
