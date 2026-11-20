@@ -55,6 +55,7 @@ SITE_DETAILS: dict[str, tuple[str, str]] = {
     "evelpidou": ("Prof. Niki Evelpidou", f"{EVELPIDOU}/evelpidou/"),
     "geological-museum-apeiranthos": ("Geological Museum of Apeiranthos", f"{GITHUB_PAGES_TEAM}/geological-museum-apeiranthos/"),
     "exp-dunes-naxos": ("Artificially Triggered Nature-based Sand Dunes Visitor Guide", f"{GITHUB_PAGES_TEAM}/exp-dunes-naxos/"),
+    "msc-gis": ("Master's Programme in Geographic Information Systems", "https://gis.geol.uoa.gr/"),
     "liaskos-eu": ("Alexandros P. Liaskos", "https://liaskos.eu/"),
     "science-trees": ("The trees of science", "https://liaskos.nkua.cloud/trees/"),
     "jazz-ink": ("Jazz Ink", "https://liaskos.nkua.cloud/jazz/"),
@@ -70,6 +71,8 @@ RECORDING_ORIGINS: dict[str, frozenset[str]] = {
     "ancient-greek-world-atlas": frozenset({GITHUB_PAGES_PERSONAL}),
     "ancient-greek-wonders": frozenset({GITHUB_PAGES_PERSONAL}),
     "hgs": frozenset({"https://hellenic-geographical-society.com", "https://www.hellenic-geographical-society.com"}),
+    # The English and the Greek address of the programme share one count.
+    "msc-gis": frozenset({"https://gis.geol.uoa.gr", "https://gis-el.geol.uoa.gr"}),
     "liaskos-eu": frozenset({"https://liaskos.eu", "https://www.liaskos.eu"}),
     "mani-floods-aug-2026": frozenset({EVELPIDOU}),
     "prisma-builder": frozenset({EVELPIDOU}),
