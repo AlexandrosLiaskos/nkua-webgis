@@ -24,6 +24,10 @@ All notable changes to this repository are recorded in this file. The format fol
   screenshot of its start page (`sites/cvic-site-preview.jpg`), its number of recorded visits (key
   `cvic` of the visit summary) and a link at the foot of the page. The group uses the grid of three
   columns, as the group 'Geomorphic features' does.
+- `infra/counter/visit_counter.py` records the visits of the site of the Master's Programme in
+  Geographic Information Systems (key `msc-gis`). Its English address `gis.geol.uoa.gr` and its Greek
+  address `gis-el.geol.uoa.gr` record with POST `/api/visits/msc-gis` and share one count. The visit
+  summary lists the site from its first recorded visit.
 
 ### Changed
 
