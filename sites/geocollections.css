@@ -598,61 +598,68 @@ button {
     visibility: visible;
 }
 
-.visual-caption {
+/* Window chrome above the screenshot: the address of the WebGIS and the action. */
+.visual-chrome {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1rem 1.25rem;
+    padding: 0.5rem 0.875rem 0.5rem 0.625rem;
+    border-bottom: 1px solid rgba(220, 232, 229, 0.14);
+    background: var(--ocean);
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    line-height: 1.2;
 }
 
-.visual-caption-copy {
-    display: grid;
-    gap: 0.25rem;
+.visual-address {
+    min-width: 0;
+    padding: 0.375rem 0.875rem;
+    border-radius: 999px;
+    color: var(--paper);
+    background: rgba(246, 248, 245, 0.08);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.visual-caption strong {
-    font-family: var(--serif);
-    font-size: clamp(1.5rem, 2.1vw, 2rem);
-    font-weight: 400;
-    line-height: 1.05;
+.visual-address span {
+    color: rgba(220, 232, 229, 0.66);
 }
 
-.visual-caption-copy > span {
-    color: var(--ocean-light);
-    font-size: 0.6875rem;
-    line-height: 1.4;
-}
-
-.visual-caption svg {
-    width: 1.25rem;
-    height: 1.25rem;
+.visual-open {
+    display: inline-flex;
     flex: 0 0 auto;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--ocean-light);
+    font-weight: 500;
+    transition: color 180ms ease-out;
+}
+
+.visual-open svg {
+    width: 0.95rem;
+    height: 0.95rem;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.4;
+    stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.visual-map {
-    position: relative;
-    display: block;
-    aspect-ratio: 1.66;
-    overflow: hidden;
-    border-top: 1px solid rgba(220, 232, 229, 0.25);
-    background: var(--ocean-light);
+.visual-frame:hover .visual-open,
+.visual-frame:focus-visible .visual-open {
+    color: var(--white);
 }
 
-/* Enlarge the actual map viewport, leaving the app masthead, sidebar and footer outside the frame. */
-.visual-map img {
-    position: absolute;
-    top: -20%;
-    left: -40.5%;
+/* The whole page of the WebGIS, uncropped. */
+.visual-shot {
     display: block;
-    width: 143%;
-    max-width: none;
+    width: 100%;
     height: auto;
+    aspect-ratio: 16 / 10;
+    background: var(--mist);
 }
 
 .collection-index {
@@ -1602,8 +1609,12 @@ html.has-collection-dialog {
         font-size: clamp(2.4rem, 10.5vw, 4rem);
     }
 
-    .visual-caption {
-        padding: 0.875rem 1rem;
+    .visual-chrome {
+        padding-block: 0.4375rem;
+    }
+
+    .visual-address {
+        padding-block: 0.3125rem;
     }
 
     .collection-index {
@@ -1768,6 +1779,10 @@ html.has-collection-dialog {
     .visual-frame:hover {
         transform: translateY(-0.25rem);
         border-color: rgba(246, 248, 245, 0.8);
+    }
+
+    .visual-frame:hover .visual-open svg {
+        transform: translate(0.125rem, -0.125rem);
     }
 
     .team-member:hover .team-portrait img {

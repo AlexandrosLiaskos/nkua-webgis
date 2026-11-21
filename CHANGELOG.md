@@ -38,7 +38,12 @@ All notable changes to this repository are recorded in this file. The format fol
   window shows Coastal lagoons with the geomorphic features and Historic floods with the natural
   disasters, and fades from one to the other with the heading and the background photo. On tablets
   it follows the text without covering the link 'Explore the collections', and on phones it is one
-  window at full width. The map previews are cropped to the map, without the border of the page.
+  window at full width.
+- The window of the hero shows the whole page of the WebGIS, not a crop of its map: a screenshot of
+  Coastal lagoons of Earth or Historic floods of Earth at 1440 by 900 pixels
+  (`sites/hero-window-*.jpg`, 960 and 1440 pixels wide), under a bar with its address and the word
+  'Open'. The cropped map previews and the caption bar are gone from the hero; the catalogue cards
+  keep their previews.
 - `infra/nginx/webgis.conf` answers counting requests (POST) to the page-summary addresses and to
   `/api/visits/` with 204, without passing them to the counter, when the user agent names a robot, an
   automation tool or an HTTP library, or is empty. Reading the numbers (GET) is not affected.
