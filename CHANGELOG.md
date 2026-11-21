@@ -28,9 +28,17 @@ All notable changes to this repository are recorded in this file. The format fol
   Geographic Information Systems (key `msc-gis`). Its English address `gis.geol.uoa.gr` and its Greek
   address `gis-el.geol.uoa.gr` record with POST `/api/visits/msc-gis` and share one count. The visit
   summary lists the site from its first recorded visit.
+- The header of the home page shows the title 'Collections of Geodatasets' beside the emblem of the
+  university, as the earlier name 'GeoCollections' was shown until 16 November 2026. On phones the
+  title takes two lines.
 
 ### Changed
 
+- The hero of the home page shows one framed window instead of two tilted, overlapping cards. The
+  window shows Coastal lagoons with the geomorphic features and Historic floods with the natural
+  disasters, and fades from one to the other with the heading and the background photo. On tablets
+  it follows the text without covering the link 'Explore the collections', and on phones it is one
+  window at full width. The map previews are cropped to the map, without the border of the page.
 - `infra/nginx/webgis.conf` answers counting requests (POST) to the page-summary addresses and to
   `/api/visits/` with 204, without passing them to the counter, when the user agent names a robot, an
   automation tool or an HTTP library, or is empty. Reading the numbers (GET) is not affected.
