@@ -556,49 +556,46 @@ button {
     }
 }
 
+/* One framed window beside the heading. It shows the catalogue of the current
+   scene of the hero: Coastal lagoons with the geomorphic features, Historic
+   floods with the natural disasters. Both frames share one grid cell. */
 .hero-visual {
     position: relative;
+    z-index: 1;
     min-width: 0;
     width: 100%;
-    max-width: 40rem;
-    aspect-ratio: 1 / 1.1;
-    justify-self: center;
-    z-index: 1;
-    overflow: visible;
-    perspective: 1600px;
+    max-width: 44rem;
+    justify-self: end;
+    display: grid;
 }
 
 .visual-frame {
-    position: absolute;
-    border: 1px solid rgba(220, 232, 229, 0.45);
-    border-radius: 6px;
+    grid-area: 1 / 1;
+    position: relative;
+    border: 1px solid rgba(220, 232, 229, 0.32);
+    border-radius: 8px;
     color: var(--paper);
     background: var(--ocean-deep);
     display: grid;
     grid-template-rows: auto auto;
+    align-self: start;
     overflow: hidden;
     text-decoration: none;
-    box-shadow: 0 32px 64px rgba(6, 31, 40, 0.46), 0 8px 16px rgba(6, 31, 40, 0.3);
-    transform: rotate(var(--frame-angle)) rotateY(var(--frame-turn));
-    transform-origin: center;
+    box-shadow:
+        0 1px 2px rgba(6, 31, 40, 0.24),
+        0 12px 24px -6px rgba(6, 31, 40, 0.34),
+        0 40px 80px -24px rgba(6, 31, 40, 0.6);
 }
 
-.visual-frame-landforms {
-    --frame-angle: -3deg;
-    --frame-turn: 5deg;
-    z-index: 1;
-    top: 1%;
-    left: 0;
-    width: 88%;
+.visual-frame-disasters,
+.hero[data-hero-scene="disasters"] .visual-frame-landforms {
+    opacity: 0;
+    visibility: hidden;
 }
 
-.visual-frame-disasters {
-    --frame-angle: 3deg;
-    --frame-turn: -5deg;
-    z-index: 2;
-    right: 0;
-    bottom: 0;
-    width: 74%;
+.hero[data-hero-scene="disasters"] .visual-frame-disasters {
+    opacity: 1;
+    visibility: visible;
 }
 
 .visual-caption {
@@ -650,10 +647,10 @@ button {
 /* Enlarge the actual map viewport, leaving the app masthead, sidebar and footer outside the frame. */
 .visual-map img {
     position: absolute;
-    top: -16%;
-    left: -38%;
+    top: -20%;
+    left: -40.5%;
     display: block;
-    width: 138%;
+    width: 143%;
     max-width: none;
     height: auto;
 }
@@ -1419,10 +1416,8 @@ html.has-collection-dialog {
     }
 
     .hero-visual {
-        width: min(100%, 42rem);
-        max-width: none;
-        justify-self: end;
-        margin-top: -5rem;
+        max-width: 42rem;
+        justify-self: start;
     }
 
     .team-grid {
@@ -1448,6 +1443,18 @@ html.has-collection-dialog {
 
 }
 
+/* Between the phone layout and wide screens the emblem returns to its
+   earlier size, so that the title and the navigation keep their space. */
+@media (min-width: 841px) and (max-width: 1120px) {
+    .brand-emblem {
+        width: 9.25rem;
+    }
+
+    .brand-name {
+        font-size: 1.375rem;
+    }
+}
+
 @media (max-width: 840px) {
     :root {
         --header-height: 72px;
@@ -1468,7 +1475,7 @@ html.has-collection-dialog {
     }
 
     .brand-emblem {
-        width: 9rem;
+        width: clamp(6.5rem, 36vw, 9rem);
     }
 
     .brand-wordmark {
@@ -1477,9 +1484,12 @@ html.has-collection-dialog {
         padding-left: 0.5rem;
     }
 
+    /* On phones the title breaks once, before "Geodatasets". */
     .brand-name {
-        font-size: clamp(1.25rem, 4vw, 1.5rem);
-        white-space: nowrap;
+        font-size: clamp(1rem, 5vw, 1.375rem);
+        line-height: 1.04;
+        white-space: normal;
+        text-wrap: balance;
     }
 
     .brand-description {
@@ -1590,32 +1600,6 @@ html.has-collection-dialog {
 
     .hero h1 {
         font-size: clamp(2.4rem, 10.5vw, 4rem);
-    }
-
-    .hero-visual {
-        width: 100%;
-        margin-top: 0;
-        aspect-ratio: auto;
-        display: grid;
-        gap: 1.5rem;
-        perspective: none;
-    }
-
-    .visual-frame {
-        position: relative;
-        transform: none;
-    }
-
-    .visual-frame-landforms {
-        inset: auto;
-        width: 94%;
-        justify-self: start;
-    }
-
-    .visual-frame-disasters {
-        inset: auto;
-        width: 88%;
-        justify-self: end;
     }
 
     .visual-caption {
@@ -1758,21 +1742,32 @@ html.has-collection-dialog {
     }
 
     .visual-frame {
-        transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1), border-color 300ms ease-out;
+        transition:
+            opacity 900ms ease,
+            visibility 0s linear 0s,
+            transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 300ms ease-out;
+    }
+
+    .visual-frame-disasters,
+    .hero[data-hero-scene="disasters"] .visual-frame-landforms {
+        transition:
+            opacity 900ms ease,
+            visibility 0s linear 900ms,
+            transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 300ms ease-out;
     }
 
     .visual-frame:focus-visible {
         transform: translateY(-0.25rem);
-        z-index: 3;
-        border-color: var(--paper);
+        border-color: rgba(246, 248, 245, 0.8);
     }
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     .visual-frame:hover {
-        transform: translateY(-0.5rem) rotate(0deg) rotateY(0deg);
-        z-index: 3;
-        border-color: var(--paper);
+        transform: translateY(-0.25rem);
+        border-color: rgba(246, 248, 245, 0.8);
     }
 
     .team-member:hover .team-portrait img {
