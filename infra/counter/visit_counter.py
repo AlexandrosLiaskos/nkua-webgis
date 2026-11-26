@@ -59,6 +59,7 @@ SITE_DETAILS: dict[str, tuple[str, str]] = {
     "liaskos-eu": ("Alexandros P. Liaskos", "https://liaskos.eu/"),
     "science-trees": ("The trees of science", "https://liaskos.nkua.cloud/trees/"),
     "jazz-ink": ("Jazz Ink", "https://liaskos.nkua.cloud/jazz/"),
+    "awesome-wallpapers": ("Awesome Wallpapers", "https://wallpapers.liaskos.eu/"),
 }
 
 # Sites that record a visit with POST /api/visits/<key>. The request is accepted
@@ -80,6 +81,7 @@ RECORDING_ORIGINS: dict[str, frozenset[str]] = {
     "catalogue-new-study": frozenset({EVELPIDOU}),
     "science-trees": frozenset({"https://liaskos.nkua.cloud"}),
     "jazz-ink": frozenset({"https://liaskos.nkua.cloud"}),
+    "awesome-wallpapers": frozenset({"https://wallpapers.liaskos.eu"}),
 }
 
 # Counters kept by other projects on this server. They are read, never written:
